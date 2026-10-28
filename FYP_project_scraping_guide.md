@@ -1,7 +1,8 @@
 # IPMS FYP 项目数据爬取指南（个人记录）
 
-> **仅供个人记录与使用，不可以恶意商用或者读取。**
-> 目的：把 IPMS 里的 FYP 项目（Project ID、标题、描述等）整理成本地文件，方便自己比较选题。
+> **用途说明：本项目仅用于更方便地查看、整理和比较 FYP 题目，不以恶意获取资料、访问未经授权的数据或影响 IPMS 正常运作为目的。若学校、系统管理方、资料相关人员或其他有关人员对本项目或其内容有异议，请联系我；收到通知后，我会立即停止相关使用，并删除本项目及相关资料。**
+>
+> 目的：把自己账号正常可见的 IPMS FYP 项目（Project ID、标题、描述等）整理成本地文件，方便自己比较选题。
 > 抓取下来的数据、登录文件都只留在自己电脑上，不上传、不转发。
 
 ---
@@ -22,10 +23,21 @@
 | `get_list.py` | 抓取全部项目列表（翻页），生成 `output/project_list_all.xlsx` |
 | `get_details.py` | 逐个打开详情页，抓取描述等字段，边抓边存进 `output/progress.jsonl` |
 | `export.py` | 把 `output/progress.jsonl` 整理成 `output/projects_with_description.xlsx` |
-| `to_md.py` | 只提取 Available 的项目，生成 `available_projects.md`（第 7 节） |
+| `to_md.py` | 只提取 Available 的项目，生成 `output/available_projects.md`（第 7 节） |
 | `to_md_by_supervisor.py` | 在 Available 的基础上再按导师筛选，生成 `output/available_projects.md`（第 8 节） |
 | `fyp_search.html` | 读取 `output/progress.jsonl` 的搜索 / 筛选 / 收藏页面（第 9 节） |
 | `update_status.py` | 用最新列表同步状态，处理新增和被删除的项目（第 10 节） |
+
+### `output/` 文件夹
+
+`output/` 是脚本所在文件夹下的数据目录，用来集中保存登录状态、抓取进度、备份和导出结果。运行相应步骤后，里面会有：
+
+- `login_state.json`：登录凭证。
+- `project_list_all.xlsx`：抓取的项目列表。
+- `progress.jsonl`：已抓取的项目详情和进度。
+- `progress_backup_*.jsonl`：更新数据前生成的备份。
+- `projects_with_description.xlsx`：导出的 Excel 文件。
+- `available_projects.md`：导出的 Markdown 文件。
 
 ### 关键信息
 
@@ -41,7 +53,7 @@
 
 1. **只用自己的账号**，手动登录，密码不写进代码。
 2. **顺序抓取、不并发**，每个详情页之间随机间隔 3～6 秒。
-3. **只读不改**：脚本只打开页面、读取文字，不点任何按钮（申请、提交、保存等）。
+3. **只读不改业务数据**：脚本只打开页面、读取文字，允许点击列表的分页按钮，不执行申请、提交、保存、删除等业务操作；登录和选择筛选条件由自己手动完成。
 4. **分批抓取**：每次最多 100 个，批与批之间隔几个小时，避开选题高峰期。
 5. **出现异常就停**：403、429、跳回登录页、读不到 Description，都不要硬重试。
 6. `login_state.json` 等同于登录凭证：**不分享、不上传，用完就删**。
@@ -60,7 +72,7 @@
 python --version
 ```
 
-显示 `Python 3.x.x` 即可。如果提示找不到，到 https://www.python.org/downloads/ 安装，**安装时务必勾选 "Add Python to PATH"**。
+确认使用的 Python 版本与所安装的 Playwright、pandas、openpyxl 兼容；不能只凭显示 `Python 3.x.x` 就判断环境可用。新建环境建议使用 Python 3.12，已有可运行环境则优先保留其版本。如果提示找不到 Python，到 https://www.python.org/downloads/ 安装，**安装时务必勾选 "Add Python to PATH"**。
 
 ### 2.2 建立工作文件夹
 前往你所在的文件夹位置。例子：
@@ -85,6 +97,24 @@ pip install playwright pandas openpyxl
 - 成功激活后，命令行最前面会出现 `(myenv)`。
 - **以后每次打开新的命令行窗口，都要先 `cd` 到文件夹，再执行 `myenv\Scripts\activate`，然后才运行脚本。**
 - 不需要执行 `playwright install`，因为脚本直接使用电脑自带的 Chrome\Edge。
+
+### 2.4 记录实际跑通的环境
+
+首次成功运行抓取流程后，在同一个已激活的 `myenv` 中记录版本：
+
+```cmd
+python --version
+python -m pip show playwright pandas openpyxl
+python -m pip freeze > requirements.txt
+```
+
+将 Python 版本与输出结果保存在自己的运行记录中，保留 `requirements.txt`。依赖安装成功不等于网站抓取流程已验证成功，以实际成功运行的记录为准。重建同一套环境时，可在新虚拟环境中使用：
+
+```cmd
+python -m pip install -r requirements.txt
+```
+
+如果还没有实际跑通环境的版本记录，先按第 2.3 节安装并做第 5.2 节的小规模测试，不要把未经验证的依赖版本记成“已测试通过”。
 
 ---
 
@@ -120,7 +150,7 @@ with sync_playwright() as p:
 python save_login.py
 ```
 
-会弹出 Edge 窗口。用自己的账号手动登录，看到 Project List 表格后，回到命令行按回车。文件夹里会出现 `login_state.json`。
+会弹出 Edge 窗口。用自己的账号手动登录，看到 Project List 表格后，回到命令行按回车。登录状态会保存到 `output/login_state.json`。
 
 > 这里要注意的是如果要使用的是chrome浏览器就把`msedge`改成`chrome`。
 例子：
@@ -136,7 +166,8 @@ browser = p.chromium.launch(channel="chrome", headless=False)
 ### 3.3 注意
 
 - 登录状态**会过期**。以后如果脚本提示"跳回登录页"，重新运行一次 `save_login.py` 即可。
-- 在网站里点了 Logout，保存的登录状态也会失效。
+- 如果之前已删除 `output/login_state.json`，即使原会话还没过期，也必须重新运行 `save_login.py` 保存登录状态。
+- 在使用该登录状态的脚本浏览器会话中点 Logout，才是对该会话进行主动注销；不要把普通浏览器的登录会话视为同一个会话。具体操作和失效范围见第 13.1 节。
 
 ---
 
@@ -220,7 +251,7 @@ python get_list.py
 浏览器打开后，在网页里手动做两件事，再回命令行按回车：
 
 1. **Select Programme** 选成自己的专业（例如 Artificial Intelligence (AI)）
-2. **Show** 选到 100
+2. **Show** 建议选到 100，以减少翻页次数。脚本会遍历所有分页；选择 50 等其他每页数量，本身不会让完整列表变成不完整列表。
 
 ### 4.3 检查结果
 
@@ -265,7 +296,7 @@ PROGRESS = "output/progress.jsonl"   # 每抓完一个就追加一行，中断�
 ONLY_AVAILABLE = False        # 改成 True 就只抓状态为 Available 的项目（分批期间不要改）
 AUTO_BATCH_LIMIT = 100        # 单次运行最多抓多少个（手动输入的数字也不能超过它）
 BROWSER = "msedge"            # 用 Chrome 就改成 "chrome"
-DELAY = (3, 6)                # 每个项目之间随机等待的秒数范围，不要调得比 2 秒更小
+DELAY = (3, 6)                # 每个项目之间随机等待的秒数范围，不要调得比 3 秒更小
 
 
 def fix(text):
@@ -404,12 +435,15 @@ python get_details.py
 
 ### 5.4 分批注意事项
 
-1. **`progress.jsonl` 不要删、不要改名、不要移动**，它必须和脚本在同一个文件夹，否则会从头开始抓。
+1. **`progress.jsonl` 不要删、不要改名、不要移动**，它应一直放在脚本所在文件夹下的 `output/` 中，否则脚本找不到已有进度，会从头开始抓。
 2. 中途想停，按 `Ctrl+C`。最多只丢掉正在抓的那一个，下次会重新抓。
 3. `ONLY_AVAILABLE` 在整个分批期间保持一致。
 4. 隔了很久再跑，如果提示"跳回登录页"，先重新运行 `save_login.py`。
+5. **旧文件迁移**：如果已有旧的 `progress.jsonl`、`project_list_all.xlsx`，先把它们放进 `output/` 再运行；尤其要确保旧进度文件位于 `output/progress.jsonl`，否则 `get_details.py` 会以为一个都没抓过，从头重抓。
 
 ### 5.5 脚本会自动停止的情况
+
+下表中的明确检测和对应提示针对 `get_details.py`。`save_login.py`、`get_list.py` 没有同样完整的状态码、登录页和字段检查；遇到错误页面时可能报错退出，也可能停在手动输入处，不能据此认定抓取成功。列表页面异常时不要继续按回车抓取，也不要使用异常运行产生的列表去同步状态。
 
 | 情况 | 屏幕提示 | 常见原因 |
 |---|---|---|
@@ -424,9 +458,10 @@ python get_details.py
 - **403 / 429**：至少等几个小时甚至隔天再继续，不要硬试。
 - **跳回登录页**：重新运行 `save_login.py`，再运行 `get_details.py`。
 - **读不到 Description**：先在浏览器里手动打开那个项目看看是否正常。
-- **断网 / 超时**：网络恢复后直接重新运行。
+- **明确是本地断网导致的失败**：确认网络恢复后，可重新运行。
+- **原因不明的超时、网站变慢或服务器报错**：先停止，不要立即反复重试，等几个小时或隔天再继续。
 
-以下情况不会自动停，要自己留意：电脑睡眠或关闭窗口（下次接着抓即可）、网站只是变慢、某个项目 Description 为空但字段存在（抓完后在 Excel 里扫一眼有没有明显空白行）。
+其他情况也要自己留意：关闭命令行窗口会终止程序，电脑睡眠可能使后续请求失败，恢复后应检查进度再继续；网站只是变慢但没有超时，脚本可能继续运行。某个项目的 Description 为空但字段存在时，不会触发“读不到 Description”的停止条件，抓完后要检查是否有明显空白记录。
 
 ---
 
@@ -475,13 +510,13 @@ def clean(text):
 rows = []
 with open("output/progress.jsonl", encoding="utf-8") as f:
     for line in f:
-    if not line.strip():
-        continue
-    try:
-        r = json.loads(line)
-    except json.JSONDecodeError:
-        print("跳过一行无法读取的数据")
-        continue
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            print("跳过一行无法读取的数据")
+            continue
         rows.append({k: clean(r.get(k, "")) for k in KEEP})
 
 df = pd.DataFrame(rows)
@@ -539,13 +574,13 @@ def clean(text):
 projects = []
 with open("output/progress.jsonl", encoding="utf-8") as f:
     for line in f:
-    if not line.strip():
-        continue
-    try:
-        r = json.loads(line)
-    except json.JSONDecodeError:
-        print("跳过一行无法读取的数据")
-        continue
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            print("跳过一行无法读取的数据")
+            continue
         # Status 原本长这样: "[ Available ]"，去掉括号和空格后做精确比较
         if re.sub(r"[\[\]\s]", "", r.get("Status", "")).lower() == "available":
             projects.append(r)
@@ -641,13 +676,13 @@ def clean(text):
 available = []
 with open("output/progress.jsonl", encoding="utf-8") as f:
     for line in f:
-    if not line.strip():
-        continue
-    try:
-        r = json.loads(line)
-    except json.JSONDecodeError:
-        print("跳过一行无法读取的数据")
-        continue
+        if not line.strip():
+            continue
+        try:
+            r = json.loads(line)
+        except json.JSONDecodeError:
+            print("跳过一行无法读取的数据")
+            continue
         if re.sub(r"[\[\]\s]", "", r.get("Status", "")).lower() == "available":
             available.append(r)
 
@@ -687,9 +722,11 @@ print(f"已保存 {OUTPUT}")
 
 ### 8.2 怎么用
 
-1. **先直接运行一次**：`python to_md_by_supervisor.py`，屏幕会列出 Available 项目里每位导师各有几个，方便挑名字。
+1. **先检查输出文件名，再运行一次**：`python to_md_by_supervisor.py`，屏幕会列出 Available 项目里每位导师各有几个，方便挑名字。注意：这次运行也会按设置区的预设导师生成 Markdown，并覆盖同名输出文件，并非只打印导师分布。
 2. **在设置区填想要的导师**：`SUPERVISORS = ["Tan Shing Chiang", "Goh Pey Yun"]`，一个或多个都可以。
 3. **再运行一次**，生成 `output/available_projects.md`。
+
+第 7 节的 `to_md.py` 和本节脚本默认都写入 `output/available_projects.md`，后运行的会覆盖前一次结果。若要同时保留全部 Available 与按导师筛选的版本，运行前把本节的 `OUTPUT` 改成不同文件名，例如 `output/available_projects_by_supervisor.md`。
 
 ### 8.3 修改设置后会变成什么
 
@@ -710,13 +747,16 @@ print(f"已保存 {OUTPUT}")
 
 ## 9. 搜索页面（`fyp_search.html`）
 
-一个单独的 HTML 文件，用来读取 `progress.jsonl`，方便搜索和筛选项目。**它不访问任何网站**，数据只在你打开文件时读进页面，不上传，也不保存到浏览器（所以不会留下残留）。
+一个单独的 HTML 文件，用来读取 `progress.jsonl`，方便搜索和筛选项目。**页面代码不访问网站、不上传数据，也不主动把项目数据或收藏保存到浏览器的持久化存储中**，只在当前页面内处理。复制、下载会按你的操作产生剪贴板内容或文件；浏览器及操作系统自身的记录不属于这里“不主动保存”的范围。
 
 ### 9.1 使用步骤
 
 1. 把 `fyp_search.html` 放在电脑上，**双击用浏览器打开**（Edge、Chrome 都可以）。
 2. 把 `output/progress.jsonl` **拖进页面**，或点右上角「选择 progress.jsonl」。
-3. 搜索、筛选、收藏。
+3. **状态自检**：看左侧状态按钮，Available + Taken + Removed 的数量应该等于「全部」总数；如果出现别的状态，先确认状态含义和数据是否正确，再依赖 Markdown 导出和搜索结果。
+4. 搜索、筛选、收藏。
+
+状态数量相加只用于检查分类是否符合预期，不能证明没有漏抓、坏行或重复记录；仍需留意页面提示，并按第 4.3 节核对列表数量。
 
 ### 9.2 功能说明
 
@@ -724,7 +764,7 @@ print(f"已保存 {OUTPUT}")
 |---|---|
 | 搜索框 | 多个关键词用空格分隔，表示**同时包含**；命中的词会高亮；按键盘 `/` 快速定位 |
 | 搜索范围 | 全部内容 / 仅标题 / 标题 + 描述 |
-| 状态 | 按钮上显示每种状态的数量（Available、Taken、Removed，以及无法识别的状态）；默认只看 Available |
+| 状态 | 按钮上显示每种状态的数量（Available、Taken、Removed，以及无法识别的状态）；有 Available 时默认只看 Available，没有时默认显示全部状态 |
 | 导师（可多选） | 每位导师后面显示项目数，上面有小搜索框 |
 | 项目类型 / 适合专业 | 下拉选择 |
 | 研究领域 / 所需技能 | 输入文字筛选，研究领域有自动提示 |
@@ -738,9 +778,11 @@ print(f"已保存 {OUTPUT}")
 
 页面**只能显示 `progress.jsonl` 里有的内容**，它自己不会联网，所以不会知道网站上发生了什么。要让它显示"已删除"，需要先按第 10 节更新数据，并把 `GONE_ACTION` 设成 `"mark"`，被删除的项目在数据里状态会变成 `[ Removed ]`，然后：
 
-- 状态按钮里会出现 **Removed 及数量**，默认的 Available 视图**不会显示**它们。
-- 点「Removed」或「全部」才会看到，卡片变淡、标题有删除线、状态标签显示 `Removed`。
-- 如果你**收藏的项目**后来变成 Removed 或 Taken，页面顶部提示条会告诉你"收藏里有 N 个已经不是 Available"，导出收藏时也会提醒"其中有已不可选的项目"。
+- 状态按钮里会出现 **Removed 及数量**。有 Available 项目时，默认的 Available 视图不会显示 Removed；如果文件里没有任何 Available，页面会默认显示全部状态，Removed 也会出现。
+- 选择「Removed」或「全部」可以查看这些项目，卡片变淡、标题有删除线、状态标签显示 `Removed`。
+- 页面不会实时更新状态，也不会保留旧文件中的收藏供下次比较。**每次成功重新导入文件都会清空收藏**；如果想对照旧的选题清单，先导出，再按 Project ID 在新数据中查询并重新收藏。
+- 如果在当前已加载的数据里收藏了 Taken、Removed 或其他非 Available 项目，下一次完整刷新结果时，顶部提示条会显示收藏中非 Available 项目的数量。普通视图中仅点击收藏按钮不会立即更新该提示，改变筛选条件等触发重绘后才会更新。
+- **复制收藏**成功时会提示是否包含非 Available 项目；**下载收藏**只生成 `shortlist.md`，没有额外的状态警告，需在下载前自行检查。
 
 ### 9.3.1 每个项目是否「还在」
 
@@ -748,7 +790,7 @@ print(f"已保存 {OUTPUT}")
 
 - **✔ 最近确认仍在：日期**：那天运行 `update_status.py` 时，这个项目还在最新列表里。
 - **✖ 网站已移除（日期 发现）**：那天发现它已不在列表里（需要 `GONE_ACTION = "mark"`）。
-- **未确认（更新数据后会显示）**：这是旧数据，还没有用 `update_status.py` 确认过。
+- **未确认（更新数据后会显示）**：该记录没有 `Last seen` 字段。首次刚抓到的项目、刚重新抓取详情的项目，以及未经过列表同步确认的旧记录，都可能出现这个提示，不代表数据一定很旧。
 
 注意：这个日期是**你上次更新时**确认的，不是现在这一刻；决定申请前仍要回网站核对。
 
@@ -758,11 +800,12 @@ print(f"已保存 {OUTPUT}")
 
 - **数据文件最后修改时间**，超过 3 天会提示"建议先更新"。这个时间来自文件本身，不是联网获取的。
 - **永远显示的提醒**：数据只是快照，决定申请前请回 IPMS 核对状态。
-- 有 Removed 项目、收藏里有已不可选项目、状态无法识别、描述为空、无法读取的行、重复的 Project ID（保留最后出现的那条），都会在这里提示。
+- 有 Removed 项目、收藏里有非 Available 项目、状态无法识别、描述为空、无法读取的行、重复的 Project ID（保留最后出现的那条），会在完整刷新结果时显示相应提示；普通视图中单独点击收藏按钮不会立即刷新提示条。
 
 ### 9.5 局限
 
-- 刷新页面后要重新选文件，**收藏会清空**，需要的话先导出。
+- 刷新页面后要重新选文件；成功重新导入文件时也会清空收藏，需要的话先导出。导出的 Markdown 用来留存和人工对照，页面没有把它导回收藏的功能。
+- 重新导入后，部分筛选条件会保留。如果结果为空，先点「重置筛选」；尤其是原来勾选了「只看已收藏」时，新导入后收藏已清空，会得到零结果。
 - 页面不能更新数据，更新要走第 10 节的流程。
 - 搜索和筛选的结果只是本地数据，**不等于网站此刻的状态**。
 
@@ -779,7 +822,7 @@ print(f"已保存 {OUTPUT}")
 | 网站上被删除的项目 | 可能 | 用 `GONE_ACTION` 处理 |
 | 描述、目标等内容 | 基本不变 | 需要时用 `REFRESH_IDS` 单独重抓 |
 
-所以**不需要整批重抓 391 个详情页**。列表页本身就有状态，只抓列表（4 页）加上新增项目的详情页，访问量比第一次小得多。
+所以**不需要整批重抓所有详情页**。列表页本身就有状态，只需遍历当前筛选范围的全部列表页，再补抓新增或指定项目的详情。391 条、每页 100 条时是 4 页，实际页数随总数和每页数量变化；页数也不等于浏览器的全部 HTTP 请求数，因为加载页面还可能请求脚本、样式等资源。
 
 > 直接重跑 `get_details.py` 不会更新已有项目，因为它会跳过 `progress.jsonl` 里已有的项目。这是需要 `update_status.py` 的原因。
 
@@ -795,15 +838,19 @@ pip install playwright pandas openpyxl
 python save_login.py
 ```
 
-**步骤 1：更新列表（只访问 4 个列表页）**
+已有可运行环境的 `requirements.txt` 时，可按第 2.4 节恢复依赖。如果连 `output/progress.jsonl` 也已删除，先按第 10.7 节恢复备份；没有备份时按首次抓取流程重新开始，不能直接同步不存在的进度文件。
+
+**步骤 1：更新列表（遍历当前筛选范围的全部列表页）**
 
 ```
 python get_list.py
 ```
 
-**专业和 Show 必须和上次一致**，否则列表不完整，后面会误判有项目被删除。
+**专业及其他决定项目范围的筛选条件必须和上次一致，并确认所有分页读取完整**，否则后面可能把未抓到的项目误判为缺失。Show 建议继续选 100 来减少分页；只改变每页数量不会改变完整列表中的项目范围。重新抓完后按第 4.3 节核对总数。
 
 **步骤 2：本地同步状态（不访问网站）**
+
+同步前先核对列表范围与完整性。**若设置了 `REFRESH_IDS`，还要在运行更新前确认这些 ID 仍在列表中，并检查 `ONLY_AVAILABLE` 是否会排除它们。** 更新脚本会先移除指定旧记录，再由详情脚本补抓；如果目标已不在列表、被筛选排除或抓取失败，旧记录不会自动恢复。此时停止操作，按第 10.7 节从更新前的备份恢复；确认处理方式后再重试。
 
 ```
 python update_status.py
@@ -817,7 +864,7 @@ python update_status.py
 python get_details.py
 ```
 
-只会抓新增和指定重抓的项目。
+详情脚本会处理当前列表中尚未保存在 `progress.jsonl` 的项目，包括新增、指定重抓以及之前未完成的项目。指定重抓的 ID 必须仍在最新列表中；如果开启了 `ONLY_AVAILABLE = True`，还必须通过 Available 筛选，且仍受单次批量上限限制。
 
 **步骤 4：重新生成你要的东西**
 
@@ -827,7 +874,7 @@ python to_md_by_supervisor.py
 
 或者把更新后的 `progress.jsonl` 重新拖进 `fyp_search.html`。
 
-**步骤 5：收尾**：删除 `output\login_state.json`，在 IPMS 点 Logout（见第 13 节）。
+**步骤 5：收尾**：按第 13.1 节处理同一脚本会话的 Logout（如需主动注销），再删除 `output\login_state.json`。下次运行访问网站的脚本前，文件不存在或会话已过期时，都需要重新运行 `save_login.py`。
 
 ### 10.3 脚本
 
@@ -843,7 +890,7 @@ REFRESH_IDS = []
 # 例如: REFRESH_IDS = ["T493015", "T493056"]
 
 # 网站上已经删除的项目（本地有、最新列表里没有）怎么处理：
-#   "report" = 只提醒，不改任何数据（默认，最安全）
+#   "report" = 对缺失项目只提醒，不删除或标记它们；其他状态和日期仍会更新（默认）
 #   "mark"   = 把它的 Status 改成 [ Removed ]，数据保留，但不会再出现在 Available 里
 #   "delete" = 直接从 progress.jsonl 删掉（有备份，但仍建议优先用 mark）
 GONE_ACTION = "report"
@@ -857,13 +904,13 @@ live = dict(zip(df["Project ID"].astype(str).str.strip(),
 records = []
 with open(PROGRESS, encoding="utf-8") as f:
     for n, line in enumerate(f, 1):
-    if not line.strip():
-        continue
-    try:
-        records.append(json.loads(line))
-    except json.JSONDecodeError:
-        raise SystemExit(f"progress.jsonl 第 {n} 行无法读取（可能是中断时写了一半）。"
-                         "请用记事本打开删掉这一行再运行，本脚本没有改动任何文件。")
+        if not line.strip():
+            continue
+        try:
+            records.append(json.loads(line))
+        except json.JSONDecodeError:
+            raise SystemExit(f"progress.jsonl 第 {n} 行无法读取（可能是中断时写了一半）。"
+                             "请先手动备份原文件，再检查并删除损坏行后运行；本脚本没有改动任何文件。")
 
 # 3. 先备份，再修改
 backup = f"output/progress_backup_{time.strftime('%Y%m%d_%H%M%S')}.jsonl"
@@ -873,19 +920,19 @@ print("已备份到", backup)
 refresh = set(REFRESH_IDS)
 today = time.strftime("%Y-%m-%d")
 
-# 安全检查：最新列表比本地少很多，多半是抓列表时选错了专业或 Show，
-# 这种情况下不执行 mark / delete，避免把正常的项目误标成已删除
+# 数量检查：只比较列表 ID 数与本地记录行数，不验证 ID 重合度或列表完整性。
+# 最新列表少于本地记录行数的 80% 时，本次不执行 mark / delete；仍会同步其他状态和日期。
 action = GONE_ACTION
 if action in ("mark", "delete") and len(live) < 0.8 * len(records):
     print(f"警告：最新列表只有 {len(live)} 个，本地有 {len(records)} 个，"
-          "差距太大，可能是专业或 Show 选错了。本次只提醒，不处理已删除的项目。\n")
+          "差距太大，可能是专业或筛选范围不同、列表未抓完整。本次不删除或标记缺失项目，其他同步仍会进行。\n")
     action = "report"
 
 kept, changed, removed = [], [], []
 for r in records:
     pid = r["Project ID"]
     if pid in refresh:
-        continue                      # 删掉旧记录，下次 get_details.py 会重新抓
+        continue                      # 先移除旧记录；后续是否补抓取决于列表、筛选和批次
     new = live.get(pid)
     if new:
         r["Last seen"] = today            # 记录：这天确认过它还在最新列表里
@@ -929,12 +976,12 @@ for i in new_ids:
     print("  ", i)
 print(f"\n本地有、但最新列表里没有: {len(gone)} 个（不会删除，只是提醒）")
 if gone:
-    print("  可能是项目被移除，或抓列表时选的专业 / Show 数量和上次不同")
+    print("  可能是项目被移除，或专业 / 筛选范围不同、列表未抓完整")
     for i in gone[:20]:
         print("  ", i)
 
 if new_ids or refresh:
-    print("\n下一步：运行 python get_details.py，只会抓新增和你指定要重抓的项目")
+    print("\n下一步：运行 python get_details.py，按当前列表、筛选和批次补抓缺少详情的项目")
 else:
     print("\n没有需要抓详情页的项目，更新完成")
 ```
@@ -945,8 +992,8 @@ else:
 
 | 修改 | 效果 |
 |---|---|
-| `REFRESH_IDS = []`（默认） | 只更新状态，其他内容不动 |
-| `REFRESH_IDS = ["T493015"]` | T493015 的旧记录被移除，再运行 `get_details.py` 就会重新抓它 |
+| `REFRESH_IDS = []`（默认） | 不主动移除记录以重抓详情；仍同步状态、更新 `Last seen`，并按 `GONE_ACTION` 处理缺失项目或清理恢复出现项目的 `Removed on` |
+| `REFRESH_IDS = ["T493015"]` | 先移除 T493015 的旧记录；之后仅在该 ID 仍在最新列表、通过 `ONLY_AVAILABLE` 筛选且轮到本次批次时，`get_details.py` 才会尝试重新抓取 |
 
 ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，否则下次运行又会移除并重抓。因为每打开一次详情页，对应项目的浏览次数可能 +1，所以不要滥用。
 
@@ -954,7 +1001,7 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 
 | 修改 | 效果 |
 |---|---|
-| `"report"`（默认） | 只提醒，不改任何数据 |
+| `"report"`（默认） | 对缺失项目只提醒，不删除或标记它们；仍会备份、同步其他项目的状态和日期、按 `REFRESH_IDS` 移除指定旧记录并写回文件 |
 | `"mark"` | 状态改成 `[ Removed ]`，数据保留，不再出现在 Available 里，搜索页面里会显示为已移除 |
 | `"delete"` | 直接从 `progress.jsonl` 删除（有备份，但建议优先用 `mark`） |
 
@@ -964,17 +1011,44 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 
 脚本提示"本地有、但最新列表里没有"时，不要马上处理：
 
-1. 先检查抓列表时专业和 Show 是否和上次一致。
-2. 手动在浏览器里打开那个项目的详情页（网址里把 `q=` 后面换成项目 ID），确认是否真的打不开或不存在。只手动看几个，不要用脚本逐个访问。
-3. 确认后把 `GONE_ACTION` 改成 `"mark"`，再运行一次 `update_status.py`。
+1. 先检查抓列表时专业及其他范围筛选是否和上次一致，并核对所有分页是否抓完整；Show 的每页数量不同本身不代表缺失。
+2. 手动在浏览器里核实少量有疑问的项目（网址里把 `q=` 后面换成项目 ID），同时确认登录有效、网站正常；不能把登录失效或暂时打不开直接当成项目已删除。不要用脚本逐个访问全部缺失项目。
+3. **`GONE_ACTION = "mark"` 会标记全部缺失项目，不是只标记刚才手动查看的几个。** 抽查只能确认抽查项；只有在列表范围一致、抓取完整，并能确认全部缺失项目都应如此处理时，才改成 `"mark"` 再运行。如果只能确认其中几个，保持 `"report"`，不要用这个全局设置批量标记。
 4. 用完改回 `"report"`。
 
 ### 10.6 脚本内置的安全措施
 
-- **每次运行前自动备份**成 `output/progress_backup_日期时间.jsonl`。
+- **读取最新列表和现有数据成功后、修改前自动备份**成 `output/progress_backup_日期时间.jsonl`。读取坏行时会提前退出，还没有创建这次备份，手动编辑前要自己先备份。
 - **写入先写临时文件再替换**，中途出错不会弄坏原文件。
-- **数量差距保护**：如果最新列表比本地少 20% 以上，大概率是专业或 Show 选错了，这时 `mark` 和 `delete` 不会执行，只提醒。
+- **数量差距保护**：仅当最新列表 ID 数量**少于本地记录行数的 80%**（严格少于，恰好减少 20% 不触发）时，将本次 `mark` / `delete` 降为 `report`；其他状态、日期和指定重抓的处理仍会执行。它不检查 ID 重合度，相同数量但完全不同的一批项目不会触发保护；重复本地记录也会影响这个数量判断，不能用它替代列表范围和完整性检查。
 - **状态用精确比较**，不会把 `Unavailable` 当成 `Available`。
+
+### 10.7 手动编辑前备份与恢复
+
+先停止所有正在读写这些文件的脚本。遇到坏行、准备清理重复记录或手动修改 JSONL 时，先复制一份原文件到未使用的备份名；不要先编辑唯一副本。
+
+```cmd
+copy /-Y output\progress.jsonl output\progress_backup_before_edit.jsonl
+```
+
+如果提示备份名已存在，换一个未使用的名字，确认备份成功后再编辑。确认某行确实损坏后再删除它；后续只有仍在当前列表且通过抓取筛选的项目才能补抓，不要假定删除后一定会自动恢复。
+
+如果一次更新或重抓结果不对：
+
+1. 先另外保留当前文件，避免回退时丢掉更新后已经成功抓到的记录。选择一个未使用的名字，例如：
+
+   ```cmd
+   copy /-Y output\progress.jsonl output\progress_backup_before_restore.jsonl
+   ```
+
+2. 找到出问题操作之前的 `progress_backup_*.jsonl`，核对内容和时间，确认它包含要恢复的记录，再复制回 `output/progress.jsonl`。下面的日期文件名只是例子，必须替换为自己选定的实际备份名；覆盖确认时先核对源文件和目标文件：
+
+   ```cmd
+   copy /-Y output\progress_backup_20261029_120000.jsonl output\progress.jsonl
+   ```
+
+3. 恢复后先检查数据。回退会丢弃该备份之后的进度；需要的话与第 1 步保留的文件人工对照。修正 `REFRESH_IDS`、抓取筛选或列表问题后再继续；再次同步前重新获取并核对最新列表。
+4. Excel、Markdown 不会随 JSONL 回退而自动更新，需要重新导出；搜索页面也要重新选择文件，已有收藏会清空。
 
 ---
 
@@ -984,7 +1058,7 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 
 ### 11.1 只读，不改任何东西
 
-- 脚本只做"打开页面、读取文字"，**不点任何按钮，不填任何表单**，不会申请项目、提交、保存、删除。
+- 脚本只做“打开页面、读取文字”，列表抓取会点击下一页按钮；**不执行申请项目、提交、保存、删除等会改变业务数据的操作**。登录和专业、每页数量等筛选由自己手动完成。
 - 只访问你登录后正常能看到的页面：列表页和项目详情页。
 - 不要修改网址参数去猜别的页面，不要去碰别人的资料（比如别的同学的 My Project）。
 
@@ -993,14 +1067,14 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 - **顺序访问，不并发**：一次只开一个页面，不要同时开多个窗口或多个脚本。
 - **间隔 3～6 秒随机**（`time.sleep(random.uniform(3, 6))`）。这一行**不要删，也不要把间隔调得比 3 秒更小**；想更温和可以调大，例如 `(3, 6)`。
 - **分批**：每次最多 100 个，批与批之间隔几个小时。
-- **更新只抓列表 + 新增项目**，不要整批重抓详情页。
+- **更新以列表同步为主，只补抓新增、之前未完成或确有必要重抓的项目**，不要整批重复访问详情页。
 - **不要频繁运行**：选题期间每隔几天更新一次就够，不需要每天。
 - **避开高峰**：选题截止前几天、大家都在用系统时不要跑，早上或深夜更好。
 
 ### 11.3 出现异常就停，不要硬试
 
-- 脚本遇到异常状态码（403、429、500…）、超时、跳回登录页、读不到 Description，都会**自己停下**。
-- 停下之后**不要立刻重试**：网站变慢或报错，说明它可能正在承受压力，应该等几个小时甚至隔天再继续。
+- `get_details.py` 明确检测异常状态码（403、429、500…）、打开页面失败、登录页密码框和缺少 Description，并在发现这些情况时停止。其他脚本没有同样完整的检测，不能把异常页面或无报错当作抓取成功；自己也要检查页面和输出。
+- 网站变慢、服务器报错、原因不明的超时或出现限制时，**不要立刻重试**，应等几个小时甚至隔天再继续。明确是本地断网时，确认网络恢复后可重新运行；登录失效时重新保存登录状态。
 - 不要把脚本改成"出错自动重试"或"无限循环"，也不要让它无人看管地跑。
 - 如果网站管理员或老师要求你停止，**立刻停止**。
 
@@ -1015,6 +1089,7 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 - 只用自己的账号，手动登录，**不把密码写进代码**。
 - `login_state.json` 等同于登录凭证，用完就删，不分享、不上传。
 - 抓下来的资料只留在自己电脑上，**不上传、不转发、不分享**。
+- `output/` 里有登录凭证和项目资料；以后如果把文件夹放进 Git 或同步到云盘，**要把 `output/` 排除掉**。
 
 ---
 
@@ -1026,39 +1101,54 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 | 项目被别人选走 | 状态 Available → Taken | 抓列表后运行 `update_status.py` 自动更新 |
 | 项目被释放（Taken → Available） | 同上 | 同上，会自动更新 |
 | 新增了项目 | 本地没有 | `update_status.py` 会列出新增 ID，再运行 `get_details.py` 抓取 |
+| 第一次设置 `ONLY_AVAILABLE = True`，只抓了 Available | `update_status.py` 会把本地没有的 Taken 项目列为「新增项目」，但 `get_details.py` 保持这个设置时不会抓它们 | 这是正常现象，不代表漏抓或更新失败，不要误会 |
 | 导师修改了描述 | 脚本发现不了（只比较状态） | 手动填 `REFRESH_IDS` 重抓 |
-| 新学期 / 新一轮 FYP，列表整批更换 | 大量"本地有、列表没有"，触发 20% 保护 | 把旧 `progress.jsonl` 改名存档，当作第一次重新分批抓取，不要在旧数据上硬更新 |
-| 抓列表时专业或 Show 选错 | 列表不完整，被误判为"已删除" | 数量保护会拦住；重新抓列表，保持专业和 Show 一致 |
+| 新学期 / 新一轮 FYP，列表整批更换 | 大量“本地有、列表没有”；若新旧数量接近，可能完全不触发数量保护 | 先备份并归档旧 `progress.jsonl`，当作第一次重新分批抓取，不要在旧数据上硬更新 |
+| 抓列表时专业或其他范围筛选不同，或分页没有抓完整 | 正常项目可能被误判为缺失；数量保护不一定触发 | 重新抓列表，保持项目范围一致并核对总数；Show 只是每页数量，只要遍历完整就不会因此漏项目 |
 | 出现新的状态（如 Unavailable） | 搜索页面会单独显示这个状态，不会当成 Available | 到页面「状态」按钮里查看，必要时告诉我来调整 |
 | 网站改版 | `get_details.py` 读不到 Description 而自动停下 | 重新查看页面结构，再改脚本，不是改设置能解决的 |
 | 登录过期（批次中途） | 提示"跳回登录页"并停止 | 重新运行 `save_login.py`，再接着抓 |
-| 抓取中途中断（Ctrl+C、断电） | `progress.jsonl` 最后一行可能写了一半 | 搜索页面会跳过并提示"无法读取"；`get_details.py` 会自动跳过并提示坏行，下次抓取不会粘连；`update_status.py` 会停下并告诉你是第几行，用记事本删掉那一行再运行 |
+| 抓取中途中断（Ctrl+C、断电） | `progress.jsonl` 最后一行可能写了一半 | 搜索页面会跳过并提示无法读取；`get_details.py` 会跳过坏行、避免新行粘连；`update_status.py` 会在备份前停下并指出行号，先按第 10.7 节手动备份，再检查损坏行及补抓条件 |
 | Excel 正开着时写 xlsx | `PermissionError` | 关掉 Excel 再运行 |
 | 同时开两个窗口跑 `get_details.py` | 同时写同一个文件，可能错乱，也违反第 11 节 | 一次只跑一个 |
-| 同一项目出现两次 | 搜索页面自动合并，保留最后一条 | 无需处理 |
+| 同一项目出现两次 | 搜索页面会合并并保留最后一条；Excel、Markdown 导出及状态更新脚本不会自动去重，重复行还会影响数量保护 | 仅在搜索页面查看时无需为显示重复另行处理；要导出或同步时，先备份，再按 Project ID 核对重复记录并保留正确的一条 |
 | 备份文件越积越多 | 里面是项目资料和导师邮箱 | 确认更新无误后删除 `progress_backup_*.jsonl` |
 | 一个项目属于多个专业（如 `DCN,ST,AI`） | 换专业抓列表时，列表内容会不同 | 每次抓列表都选同一个专业 |
 | 数据太旧 | 搜索页面看到的状态已经过期 | 搜索页面会提示文件已过几天；**申请前一定回网站核对** |
 
 ---
 
-## 13. 彻底清理（不留残留）
+## 13. 清理本项目的本地文件
 
 **保留**：`.py` 脚本，以及导出的资料（`available_projects.md`、`projects_with_description.xlsx` 等）。
 **删除**：登录凭证、依赖、缓存、运行残留。
+
+本节只处理列出的本地文件和可选缓存，不保证清除浏览器、操作系统或服务器的全部记录。是否保留原始数据，要在执行删除命令前先决定。
 
 ### 13.0 清理前：备份要保留的东西（建议）
 
 把脚本和成品（`.md`、`.xlsx`）复制到另一个文件夹，例如 `Desktop\ipms_keep`，避免手滑误删。
 
-### 13.1 删除登录凭证（最重要，最先做）
+### 13.1 处理登录会话并删除本地凭证
 
-```
-cd C:\Users\User\Desktop\t
-del output\login_state.json
-```
+脚本通过 `browser.new_context()` 创建独立的非持久化浏览器会话，和日常 Edge / Chrome 的登录状态隔离。正常结束时脚本会关闭窗口，但关闭窗口、删除 `login_state.json` 都不等于主动注销服务器会话；在日常浏览器里点 Logout，也不能直接保证注销了脚本保存的那个会话。
 
-再回到 IPMS 网站点一次 **Logout**，让服务器那边的登录会话也失效。
+会话隔离及非持久化上下文的行为可参考 [Playwright 官方 BrowserContext 说明](https://playwright.dev/python/docs/api/class-browsercontext)。
+
+如果全部网站访问工作都已完成，并且需要主动注销仍有效的脚本会话，应在删除登录文件前操作。若已没有脚本窗口，可复用现有列表脚本打开相同登录状态，不需要新增脚本：
+
+1. 在已激活的 `myenv` 中运行 `python get_list.py`，它会读取现有 `output/login_state.json` 并打开列表页。
+2. 让命令行停在“选好专业……按回车”的提示处，**不要按回车开始抓列表**。在这次脚本打开的浏览器窗口里手动点击 Logout，确认回到登录页。若一开始已是登录页，说明该登录状态已不可用，无需继续抓取。
+3. 回到命令行按 `Ctrl+C` 结束脚本；此时尚未开始分页和写列表文件，出现 `KeyboardInterrupt` 属于这次手动中止的预期结果。
+4. 确认不再有脚本使用登录文件后，删除本地凭证：
+
+   ```cmd
+   del output\login_state.json
+   ```
+
+如果登录文件已不存在，不能通过该文件重新打开原会话，也不需要为“注销旧会话”重新保存一份新登录。服务器会话的具体失效及注销范围取决于学校系统；本地文件删除只表示不能再从该文件复用登录状态。
+
+删除后，下次抓列表或详情前都要重新运行 `save_login.py`，不只是“过期时”才需要。
 
 ### 13.2 删除虚拟环境（所有 pip 依赖）
 
@@ -1071,56 +1161,79 @@ playwright、pandas、openpyxl 以及它们的所有依赖都装在 `myenv` 里�
 
 ### 13.3 清理 pip 下载缓存
 
-退出虚拟环境后 `pip` 命令可能不可用，所以用：
+这是**可选操作**。pip 默认使用当前用户的共享缓存，不是本项目专属缓存；`purge` 会清空当前配置缓存目录中的所有 pip 缓存，可能涉及其他项目之前安装过的包。它不会卸载那些项目已安装的包，但之后安装时可能需要重新下载。若只想删除本项目的虚拟环境，第 13.2 节已足够，不必清空共享缓存。
 
+缓存位置和清理范围可参考 [pip 官方缓存说明](https://pip.pypa.io/en/stable/topics/caching/)。
+
+先查看当前配置的缓存目录和范围，再决定是否清空；退出虚拟环境后使用基础 Python 的 pip：
+
+```cmd
+python -m pip cache dir
+python -m pip cache info
 ```
+
+确认要清空该目录中的全部 pip 缓存时，再执行：
+
+```cmd
 python -m pip cache purge
 ```
 
 ### 13.4 删除运行残留文件
 
-```
-del output\login_state.json
-del output\progress.jsonl
-del output\progress_backup_*.jsonl
-del output\project_list_all.xlsx
+**执行前先选择是否保留原始数据：**
+
+- 以后还想用搜索页面或继续更新：保留 `output/progress.jsonl`，列表文件也可保留；只删除不再需要的临时文件。备份应在确认更新或恢复无误后再清理。
+- 已经不需要原始数据：先确认导出的 Excel、Markdown 满意且已备份，再使用下面的“删除原始数据”命令。删除后不能只靠导出的 Markdown 恢复完整项目字段和抓取进度。
+- 如果保存过 `list_page.html`、`test_details.json` 等网页源码或测试数据，按实际位置检查并清理；不要把它们当成普通脚本一起备份。
+
+**两种情况都可按实际需要清理的临时文件：**
+
+```cmd
 del output\*.tmp
 rmdir /s /q __pycache__
 ```
 
-- `progress.jsonl` 是原始抓取数据，`.md` 和 Excel 都是从它生成的。**确认两个成品都满意后再删**；想保险就先留着。
-- `progress_backup_*.jsonl` 是 `update_status.py` 每次运行自动生成的备份，里面同样是项目资料和导师邮箱，确认更新无误后全部删除。
-- `project_list_all.xlsx` 是 391 个项目的列表，想留就不删。
-- 如果还想继续用 `fyp_search.html` 或以后再更新，就先保留 `progress.jsonl`；它是搜索页面和更新流程的数据来源。
-- 如果过程中保存过网页源码（如 `list_page.html`，里面带有姓名和专业）或测试文件（如 `test_details.json`），也一并删除。
-- `__pycache__` 如果不存在，会提示找不到，忽略即可。
+`__pycache__` 或临时文件不存在时，命令可能提示找不到，确认路径正确后可忽略。
+
+**仅在决定删除原始数据、且不再需要回退备份后执行：**
+
+```cmd
+del output\login_state.json
+del output\progress.jsonl
+del output\progress_backup_*.jsonl
+del output\project_list_all.xlsx
+```
+
+`progress_backup_*.jsonl` 包括自动生成的备份，也会匹配第 10.7 节示例中的手动备份；确认它们全部不再需要后再删除。以上命令保留导出的 `.xlsx` 和 `.md` 成品。
 
 ### 13.5 检查是否干净
 
 在工作文件夹里输入：
 
-```
+```cmd
 dir
+dir output
 ```
 
-应该只剩：
+分别检查两个位置：
 
-- 脚本：`save_login.py`、`get_list.py`、`get_details.py`、`export.py`、`to_md.py`、`to_md_by_supervisor.py`、`update_status.py`
-- 页面：`fyp_search.html`
-- 资料：`available_projects.md`、`projects_with_description.xlsx`（以及你选择保留的文件）
+- 根目录：保留的脚本、`fyp_search.html`、指南等项目文件，以及第 2.4 节记录的 `requirements.txt`（如有）。
+- `output/`：保留的导出文件，如 `available_projects.md`、`projects_with_description.xlsx`，以及按前一步选择保留的进度、列表或备份文件。
 
-不应该再有：`login_state.json`、`myenv`、`progress.jsonl`（如果已决定删）、`progress_backup_*.jsonl`、`__pycache__`、网页源码和测试文件。
+完成对应清理选项后，应确认本地登录凭证已删除；若已选择删除虚拟环境或原始数据，再分别确认 `myenv`、`output/progress.jsonl`、不再需要的备份等确已删除。检查网页源码、测试数据和自己另外复制出的备份是否也按计划处理，不要只看根目录的 `dir` 输出。
 
-### 13.6 可选：清 Edge 浏览记录
+### 13.6 可选：检查普通浏览器中的记录
 
-脚本是用电脑自带的 Edge 打开的。如果介意，可在 Edge 的 设置 → 隐私 → 清除浏览数据 里清理。
+这些脚本用 `browser.new_context()` 创建独立的非持久化上下文，其浏览数据不会按普通浏览会话写入日常 Edge / Chrome 配置；不要把清理日常浏览器历史记录当成注销脚本会话的方法。
+
+如果自己还在普通浏览器中手动访问过 IPMS 或打开过搜索页面，可按需要检查实际使用的 Edge / Chrome 的历史记录、下载文件和剪贴板内容。该操作与脚本会话的注销、`login_state.json` 的删除是不同的事，也不能清除学校服务器记录。
 
 ### 13.7 不需要删的
 
 - **Edge**：系统自带，脚本只是调用它，没有另外安装任何浏览器。
 - **Python 本身**：除非以后完全不用。要删的话在 Windows 设置 → 应用 里卸载。
 
-### 13.8 无法清除的
+### 13.8 本节不会清除的记录
 
 - Windows 自身的痕迹（命令行历史、最近使用的文件、系统日志）。
 - 学校服务器上的访问记录和项目 View 浏览次数。
@@ -1131,14 +1244,14 @@ dir
 
 | 现象 | 原因 / 处理 |
 |---|---|
-| `'pip' is not recognized` | 没有激活虚拟环境，先执行 `myenv\Scripts\activate`；清缓存时用 `python -m pip cache purge` |
-| 运行脚本提示找不到 `login_state.json` | 还没运行 `save_login.py`，或 output 文件夹里没有这个文件 |
+| `'pip' is not recognized` | 先检查并激活虚拟环境，可用 `python -m pip` 调用对应 Python 的 pip；清缓存前先确认第 13.3 节的共享缓存范围 |
+| 运行脚本提示找不到 `login_state.json` | 还没保存登录状态，或上次已删除 `output/login_state.json`；重新运行 `save_login.py` |
 | 打开后是登录页 / 提示跳回登录页 | 登录状态过期，重新运行 `save_login.py` |
-| 列表抓到的数量不对 | 确认已选对专业，且 Show 选到 100；检查最后的 "of N entries" |
+| 列表抓到的数量不对 | 确认专业及范围筛选正确、所有分页读取完整，并检查最后的 "of N entries"；Show 只决定每页数量 |
 | 详情页中文或符号出现 `â€“` 乱码 | 网页本身的编码问题，`get_details.py` 里的 `fix()` 会自动修正 |
 | 写 Excel 报 `IllegalCharacterError` | 数据里有隐藏控制字符，用 `export.py`（带 `clean()`） |
-| 搜索页面看不到某个项目 | 默认只显示 Available；到左侧「状态」选「全部」，或检查是否被标记为 Removed |
-| `update_status.py` 提示列表比本地少很多 | 抓列表时专业或 Show 选错，重新抓列表，不要强行处理 |
+| 搜索页面看不到某个项目 | 有 Available 时默认只看 Available，没有时默认显示全部；选择「全部」并重置其他筛选，重新导入后尤其检查「只看已收藏」是否仍勾选 |
+| `update_status.py` 提示列表比本地少很多 | 检查专业和范围筛选、分页完整性及本地重复记录；重新核对列表，不要强行处理缺失项目 |
 | 第二次运行好像从头开始 | `progress.jsonl` 被删、改名或不在 output 文件夹里 |
 | 出现 403 / 429 | 被限制了，等几个小时或隔天再继续，不要硬试 |
 
@@ -1148,32 +1261,72 @@ dir
 
 **第一次使用**
 
-```
+先进入实际工作文件夹。下面路径是例子，虚拟环境和依赖只需在首次准备或环境已删除后重新安装；若已记录可运行环境的版本，按第 2.4 节恢复依赖。
+
+```cmd
 cd C:\Users\User\Desktop\t
-python -m venv myenv                      （仅第一次）
+python -m venv myenv
 myenv\Scripts\activate
-pip install playwright pandas openpyxl    （仅第一次）
-
-python save_login.py                      手动登录一次
-python get_list.py                        选专业、Show 100，抓列表
-python get_details.py                     输入 3 测试；之后按回车自动分批，隔几小时重复
-python export.py                          导出 Excel
-python to_md_by_supervisor.py             导出 Available（可按导师筛选）的 Markdown
+pip install playwright pandas openpyxl
 ```
 
-然后用浏览器打开 `fyp_search.html`，把 `progress.jsonl` 拖进去搜索、收藏。
+手动保存登录状态，再抓列表；专业与其他范围筛选按自己的实际需要选择，Show 建议设为 100，最后核对总数。
+
+```cmd
+python save_login.py
+python get_list.py
+```
+
+运行详情脚本，首次在数量提示处输入 `3` 测试；确认字段正确后，再按第 5 节间隔分批运行，输入数量或直接按回车。不要把说明文字粘贴到命令后面。
+
+```cmd
+python get_details.py
+```
+
+抓取完成后导出 Excel。生成按导师筛选的 Markdown 前，先检查 `SUPERVISORS` 和 `OUTPUT`，避免覆盖想保留的结果；需要全部 Available 时，也可改用第 7 节的 `to_md.py`。
+
+```cmd
+python export.py
+python to_md_by_supervisor.py
+```
+
+然后用浏览器打开 `fyp_search.html`，把 `output/progress.jsonl` 拖进去，完成状态自检后搜索、收藏。先导出要保留的收藏，再刷新或重新导入文件。
 
 **之后更新（选题期间每隔几天一次，不要每天）**
 
-```
+进入工作文件夹并激活已有虚拟环境；若环境已删除，先按第 10.2 节重新准备。若原始进度已删除，先按第 10.7 节恢复备份；没有备份时需按首次使用流程重新抓取，不能直接同步不存在的文件。
+
+```cmd
+cd C:\Users\User\Desktop\t
 myenv\Scripts\activate
-python save_login.py                      登录状态过期时才需要
-python get_list.py                        专业和 Show 与上次一致
-python update_status.py                   同步状态，查看新增和被删除的项目
-python get_details.py                     仅当有新增项目时
-python to_md_by_supervisor.py             或重新把 progress.jsonl 拖进 fyp_search.html
+```
+
+如果 `output/login_state.json` 不存在，或会话已过期，先重新保存登录状态：
+
+```cmd
+python save_login.py
+```
+
+重新获取范围一致、分页完整的列表，核对总数，再同步本地状态。使用 `REFRESH_IDS` 或批量处理缺失项前，先完成第 10 节的检查。
+
+```cmd
+python get_list.py
+python update_status.py
+```
+
+仅当有尚未抓到的项目或指定了 `REFRESH_IDS` 时，再按批次运行详情脚本；目标必须仍在列表中并通过 `ONLY_AVAILABLE` 筛选，失败时按第 10.7 节恢复或处理：
+
+```cmd
+python get_details.py
+```
+
+按需要重新导出 Excel / Markdown，或者重新把 `output/progress.jsonl` 拖进页面。重新导入会清空收藏、保留部分筛选，结果不对时先重置筛选。
+
+```cmd
+python export.py
+python to_md_by_supervisor.py
 ```
 
 **决定申请某个项目前：一定回 IPMS 网站核对它是否仍是 Available。**
 
-**全部用完后：按第 13 节清理。**
+**本次网站访问结束后，按第 13.1 节处理登录会话和本地凭证；其余文件按第 13 节决定保留或清理。**
