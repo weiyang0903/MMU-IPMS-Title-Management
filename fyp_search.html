@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="zh">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FYP 项目搜索</title>
+  <style>
+    :root {
+      --bg: #f4f5fa;
+      --card: #fff;
+      --tx: #1d2433;
+      --mu: #6b7385;
+      --bd: #e3e6ee;
+      --ac: #4f46e5;
+      --acs: #eceeff;
+      --ok: #12805c;
+      --oks: #e0f5ec;
+      --no: #c0392b;
+      --nos: #fdeaea;
+      --hl: #ffeb85;
+      --st: #f5a623
+    }
+
+    @media(prefers-color-scheme:dark) {
+      :root {
+        --bg: #12141b;
+        --card: #1b1e28;
+        --tx: #e6e8ef;
+        --mu: #98a0b3;
+        --bd: #2b3040;
+        --ac: #9a95ff;
+        --acs: #262a4a;
+        --ok: #4fd1a1;
+        --oks: #163a2f;
+        --no: #ff8a7a;
+        --nos: #3c1f1f;
+        --hl: #6b5a00
+      }
+    }
+
+    * {
+      box-sizing: border-box
+    }
+
+    body {
+      margin: 0;
+      font: 15px/1.55 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
+      background: var(--bg);
+      color: var(--tx)
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 5;
+      background: var(--card);
+      border-bottom: 1px solid var(--bd);
+      padding: 12px 20px;
+      display: flex;
+      gap: 14px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0;
+      white-space: nowrap
+    }
+
+    h1 span {
+      color: var(--ac)
+    }
+
+    #q {
+      flex: 1;
+      min-width: 220px;
+      padding: 10px 14px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      background: var(--bg);
+      color: var(--tx);
+      font-size: 15px
+    }
+
+    #q:focus,
+    input:focus,
+    select:focus {
+      outline: 2px solid var(--ac);
+      outline-offset: 0
+    }
+
+    button,
+    .btn {
+      font: inherit;
+      font-size: 13px;
+      padding: 8px 12px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--tx);
+      cursor: pointer
+    }
+
+    button:hover,
+    .btn:hover {
+      border-color: var(--ac);
+      color: var(--ac)
+    }
+
+    .pri {
+      background: var(--ac);
+      color: #fff;
+      border-color: var(--ac)
+    }
+
+    .pri:hover {
+      color: #fff;
+      opacity: .9
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 20px;
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 20px
+    }
+
+    @media(max-width:820px) {
+      main {
+        grid-template-columns: 1fr
+      }
+    }
+
+    aside {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      padding: 16px;
+      align-self: start;
+      position: sticky;
+      top: 76px;
+      max-height: calc(100vh - 96px);
+      overflow: auto
+    }
+
+    @media(max-width:820px) {
+      aside {
+        position: static;
+        max-height: none
+      }
+    }
+
+    aside label.t {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--mu);
+      text-transform: uppercase;
+      letter-spacing: .04em;
+      margin: 14px 0 6px
+    }
+
+    aside label.t:first-child {
+      margin-top: 0
+    }
+
+    aside input[type=text],
+    aside select {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      background: var(--bg);
+      color: var(--tx);
+      font: inherit;
+      font-size: 14px
+    }
+
+    .seg {
+      display: flex;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      overflow: hidden
+    }
+
+    .seg button {
+      flex: 1;
+      border: 0;
+      border-radius: 0;
+      background: none;
+      padding: 7px 4px
+    }
+
+    .seg button.on {
+      background: var(--ac);
+      color: #fff
+    }
+
+    .sups {
+      max-height: 230px;
+      overflow: auto;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 4px;
+      background: var(--bg)
+    }
+
+    .sups label {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      padding: 4px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .sups label:hover {
+      background: var(--acs)
+    }
+
+    .sups small {
+      margin-left: auto;
+      color: var(--mu)
+    }
+
+    .chk {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 12px;
+      cursor: pointer;
+      font-size: 14px
+    }
+
+    .bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px
+    }
+
+    .bar b {
+      font-size: 15px
+    }
+
+    .bar .r {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .bar select {
+      padding: 7px 8px;
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      background: var(--card);
+      color: var(--tx);
+      font: inherit;
+      font-size: 13px
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: border-color .15s, box-shadow .15s
+    }
+
+    .card:hover {
+      border-color: var(--ac);
+      box-shadow: 0 2px 12px rgba(79, 70, 229, .1)
+    }
+
+    .top {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap
+    }
+
+    .id {
+      font: 600 12px ui-monospace, Consolas, monospace;
+      background: var(--acs);
+      color: var(--ac);
+      padding: 2px 8px;
+      border-radius: 6px
+    }
+
+    .pill {
+      font-size: 12px;
+      padding: 2px 9px;
+      border-radius: 99px;
+      font-weight: 600
+    }
+
+    .pill.Available {
+      background: var(--oks);
+      color: var(--ok)
+    }
+
+    .pill.Taken {
+      background: var(--nos);
+      color: var(--no)
+    }
+
+    .star {
+      margin-left: auto;
+      font-size: 20px;
+      line-height: 1;
+      border: 0;
+      background: none;
+      color: var(--mu);
+      padding: 2px 6px
+    }
+
+    .star.on {
+      color: var(--st)
+    }
+
+    .title {
+      font-weight: 650;
+      font-size: 16px;
+      margin: 8px 0 4px
+    }
+
+    .meta {
+      color: var(--mu);
+      font-size: 13px;
+      display: flex;
+      gap: 6px 14px;
+      flex-wrap: wrap
+    }
+
+    .desc {
+      margin-top: 8px;
+      color: var(--tx);
+      opacity: .88;
+      white-space: pre-wrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden
+    }
+
+    .card.open .desc {
+      display: block;
+      -webkit-line-clamp: unset
+    }
+
+    .more {
+      display: none;
+      margin-top: 12px;
+      border-top: 1px dashed var(--bd);
+      padding-top: 10px
+    }
+
+    .card.open .more {
+      display: block
+    }
+
+    .more h4 {
+      margin: 10px 0 2px;
+      font-size: 12px;
+      color: var(--mu);
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .more p {
+      margin: 0;
+      white-space: pre-wrap
+    }
+
+    .act {
+      display: none;
+      gap: 8px;
+      margin-top: 12px
+    }
+
+    .card.open .act {
+      display: flex
+    }
+
+    mark {
+      background: var(--hl);
+      color: inherit;
+      border-radius: 3px;
+      padding: 0 1px
+    }
+
+    #empty {
+      text-align: center;
+      border: 2px dashed var(--bd);
+      border-radius: 16px;
+      padding: 60px 20px;
+      color: var(--mu);
+      background: var(--card)
+    }
+
+    #empty.drag {
+      border-color: var(--ac);
+      background: var(--acs)
+    }
+
+    #empty h2 {
+      color: var(--tx);
+      margin: 0 0 8px
+    }
+
+    .none {
+      text-align: center;
+      color: var(--mu);
+      padding: 40px
+    }
+
+    #toast {
+      position: fixed;
+      bottom: 22px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--tx);
+      color: var(--bg);
+      padding: 9px 18px;
+      border-radius: 99px;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s
+    }
+
+    #toast.on {
+      opacity: 1
+    }
+
+    .hint {
+      font-size: 12px;
+      color: var(--mu);
+      margin-top: 16px
+    }
+
+    .seg {
+      flex-wrap: wrap
+    }
+
+    .seg button {
+      font-size: 12px;
+      flex: 1 0 auto;
+      padding: 7px 8px
+    }
+
+    .pill.Removed {
+      background: var(--bd);
+      color: var(--mu)
+    }
+
+    .seen {
+      font-size: 12px;
+      color: var(--mu)
+    }
+
+    .seen.ok {
+      color: var(--ok)
+    }
+
+    .seen.no {
+      color: var(--no)
+    }
+
+    .card.rm {
+      opacity: .6
+    }
+
+    .card.rm .title {
+      text-decoration: line-through
+    }
+
+    .banner {
+      background: var(--acs);
+      color: var(--tx);
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      font-size: 13px;
+      line-height: 1.7
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>FYP <span>项目搜索</span></h1>
+    <input id="q" type="search" placeholder="搜索关键词（空格分隔 = 同时包含）  按 / 快速定位" disabled>
+    <label class="btn pri">选择 progress.jsonl<input id="file" type="file" accept=".jsonl,.json,.txt" hidden></label>
+  </header>
+
+  <main>
+    <aside id="side" hidden>
+      <label class="t">状态</label>
+      <div class="seg" id="status"></div>
+
+      <label class="t">搜索范围</label>
+      <select id="scope">
+        <option value="all">全部内容</option>
+        <option value="title">仅标题</option>
+        <option value="td">标题 + 描述</option>
+      </select>
+
+      <label class="t">导师（可多选）</label>
+      <input type="text" id="supq" placeholder="筛选导师名…" style="margin-bottom:6px">
+      <div class="sups" id="sups"></div>
+
+      <label class="t">项目类型</label>
+      <select id="type"></select>
+
+      <label class="t">适合专业</label>
+      <select id="prog"></select>
+
+      <label class="t">研究领域</label>
+      <input type="text" id="area" list="arealist" placeholder="如 Computational Intelligence">
+      <datalist id="arealist"></datalist>
+
+      <label class="t">所需技能</label>
+      <input type="text" id="skills" placeholder="如 Python、Java">
+
+      <label class="chk"><input type="checkbox" id="starred"> 只看已收藏 ★</label>
+
+      <div style="display:flex;gap:8px;margin-top:16px">
+        <button id="reset" style="flex:1">重置筛选</button>
+      </div>
+      <p class="hint">数据只在这个页面里读取，不会上传，也不会保存到浏览器；刷新页面后需重新选择文件，收藏也会清空，需要的话先导出。</p>
+    </aside>
+
+    <section>
+      <div id="empty">
+        <h2>把 progress.jsonl 拖到这里</h2>
+        <div>或点击右上角「选择 progress.jsonl」</div>
+      </div>
+      <div id="res" hidden>
+        <div class="bar">
+          <b id="count"></b>
+          <div class="r">
+            <select id="sort">
+              <option value="id">按 ID 排序</option>
+              <option value="idd">按 ID 倒序</option>
+              <option value="title">按标题 A-Z</option>
+              <option value="sup">按导师 A-Z</option>
+            </select>
+            <button id="exp">复制收藏 (md)</button>
+            <button id="dl">下载收藏 (md)</button>
+          </div>
+        </div>
+        <div id="banner"></div>
+        <div id="list"></div>
+      </div>
+    </section>
+  </main>
+  <div id="toast"></div>
+
+  <script>
+    const $ = s => document.querySelector(s);
+    const ILL = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
+    const F = [['desc', 'Description'], ['obj', 'Objectives'], ['type', 'Project type'], ['area', 'Specific area of research'], ['skills', 'Skill set required'], ['deliv', 'Expected deliverable'], ['sched', 'Project schedule'], ['inno', 'Innovative component'], ['prog', 'Suitable for programme'], ['by', 'Proposed by'], ['email', 'Email']];
+    let all = [], stars = new Set(), sups = new Set(), status = 'Available', terms = [];
+
+    const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+    function hl(s) {
+      if (!terms.length || !s) return esc(s || '');
+      const re = new RegExp('(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
+      return s.split(re).map((p, i) => i % 2 ? '<mark>' + esc(p) + '</mark>' : esc(p)).join('');
+    }
+    function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1600) }
+    const cl = v => typeof v === 'string' ? v.replace(ILL, '').trim() : '';
+
+    function norm(r) {
+      const st = cl(r['Status']);
+      const o = {
+        id: cl(r['Project ID']), title: cl(r['Project Title']), desc: cl(r['Description']), obj: cl(r['Objectives']),
+        type: cl(r['Project type']), area: cl(r['Specific area of research']), skills: cl(r['Skill set required']),
+        deliv: cl(r['Expected deliverable']), sched: cl(r['Project schedule (List of steps for the project)']),
+        inno: cl(r['Innovative component/ project potential']), prog: cl(r['This project suitable for programme']),
+        by: cl(r['Proposed by']), seen: cl(r['Last seen']), rmon: cl(r['Removed on']), sup: cl(r['Supervisor name:']), email: cl(r['Email:']),
+        status: stat(st)
+      };
+      o.all = [o.id, o.title, o.desc, o.obj, o.type, o.area, o.skills, o.deliv, o.sched, o.inno, o.prog, o.by, o.sup].join('\n').toLowerCase();
+      o.td = (o.title + '\n' + o.desc).toLowerCase();
+      o.tl = o.title.toLowerCase();
+      return o;
+    }
+
+    // 状态只做精确识别：Available / Taken / Removed，其他原样显示，避免把 Unavailable 之类误当成 Available
+    function stat(st) {
+      const s = st.replace(/[\[\]]/g, '').trim(), l = s.toLowerCase();
+      return l === 'available' ? 'Available' : l === 'taken' ? 'Taken' : l === 'removed' ? 'Removed' : (s || '未知');
+    }
+    let bad = 0, dup = 0, fileTime = null;
+    function drawStatus() {
+      const c = {}; all.forEach(p => c[p.status] = (c[p.status] || 0) + 1);
+      const o = ['Available', 'Taken', 'Removed'], keys = [...o.filter(k => c[k]), ...Object.keys(c).filter(k => !o.includes(k))];
+      $('#status').innerHTML = ['<button data-v=""' + (status === '' ? ' class="on"' : '') + '>全部 ' + all.length + '</button>']
+        .concat(keys.map(k => '<button data-v="' + esc(k) + '"' + (status === k ? ' class="on"' : '') + '>' + esc(k) + ' ' + c[k] + '</button>')).join('');
+    }
+    function banner() {
+      const rm = all.filter(p => p.status === 'Removed').length,
+        oth = all.filter(p => !['Available', 'Taken', 'Removed'].includes(p.status)).length,
+        emp = all.filter(p => !p.desc).length,
+        sr = all.filter(p => stars.has(p.id) && p.status !== 'Available').length,
+        old = fileTime ? Math.floor((Date.now() - fileTime) / 864e5) : null;
+      const m = ['数据只是抓取当时的快照，决定申请前，请回 IPMS 网站核对该项目是否仍是 Available。'];
+      if (fileTime) m.unshift('数据文件最后修改于 ' + fileTime.toLocaleString() + (old >= 3 ? '（已过 ' + old + ' 天，建议先更新）' : ''));
+      if (rm) m.push(rm + ' 个项目已在网站被移除（Removed），默认不显示，可在左侧「状态」里查看。');
+      if (sr) m.push('你的收藏里有 ' + sr + ' 个已经不是 Available（已被选走或被移除）。');
+      if (oth) m.push(oth + ' 个项目的状态无法识别，请在「状态」筛选里查看。');
+      if (emp) m.push(emp + ' 个项目的描述为空，可能是抓取不完整。');
+      if (bad) m.push(bad + ' 行数据无法读取，已跳过（可能是中断时写了一半的行）。');
+      if (dup) m.push(dup + ' 个重复的 Project ID 已合并，保留文件里最后出现的那条。');
+      $('#banner').innerHTML = '<div class="banner">' + m.map(esc).join('<br>') + '</div>';
+    }
+    function load(text, mod) {
+      const m = new Map(); bad = 0; dup = 0;
+      text.replace(/^\ufeff/, '').split(/\r?\n/).filter(l => l.trim()).forEach(l => {
+        try { const p = norm(JSON.parse(l)); if (!p.id) { bad++; return } if (m.has(p.id)) dup++; m.set(p.id, p) } catch (e) { bad++ }
+      });
+      all = [...m.values()];
+      if (!all.length) { toast('读不到数据，请确认是 progress.jsonl'); return }
+      fileTime = mod ? new Date(mod) : null;
+      status = all.some(p => p.status === 'Available') ? 'Available' : '';
+      stars.clear(); sups.clear(); build();
+      $('#empty').hidden = true; $('#res').hidden = false; $('#side').hidden = false; $('#q').disabled = false;
+      render(); toast('已读取 ' + all.length + ' 个项目');
+    }
+
+    function opts(sel, arr, label) {
+      $(sel).innerHTML = '<option value="">' + label + '</option>' + arr.map(v => '<option>' + esc(v) + '</option>').join('');
+    }
+    function build() {
+      const uniq = f => [...new Set(all.map(f).filter(Boolean))].sort();
+      opts('#type', uniq(p => p.type), '全部类型');
+      opts('#prog', [...new Set(all.flatMap(p => p.prog.split(/[\n;]+/).map(s => s.trim())).filter(Boolean))].sort(), '全部专业');
+      $('#arealist').innerHTML = uniq(p => p.area.replace(/\.$/, '')).map(v => '<option value="' + esc(v) + '">').join('');
+      drawSups(); drawStatus();
+    }
+    function drawSups() {
+      const q = $('#supq').value.toLowerCase(), c = {};
+      all.forEach(p => { if (p.sup) c[p.sup] = (c[p.sup] || 0) + 1 });
+      $('#sups').innerHTML = Object.keys(c).sort().filter(n => n.toLowerCase().includes(q)).map(n =>
+        '<label><input type="checkbox" value="' + esc(n) + '"' + (sups.has(n) ? ' checked' : '') + '>' + esc(n) + '<small>' + c[n] + '</small></label>').join('') || '<div class="none" style="padding:10px">没有匹配</div>';
+    }
+
+    function filtered() {
+      const q = $('#q').value.trim().toLowerCase();
+      terms = q ? q.split(/\s+/) : [];
+      const key = { all: 'all', title: 'tl', td: 'td' }[$('#scope').value];
+      const ty = $('#type').value, pg = $('#prog').value, ar = $('#area').value.trim().toLowerCase(), sk = $('#skills').value.trim().toLowerCase(),
+        so = $('#starred').checked;
+      let r = all.filter(p =>
+        (!status || p.status === status) &&
+        (!sups.size || sups.has(p.sup)) &&
+        (!ty || p.type === ty) && (!pg || p.prog.includes(pg)) &&
+        (!ar || p.area.toLowerCase().includes(ar)) && (!sk || p.skills.toLowerCase().includes(sk)) &&
+        (!so || stars.has(p.id)) && terms.every(t => p[key].includes(t)));
+      const s = $('#sort').value;
+      const cmp = {
+        id: (a, b) => a.id.localeCompare(b.id), idd: (a, b) => b.id.localeCompare(a.id),
+        title: (a, b) => a.title.localeCompare(b.title), sup: (a, b) => a.sup.localeCompare(b.sup) || a.id.localeCompare(b.id)
+      }[s];
+      return r.sort(cmp);
+    }
+
+    function seenTag(p) {
+      if (p.status === 'Removed') return '<span class="seen no">✖ 网站已移除' + (p.rmon ? '（' + esc(p.rmon) + ' 发现）' : '') + '</span>';
+      if (p.seen) return '<span class="seen ok">✔ 最近确认仍在：' + esc(p.seen) + '</span>';
+      return '<span class="seen">未确认（更新数据后会显示）</span>';
+    }
+    function card(p) {
+      const meta = [p.sup && '👤 ' + hl(p.sup), p.type && '📌 ' + hl(p.type), p.area && '🔬 ' + hl(p.area)].filter(Boolean).map(x => '<span>' + x + '</span>').join('');
+      const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<h4>' + f[1] + '</h4><p>' + hl(p[f[0]]) + '</p>').join('');
+      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span>' +
+        '<span class="pill ' + esc(p.status) + '">' + esc(p.status || '?') + '</span>' + seenTag(p) +
+        '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏">' + (stars.has(p.id) ? '★' : '☆') + '</button></div>' +
+        '<div class="title">' + hl(p.title) + '</div><div class="meta">' + meta + '</div>' +
+        '<div class="desc">' + hl(p.desc) + '</div><div class="more">' + more + '</div>' +
+        '<div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
+    }
+
+    function render() {
+      const r = filtered();
+      $('#count').textContent = '共 ' + r.length + ' 个结果（总数据 ' + all.length + '）' + (stars.size ? ' · 已收藏 ' + stars.size : '');
+      $('#list').innerHTML = r.length ? r.map(card).join('') : '<div class="none">没有符合条件的项目，试试放宽筛选</div>';
+      banner();
+    }
+
+    function md(arr) { return arr.map((p, i) => (i + 1) + '. ' + p.id + ' ' + p.title + '\n' + p.desc + '\n').join('\n') }
+    const starred = () => all.filter(p => stars.has(p.id));
+
+    $('#file').onchange = e => { const f = e.target.files[0]; if (f) f.text().then(t => load(t, f.lastModified)) };
+    const emp = $('#empty');
+    ['dragover', 'dragenter'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.add('drag') }));
+    ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.remove('drag') }));
+    document.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(t => load(t, f.lastModified)) });
+
+    ['q', 'scope', 'type', 'prog', 'area', 'skills', 'starred', 'sort'].forEach(id => $('#' + id).addEventListener('input', render));
+    $('#status').onclick = e => {
+      const b = e.target.closest('button'); if (!b) return; status = b.dataset.v;
+      document.querySelectorAll('#status button').forEach(x => x.classList.toggle('on', x === b)); render()
+    };
+    $('#supq').oninput = drawSups;
+    $('#sups').onchange = e => { const c = e.target; c.checked ? sups.add(c.value) : sups.delete(c.value); render() };
+    $('#reset').onclick = () => {
+      ['q', 'area', 'skills', 'supq'].forEach(id => $('#' + id).value = '');
+      ['type', 'prog'].forEach(id => $('#' + id).value = ''); $('#scope').value = 'all'; $('#starred').checked = false;
+      sups.clear(); status = all.some(p => p.status === 'Available') ? 'Available' : '';
+      drawStatus(); drawSups(); render()
+    };
+
+    $('#list').onclick = e => {
+      const c = e.target.closest('.card'); if (!c) return;
+      const p = all.find(x => x.id === c.dataset.id), a = e.target.dataset.a;
+      if (a === 'star') {
+        stars.has(p.id) ? stars.delete(p.id) : stars.add(p.id);
+        e.target.classList.toggle('on'); e.target.textContent = stars.has(p.id) ? '★' : '☆';
+        $('#count').textContent = $('#count').textContent.replace(/ · 已收藏 \d+/, '') + (stars.size ? ' · 已收藏 ' + stars.size : '');
+        if ($('#starred').checked) render(); return
+      }
+      if (a === 'copy') { navigator.clipboard.writeText(p.id + ' ' + p.title + '\n' + p.desc).then(() => toast('已复制')); return }
+      if (!getSelection().toString()) c.classList.toggle('open');
+    };
+    $('#exp').onclick = () => { const s = starred(); if (!s.length) return toast('还没有收藏'); navigator.clipboard.writeText(md(s)).then(() => toast('已复制 ' + s.length + ' 个' + (s.some(p => p.status !== 'Available') ? '（其中有已不可选的项目）' : ''))) };
+    $('#dl').onclick = () => {
+      const s = starred(); if (!s.length) return toast('还没有收藏');
+      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md(s)], { type: 'text/markdown' }));
+      a.download = 'shortlist.md'; a.click(); URL.revokeObjectURL(a.href)
+    };
+    document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|SELECT/.test(document.activeElement.tagName) && !$('#q').disabled) { e.preventDefault(); $('#q').focus() } });
+  </script>
+</body>
+
+</html>
