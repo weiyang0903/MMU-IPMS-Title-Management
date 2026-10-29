@@ -987,6 +987,275 @@
         font-size: 10px
       }
     }
+
+    .record-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      margin-top: 10px;
+      font-size: 11px
+    }
+
+    .record-strip button {
+      min-height: 30px;
+      padding: 4px 10px;
+      font-size: 11px
+    }
+
+    #save-state {
+      flex: 1;
+      min-width: 150px;
+      color: #74836a;
+      overflow-wrap: anywhere
+    }
+
+    #save-state[data-state="dirty"],
+    #save-state[data-state="saving"] {
+      color: #9c752b
+    }
+
+    #save-state[data-state="error"] {
+      color: #a35443
+    }
+
+    .records-panel {
+      margin-top: 12px;
+      padding: 18px 20px;
+      border: 1px solid var(--bd);
+      border-radius: 10px;
+      background: #fff
+    }
+
+    .records-panel h2 {
+      margin: 0 0 7px;
+      font-size: 15px
+    }
+
+    .records-panel p,
+    .record-help {
+      font-size: 12px;
+      line-height: 1.9;
+      color: #6d7b63
+    }
+
+    .record-actions,
+    .dataset-actions,
+    .dialog-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0
+    }
+
+    .record-actions button,
+    .dataset-actions button,
+    .dialog-actions button {
+      min-height: 34px;
+      padding: 6px 11px;
+      font-size: 11px
+    }
+
+    .dataset-actions select {
+      min-width: 140px;
+      max-width: 100%;
+      flex: 1;
+      padding: 8px;
+      border: 1px solid var(--bd);
+      border-radius: 6px;
+      background: #fff
+    }
+
+    .dataset-actions label {
+      font-size: 12px
+    }
+
+    .record-option {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin: 10px 0;
+      font-size: 11px;
+      color: #75816b
+    }
+
+    .record-option input {
+      margin-top: 4px;
+      flex-shrink: 0
+    }
+
+    .record-note {
+      font-size: 11px !important;
+      margin: 6px 0
+    }
+
+    .record-help summary {
+      cursor: pointer;
+      color: var(--ac)
+    }
+
+    .record-help ol {
+      padding-left: 20px
+    }
+
+    .operation-message,
+    .filter-message {
+      padding: 10px 13px;
+      background: #faf4e7;
+      border: 1px solid #ebdfc2;
+      border-radius: 8px;
+      font-size: 12px;
+      color: #8c713b;
+      white-space: pre-line;
+      overflow-wrap: anywhere
+    }
+
+    .operation-message[data-error="true"] {
+      background: #fcf0ec;
+      border-color: #edd5ca;
+      color: #9e5847
+    }
+
+    .filter-message {
+      margin-bottom: 12px
+    }
+
+    .filter-message button {
+      margin-left: 8px;
+      min-height: 28px;
+      padding: 3px 8px;
+      font-size: 11px
+    }
+
+    .sups .unavailable {
+      color: #a18c6a
+    }
+
+    button:disabled,
+    select:disabled {
+      opacity: .5;
+      cursor: not-allowed
+    }
+
+    .app-dialog {
+      width: min(620px, calc(100vw - 32px));
+      max-height: 85vh;
+      overflow: auto;
+      padding: 24px;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      color: var(--tx);
+      background: #fff;
+      box-shadow: 0 18px 70px #273c3530
+    }
+
+    .app-dialog::backdrop {
+      background: #283c3550
+    }
+
+    .app-dialog h2 {
+      margin: 0 0 12px;
+      font-size: 18px
+    }
+
+    .app-dialog p {
+      white-space: pre-line;
+      font-size: 13px;
+      line-height: 1.9;
+      overflow-wrap: anywhere
+    }
+
+    .app-dialog label {
+      display: block;
+      font-size: 12px
+    }
+
+    .app-dialog input {
+      display: block;
+      width: 100%;
+      margin-top: 6px;
+      padding: 9px;
+      border: 1px solid var(--bd);
+      border-radius: 6px
+    }
+
+    .dialog-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px
+    }
+
+    .dialog-heading h2 {
+      margin: 0
+    }
+
+    .favorites-dialog {
+      width: min(800px, calc(100vw - 32px))
+    }
+
+    .bookmark-row {
+      border-top: 1px solid var(--bd);
+      margin-top: 15px;
+      padding-top: 16px;
+      overflow-wrap: anywhere
+    }
+
+    .bookmark-row h3 {
+      margin: 6px 0;
+      font-size: 14px
+    }
+
+    .bookmark-row .bookmark-state {
+      color: #8f794c;
+      font-size: 12px
+    }
+
+    .bookmark-row .bookmark-description {
+      font-size: 12px;
+      color: #78836e;
+      white-space: pre-wrap;
+      max-height: 150px;
+      overflow: auto
+    }
+
+    .bookmark-row button {
+      min-height: 30px;
+      font-size: 11px;
+      padding: 4px 9px
+    }
+
+    .none button {
+      margin: 12px 5px 0
+    }
+
+    @media(max-width:540px) {
+      .records-panel {
+        padding: 15px
+      }
+
+      .record-strip {
+        gap: 8px
+      }
+
+      #save-state {
+        order: 3;
+        flex-basis: 100%
+      }
+
+      #view-favorites {
+        margin-left: auto
+      }
+
+      .app-dialog {
+        padding: 18px
+      }
+
+      .dataset-actions select {
+        flex-basis: calc(100% - 70px)
+      }
+    }
   </style>
 </head>
 
@@ -1044,6 +1313,55 @@
         </svg>导入数据</button>
       <input id="file" type="file" accept=".jsonl,.json,.txt" hidden aria-label="选择项目数据文件">
     </div>
+
+    <div class="record-strip">
+      <button id="manage-records" type="button" aria-expanded="false" aria-controls="records-panel">使用记录</button>
+      <span id="save-state" role="status" aria-live="polite">未连接记录文件 · 筛选和收藏仅本次有效</span>
+      <button id="view-favorites" type="button">全部收藏（0）</button>
+    </div>
+    <section id="records-panel" class="records-panel" hidden aria-label="使用记录管理">
+      <h2>使用记录：保存筛选和收藏</h2>
+      <p><strong>项目资料</strong>是 progress.jsonl；<strong>使用记录</strong>是 fyp_search_state.json。记录文件可以保存多份独立清单，不会修改项目资料。</p>
+      <div class="record-actions">
+        <button id="state-new" type="button">新建 / 另存记录</button>
+        <button id="state-open" type="button">打开记录</button>
+        <button id="state-save" type="button">立即保存</button>
+        <button id="state-backup" type="button">下载记录副本</button>
+        <button id="state-reconnect" type="button" hidden>恢复文件访问</button>
+        <button id="state-recover" type="button" hidden>恢复未落盘草稿</button>
+        <input id="state-file" type="file" accept=".json,application/json" hidden aria-label="导入使用记录 JSON">
+      </div>
+      <p id="storage-help" class="record-note"></p>
+      <div class="dataset-actions">
+        <label for="dataset-picker">当前清单</label>
+        <select id="dataset-picker" aria-label="切换清单档案">
+          <option value="">尚未建立清单</option>
+        </select>
+        <button id="dataset-rename" type="button">改名</button>
+        <button id="dataset-delete" type="button">删除档案</button>
+        <button id="data-new" type="button">导入新清单</button>
+        <button id="data-update" type="button">更新当前清单</button>
+        <button id="data-reload" type="button">重新读取文件</button>
+      </div>
+      <label class="record-option"><input id="copy-filters" type="checkbox">新清单沿用当前筛选（不复制收藏；若只看收藏，新清单可能显示零结果）</label>
+      <label class="record-option"><input id="remember-records" type="checkbox"
+          checked>在此浏览器记住文件访问位置，并保留未保存草稿（可关闭；不缓存完整项目库）</label>
+      <div class="record-actions"><button id="clear-cache" type="button">清除此页浏览器缓存</button></div>
+      <p id="cache-help" class="record-note">浏览器缓存只作辅助。移动 HTML、换浏览器或清理浏览器数据后，请重新打开记录 JSON。</p>
+      <details class="record-help">
+        <summary>第一次怎么用？更新和换清单有什么区别？</summary>
+        <ol>
+          <li>已有记录先点“打开记录”；没有则点“新建 / 另存记录”，建议保存到 output/fyp_search_state.json。</li>
+          <li>再导入 progress.jsonl。相同内容会恢复相应档案；归属不明时，选择更新已有清单或建立新清单。</li>
+          <li>“更新当前清单”保留筛选和收藏；“导入新清单”建立独立档案，不覆盖旧档案。</li>
+          <li>操作后看保存状态。“已保存到文件”才表示写入完成；“下载副本”需自行确认下载成功。</li>
+          <li>收藏缺失不等于被学校删除。“全部收藏”可查看缺失和待核对记录，只有手动操作才会取消收藏。</li>
+        </ol>
+      </details>
+    </section>
+    <p id="save-message" class="operation-message" data-error="true" role="status" hidden></p>
+    <p id="operation-message" class="operation-message" role="status" hidden></p>
+
     <div id="file-summary" class="file-summary" hidden><svg class="icon" aria-hidden="true">
         <use href="#i-file" />
       </svg><span id="file-state"></span></div>
@@ -1091,7 +1409,7 @@
               aria-hidden="true" style="margin-left:auto;color:#bd994e">★</span></label></div>
         <p class="hint"><svg class="icon" aria-hidden="true">
             <use href="#i-shield" />
-          </svg><span>文件仅在当前页面处理。刷新或重新导入会清空收藏，记得先导出。</span></p>
+          </svg><span>同一清单更新会保留收藏。跨次使用前，请连接记录 JSON 并确认已保存；重置筛选不会清空收藏。</span></p>
       </aside>
       <section class="results-section" aria-label="项目列表">
         <div id="empty">
@@ -1099,9 +1417,9 @@
             <use href="#i-file" />
           </svg>
           <h1>导入项目数据</h1>
-          <p>将 progress.jsonl 拖到这里，或选择本地文件。</p>
+          <p class="empty-description">将 progress.jsonl 拖到这里，或选择本地文件。</p>
           <button class="pri" type="button" data-import>选择文件</button>
-          <p class="empty-note">数据仅在当前页面读取，不会上传。</p>
+          <p class="empty-note">项目资料不会上传。要跨次保留筛选和收藏，请在“使用记录”中新建或打开 JSON。</p>
         </div>
         <div id="res" hidden>
           <div class="bar">
@@ -1125,205 +1443,810 @@
                 </svg>下载收藏</button>
             </div>
           </div>
+          <div id="filter-message" class="filter-message" hidden></div>
           <div id="banner"></div>
           <div id="list"></div>
         </div>
       </section>
     </main>
   </div>
+
+  <dialog id="decision-dialog" class="app-dialog" aria-labelledby="decision-title">
+    <h2 id="decision-title"></h2>
+    <p id="decision-message"></p>
+    <label id="decision-name-label" hidden>清单名称<input id="decision-name" maxlength="80" type="text"></label>
+    <div id="decision-actions" class="dialog-actions"></div>
+    <button id="decision-cancel" type="button">取消</button>
+  </dialog>
+  <dialog id="favorites-dialog" class="app-dialog favorites-dialog" aria-labelledby="favorites-title">
+    <div class="dialog-heading">
+      <h2 id="favorites-title">全部收藏</h2><button id="favorites-close" type="button">关闭</button>
+    </div>
+    <p id="favorites-description"></p>
+    <div class="record-actions"><button id="favorites-copy" type="button">复制收藏 Markdown</button><button
+        id="favorites-download" type="button">下载收藏 Markdown</button><button id="favorites-clear"
+        type="button">清空本清单收藏</button></div>
+    <div id="favorites-list"></div>
+  </dialog>
+
   <div id="toast" role="status" aria-live="polite"></div>
 
-  <script>
-    const $ = s => document.querySelector(s);
-    const uiIcon = name => '<svg class="icon" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
-    const ILL = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
-    const F = [['desc', 'Description'], ['obj', 'Objectives'], ['type', 'Project type'], ['area', 'Specific area of research'], ['skills', 'Skill set required'], ['deliv', 'Expected deliverable'], ['sched', 'Project schedule'], ['inno', 'Innovative component'], ['prog', 'Suitable for programme'], ['by', 'Proposed by'], ['email', 'Email']];
-    let all = [], stars = new Set(), sups = new Set(), status = 'Available', terms = [];
+  <script id="state-core">
 
-    const esc = s => s.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-    function hl(s) {
-      if (!terms.length || !s) return esc(s || '');
-      const re = new RegExp('(' + terms.map(t => t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
+    // Data-only helpers: no DOM, network, browser storage or file writes.
+    globalThis.FypState = (() => {
+      'use strict';
+      const APP = 'fyp-search', VERSION = 1, MAX_BYTES = 16 * 1024 * 1024;
+      const FIELDS = {
+        id: 'Project ID', title: 'Project Title', desc: 'Description', obj: 'Objectives',
+        type: 'Project type', area: 'Specific area of research', skills: 'Skill set required',
+        deliv: 'Expected deliverable', sched: 'Project schedule (List of steps for the project)',
+        inno: 'Innovative component/ project potential', prog: 'This project suitable for programme',
+        by: 'Proposed by', sup: 'Supervisor name:', email: 'Email:', seen: 'Last seen', rmon: 'Removed on'
+      };
+      const clean = value => typeof value === 'string' ? value.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '').trim() : '';
+      const plain = value => !!value && typeof value === 'object' && !Array.isArray(value);
+      const clone = value => JSON.parse(JSON.stringify(value));
+      const now = () => new Date().toISOString();
+      const uuid = () => globalThis.crypto?.randomUUID?.() || 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+      const status = value => {
+        const s = clean(value).replace(/[\[\]]/g, '').trim(), key = s.toLowerCase();
+        return key === 'available' ? 'Available' : key === 'taken' ? 'Taken' : key === 'removed' ? 'Removed' : s || '未知';
+      };
+      // Portable SHA-256 also works when crypto.subtle is unavailable on a local file URL.
+      function hash(text) {
+        const bytes = new TextEncoder().encode(text), length = bytes.length;
+        const size = Math.ceil((length + 9) / 64) * 64, data = new Uint8Array(size);
+        data.set(bytes); data[length] = 128;
+        const view = new DataView(data.buffer);
+        view.setUint32(size - 8, Math.floor(length / 0x20000000));
+        view.setUint32(size - 4, (length * 8) >>> 0);
+        const k = [0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5, 0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174, 0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da, 0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967, 0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85, 0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070, 0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2];
+        const h = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19], w = new Uint32Array(64);
+        const rr = (n, b) => (n >>> b) | (n << (32 - b));
+        for (let offset = 0; offset < size; offset += 64) {
+          for (let i = 0; i < 16; i++) w[i] = view.getUint32(offset + i * 4);
+          for (let i = 16; i < 64; i++) {
+            const a = w[i - 15], b = w[i - 2];
+            w[i] = (w[i - 16] + (rr(a, 7) ^ rr(a, 18) ^ (a >>> 3)) + w[i - 7] + (rr(b, 17) ^ rr(b, 19) ^ (b >>> 10))) >>> 0;
+          }
+          let [a, b, c, d, e, f, g, j] = h;
+          for (let i = 0; i < 64; i++) {
+            const t1 = (j + (rr(e, 6) ^ rr(e, 11) ^ rr(e, 25)) + ((e & f) ^ (~e & g)) + k[i] + w[i]) >>> 0;
+            const t2 = ((rr(a, 2) ^ rr(a, 13) ^ rr(a, 22)) + ((a & b) ^ (a & c) ^ (b & c))) >>> 0;
+            j = g; g = f; f = e; e = (d + t1) >>> 0; d = c; c = b; b = a; a = (t1 + t2) >>> 0;
+          }
+          [a, b, c, d, e, f, g, j].forEach((value, i) => h[i] = (h[i] + value) >>> 0);
+        }
+        return 'sha256:' + h.map(n => n.toString(16).padStart(8, '0')).join('');
+      }
+      function norm(record) {
+        if (!plain(record) || typeof record['Project ID'] !== 'string' || !clean(record['Project ID']) || clean(record['Project ID']).length > 256) throw new Error('项目必须有字符串类型的 Project ID。');
+        const p = {};
+        for (const [key, field] of Object.entries(FIELDS)) {
+          if (record[field] !== undefined && record[field] !== null && typeof record[field] !== 'string') throw new Error(field + ' 必须是文字。');
+          p[key] = clean(record[field]);
+          const limit = key === 'id' ? 256 : key === 'title' ? 10000 : key === 'sup' ? 512 : key === 'prog' ? 2000 : key === 'type' ? 512 : 200000;
+          if (p[key].length > limit) throw new Error(field + ' 内容过长。');
+        }
+        if (record.Status !== undefined && typeof record.Status !== 'string') throw new Error('Status 必须是文字。');
+        p.status = status(record.Status);
+        if (p.status.length > 128) throw new Error('Status 内容过长。');
+        p.all = [p.id, p.title, p.desc, p.obj, p.type, p.area, p.skills, p.deliv, p.sched, p.inno, p.prog, p.by, p.sup].join('\n').toLowerCase();
+        p.td = (p.title + '\n' + p.desc).toLowerCase(); p.tl = p.title.toLowerCase();
+        return p;
+      }
+      const identityText = value => clean(value).normalize('NFKC').toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+      const identity = p => hash(JSON.stringify([p.title, p.sup, p.prog].map(identityText)));
+      function parseProjects(text) {
+        if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error('项目文件超过 16 MiB，请拆分或检查是否选错文件。');
+        const raw = text.replace(/^\ufeff/, '').trim();
+        if (!raw) throw new Error('项目文件为空，当前数据和收藏保持不变。');
+        let lines;
+        if (raw.startsWith('[')) {
+          try { lines = JSON.parse(raw); } catch { throw new Error('JSON 数组无法解析；JSONL 应每行一个项目对象。'); }
+          if (!Array.isArray(lines)) throw new Error('项目资料格式不正确。');
+        } else {
+          try { const object = JSON.parse(raw); if (plain(object) && ('schemaVersion' in object || 'appId' in object)) throw new Error('这是使用记录 JSON，请通过“使用记录 → 打开记录”载入。'); } catch (e) { if (e.message.startsWith('这是使用记录')) throw e; }
+          lines = raw.split(/\r?\n/).filter(s => s.trim()).map(line => { try { return JSON.parse(line); } catch { return null; } });
+        }
+        if (lines.length > 50000) throw new Error('文件记录过多，请检查文件。');
+        const map = new Map(); let bad = 0, duplicates = 0, conflicting = 0;
+        for (const record of lines) {
+          try {
+            const p = norm(record);
+            if (map.has(p.id)) { duplicates++; if (identity(map.get(p.id)) !== identity(p)) conflicting++; }
+            map.set(p.id, p);
+          } catch { bad++; }
+        }
+        const rows = [...map.values()];
+        if (!rows.length) throw new Error('没有可用的项目记录，当前数据和使用记录未被替换。');
+        if (rows.length > 20000) throw new Error('单份清单最多支持 20,000 个项目。');
+        const canonical = rows.slice().sort((a, b) => a.id < b.id ? -1 : a.id > b.id ? 1 : 0).map(p => {
+          const copy = {}; for (const key of Object.keys(FIELDS)) if (!['seen', 'rmon'].includes(key)) copy[key] = p[key];
+          copy.status = p.status; return copy;
+        });
+        return { rows, bad, duplicates, conflicting, contentHash: hash(JSON.stringify(canonical)) };
+      }
+      const defaults = rows => ({ query: '', scope: 'all', status: rows.some(p => p.status === 'Available') ? 'Available' : '', supervisors: [], supervisorQuery: '', type: '', programme: '', area: '', skills: '', starredOnly: false, sort: 'id' });
+      const newStore = () => ({ appId: APP, schemaVersion: VERSION, storeId: uuid(), revision: 0, savedAt: null, activeDatasetId: null, datasets: [] });
+      const newDataset = (name, rows, filters) => ({ id: uuid(), name: name.trim().slice(0, 80) || '未命名清单', source: null, filters: clone(filters || defaults(rows)), favorites: [] });
+      const snapshot = p => ({ id: p.id, title: p.title, desc: p.desc, sup: p.sup, prog: p.prog, status: p.status });
+      const bookmark = p => ({ bookmarkId: uuid(), projectId: p.id, savedAt: now(), snapshot: snapshot(p) });
+      function matches(dataset, rows, loaded = true) {
+        const map = new Map(rows.map(p => [p.id, p]));
+        return dataset.favorites.map(b => {
+          const p = loaded ? map.get(b.projectId) : null;
+          return { bookmark: b, project: p || null, kind: !loaded ? 'unverified' : !p ? 'missing' : identity(b.snapshot) === identity(p) ? 'matched' : 'identity-changed' };
+        });
+      }
+      function attach(dataset, parsed, file) {
+        const old = dataset.source, index = Object.create(null);
+        for (const p of parsed.rows) index[p.id] = identity(p);
+        const seen = [...(old?.seenHashes || []), ...(old ? [old.contentHash] : [])];
+        dataset.source = { filename: clean(file.name).slice(0, 256) || 'progress.jsonl', modifiedAt: Number.isFinite(file.lastModified) ? file.lastModified : null, importedAt: now(), contentHash: parsed.contentHash, projectCount: parsed.rows.length, projectIndex: index, seenHashes: [...new Set(seen)].filter(x => x !== parsed.contentHash).slice(-8) };
+        for (const entry of matches(dataset, parsed.rows)) if (entry.kind === 'matched') entry.bookmark.snapshot = snapshot(entry.project);
+      }
+      function overlap(dataset, parsed) {
+        const index = dataset.source?.projectIndex || {}, rows = parsed.rows;
+        let common = 0, changed = 0;
+        for (const p of rows) if (Object.hasOwn(index, p.id)) { common++; if (index[p.id] !== identity(p)) changed++; }
+        return { common, changed, previousCount: Object.keys(index).length };
+      }
+      function invalidFilters(filters, rows) {
+        const result = [], sets = {
+          status: new Set(rows.map(p => p.status)), type: new Set(rows.map(p => p.type)), programme: new Set(rows.flatMap(p => p.prog.split(/[\n;]+/).map(s => s.trim())))
+        };
+        for (const field of ['status', 'type', 'programme']) if (filters[field] && !sets[field].has(filters[field])) result.push({ field, value: filters[field] });
+        const supervisors = new Set(rows.map(p => p.sup));
+        for (const value of filters.supervisors) if (!supervisors.has(value)) result.push({ field: 'supervisors', value });
+        return result;
+      }
+      function validateState(input) {
+        if (!plain(input) || input.appId !== APP) throw new Error('不是本页面的使用记录文件（appId 不匹配）。');
+        if (![0, VERSION].includes(input.schemaVersion)) throw new Error('不支持的记录版本；不会覆盖文件。请使用相应版本页面或保留原文件。');
+        const migrated = input.schemaVersion === 0, value = clone(input);
+        function text(v, label, max = 2000, empty = true) {
+          if (typeof v !== 'string' || v.length > max || (!empty && !v.trim())) throw new Error(label + ' 的文字格式或长度不正确。');
+          return v;
+        }
+        function integer(v, label, max = Number.MAX_SAFE_INTEGER) { if (!Number.isSafeInteger(v) || v < 0 || v > max) throw new Error(label + ' 必须是有效非负整数。'); return v; }
+        function list(v, label, max) { if (!Array.isArray(v) || v.length > max) throw new Error(label + ' 的列表格式或数量不正确。'); return v; }
+        function date(v, label, nullable = false) { if (nullable && v === null) return null; text(v, label, 64, false); if (!Number.isFinite(Date.parse(v))) throw new Error(label + ' 不是有效时间。'); return v; }
+        const digest = v => { text(v, '内容摘要', 71, false); if (!/^sha256:[0-9a-f]{64}$/.test(v)) throw new Error('内容摘要格式错误。'); return v; };
+        if (migrated) { value.schemaVersion = VERSION; value.storeId = value.storeId || uuid(); value.revision = value.revision ?? 0; value.savedAt = value.savedAt ?? null; }
+        const out = { appId: APP, schemaVersion: VERSION, storeId: text(value.storeId, '记录文件编号', 100, false), revision: integer(value.revision, 'revision'), savedAt: date(value.savedAt, 'savedAt', true), activeDatasetId: value.activeDatasetId, datasets: [] };
+        const ids = new Set();
+        for (const d of list(value.datasets, '清单档案', 100)) {
+          if (!plain(d) || !plain(d.filters)) throw new Error('清单或筛选条件格式错误。');
+          const id = text(d.id, '清单编号', 100, false); if (ids.has(id)) throw new Error('清单编号重复。'); ids.add(id);
+          const f = d.filters;
+          const filters = {
+            query: text(f.query, '关键词'), scope: text(f.scope, '搜索范围', 20), status: text(f.status, '状态', 128),
+            supervisors: list(f.supervisors, '导师', 500).map(s => text(s, '导师名', 512, false)),
+            supervisorQuery: text(f.supervisorQuery, '导师搜索', 1000), type: text(f.type, '项目类型', 512),
+            programme: text(f.programme, '专业', 512), area: text(f.area, '领域', 1000), skills: text(f.skills, '技能', 1000),
+            starredOnly: f.starredOnly, sort: text(f.sort, '排序', 20)
+          };
+          if (!['all', 'title', 'td'].includes(filters.scope) || !['id', 'idd', 'title', 'sup'].includes(filters.sort) || typeof filters.starredOnly !== 'boolean') throw new Error('搜索范围、排序或收藏筛选值不受支持。');
+          filters.supervisors = [...new Set(filters.supervisors)];
+          let source = null;
+          if (d.source !== null) {
+            const s = d.source; if (!plain(s) || !plain(s.projectIndex)) throw new Error('清单来源索引格式错误。');
+            const index = Object.create(null), entries = Object.entries(s.projectIndex);
+            if (entries.length > 20000) throw new Error('来源索引过大。');
+            for (const [pid, h] of entries) index[text(pid, 'Project ID', 256, false)] = digest(h);
+            const count = integer(s.projectCount, '项目数', 20000); if (count !== entries.length) throw new Error('项目数与来源索引不一致。');
+            if (s.modifiedAt !== null && (!Number.isFinite(s.modifiedAt) || s.modifiedAt < 0 || s.modifiedAt > 8640000000000000)) throw new Error('项目文件修改时间不正确。');
+            source = { filename: text(s.filename, '来源文件名', 256, false), modifiedAt: s.modifiedAt, importedAt: date(s.importedAt, '导入时间'), contentHash: digest(s.contentHash), projectCount: count, projectIndex: index, seenHashes: list(s.seenHashes, '快照历史', 8).map(digest) };
+          }
+          const favoriteIds = new Set(), favorites = [];
+          for (let b of list(d.favorites, '收藏', 5000)) {
+            if (migrated && typeof b === 'string') b = { bookmarkId: uuid(), projectId: b, savedAt: now(), snapshot: { id: b, title: '', desc: '', sup: '', prog: '', status: '未知' } };
+            if (!plain(b) || !plain(b.snapshot)) throw new Error('收藏记录格式错误。');
+            const bid = text(b.bookmarkId, '收藏编号', 100, false); if (favoriteIds.has(bid)) throw new Error('收藏编号重复。'); favoriteIds.add(bid);
+            const pid = text(b.projectId, '收藏 Project ID', 256, false), s = b.snapshot;
+            if (s.id !== pid) throw new Error('收藏与快照的 Project ID 不一致。');
+            favorites.push({ bookmarkId: bid, projectId: pid, savedAt: date(b.savedAt, '收藏时间'), snapshot: { id: pid, title: text(s.title, '收藏标题', 10000), desc: text(s.desc, '收藏描述', 200000), sup: text(s.sup, '收藏导师', 512), prog: text(s.prog, '收藏专业', 2000), status: text(s.status, '收藏状态', 128, false) } });
+          }
+          out.datasets.push({ id, name: text(d.name, '清单名称', 80, false), source, filters, favorites });
+        }
+        if (out.activeDatasetId !== null && (!ids.has(out.activeDatasetId) || typeof out.activeDatasetId !== 'string')) throw new Error('当前清单编号不存在。');
+        return { state: out, migrated };
+      }
+      function parseState(text) {
+        if (new TextEncoder().encode(text).length > MAX_BYTES) throw new Error('使用记录超过 16 MiB。');
+        let input; try { input = JSON.parse(text.replace(/^\ufeff/, '')); } catch { throw new Error('使用记录 JSON 已损坏或格式不正确；原文件不会被覆盖。'); }
+        return validateState(input);
+      }
+      function favoritesMarkdown(dataset, rows, loaded = true) {
+        const labels = { missing: '当前项目文件未找到；以下为上次保存的资料', unverified: '尚未载入此清单的项目数据；以下为保存的快照', 'identity-changed': '相同 ID 的项目身份变化，尚未确认关联' };
+        return matches(dataset, rows, loaded).map((entry, i) => {
+          const p = entry.kind === 'matched' ? snapshot(entry.project) : entry.bookmark.snapshot;
+          return (i + 1) + '. ' + p.id + ' ' + p.title + '\n> ' + (labels[entry.kind] || ('当前文件状态：' + p.status)) + '\n' + p.desc + '\n';
+        }).join('\n');
+      }
+      return { APP, VERSION, MAX_BYTES, FIELDS, clean, clone, now, uuid, status, hash, norm, identity, parseProjects, defaults, newStore, newDataset, snapshot, bookmark, matches, attach, overlap, invalidFilters, validateState, parseState, favoritesMarkdown };
+    })();
+
+  </script>
+  <script id="search-app">
+
+    'use strict';
+    const C = FypState, $ = s => document.querySelector(s);
+    const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const uiIcon = name => '<svg class="icon" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
+    const F = [['desc', 'Description'], ['obj', 'Objectives'], ['type', 'Project type'], ['area', 'Specific area of research'], ['skills', 'Skill set required'], ['deliv', 'Expected deliverable'], ['sched', 'Project schedule'], ['inno', 'Innovative component'], ['prog', 'Suitable for programme'], ['by', 'Proposed by'], ['email', 'Email']];
+    let root = C.newStore(), all = [], stars = new Set(), sups = new Set(), status = 'Available', terms = [];
+    let loadedId = null, fileTime = null, lastParse = { bad: 0, duplicates: 0, conflicting: 0 };
+    let stateHandle = null, pendingStateHandle = null, stateHash = null, recordName = '', dirty = false, generation = 0, savedGeneration = 0;
+    let saveTimer = null, savePromise = null, saveError = '', blocked = false, ioBusy = false, importSequence = 0, pendingMode = 'auto', decisionResolve = null;
+    let cacheEnabled = true, database = null, databasePromise = null, cacheQueue = Promise.resolve(), cachedDraft = null, sourceRestore = null, initialized = false;
+    let toastTimer = null, toastSequence = 0, busyToast = null, cacheError = '', coordinationWarning = false, actionSequence = 0;
+    const dataCache = new Map(), sources = new Map();
+    const supportsFiles = !!globalThis.isSecureContext && typeof window.showOpenFilePicker === 'function' && typeof window.showSaveFilePicker === 'function';
+    let nativeFilesEnabled = supportsFiles;
+    const active = () => root.datasets.find(d => d.id === root.activeDatasetId) || null;
+    const hasData = () => !!active() && loadedId === active().id;
+    const favoriteEntries = () => active() ? C.matches(active(), all, hasData()) : [];
+    function clearToast(sequence) {
+      if (sequence !== undefined && sequence !== toastSequence) return;
+      clearTimeout(toastTimer); toastTimer = null; const node = $('#toast'); node.classList.remove('on'); node.textContent = '';
+    }
+    function toast(text) {
+      clearToast(); const sequence = ++toastSequence, node = $('#toast'); node.textContent = text; node.classList.add('on');
+      toastTimer = setTimeout(() => clearToast(sequence), 2200); return sequence;
+    }
+    function notice(text, error = false) { const node = $('#operation-message'); node.textContent = text; node.hidden = !text; node.dataset.error = String(error); }
+    function updateCacheHelp() {
+      const messages = [cacheError ? '浏览器缓存不可用：' + cacheError + '。记录文件保存仍可使用；请保留 JSON，并在下次手动打开。' : cacheEnabled ? '浏览器缓存只作辅助。移动 HTML、换浏览器或清理浏览器数据后，请重新打开记录 JSON。' : '已关闭此页浏览器记忆；文件保存仍可使用，下次请手动打开记录 JSON。'];
+      if (coordinationWarning) messages.push('此环境不能协调跨页面写入，请同一记录文件只开一个可写页面。');
+      $('#cache-help').textContent = messages.join('\n');
+    }
+    function errorText(e) { return e?.message || String(e); }
+    function cancelled(e) { return e?.name === 'AbortError'; }
+    function showDialog(node) { if (typeof node.showModal === 'function') node.showModal(); else node.setAttribute('open', ''); }
+    function closeDialog(node) { if (typeof node.close === 'function') node.close(); else node.removeAttribute('open'); }
+    function finishDecision(key) {
+      if (!decisionResolve) return;
+      const done = decisionResolve; decisionResolve = null;
+      const name = $('#decision-name').value.trim();
+      closeDialog($('#decision-dialog')); done(key === null ? null : { key, name });
+    }
+    function ask(title, message, choices, name) {
+      if (decisionResolve) finishDecision(null);
+      $('#decision-title').textContent = title; $('#decision-message').textContent = message;
+      $('#decision-name-label').hidden = name === undefined; $('#decision-name').value = name || '';
+      $('#decision-actions').innerHTML = choices.map((choice, i) => '<button type="button" data-choice="' + esc(choice.key) + '"' + (i === 0 ? ' class="pri"' : '') + '>' + esc(choice.label) + '</button>').join('');
+      return new Promise(resolve => { decisionResolve = resolve; showDialog($('#decision-dialog')); });
+    }
+    function captureFilters() {
+      return { query: $('#q').value, scope: $('#scope').value, status, supervisors: [...sups], supervisorQuery: $('#supq').value, type: $('#type').value, programme: $('#prog').value, area: $('#area').value, skills: $('#skills').value, starredOnly: $('#starred').checked, sort: $('#sort').value };
+    }
+    function syncFilters() { if (hasData()) active().filters = captureFilters(); }
+    function updateRecordUI() {
+      const d = active(), node = $('#save-state');
+      const message = $('#save-message');
+      message.textContent = saveError ? '记录未确认保存成功：' + saveError + '\n可以继续浏览；请重新连接、另存或下载副本。' : '';
+      message.hidden = !saveError;
+      let text, kind;
+      if (savePromise) { text = '正在写入记录文件…'; kind = 'saving'; }
+      else if (saveError) { text = '未保存：' + saveError; kind = 'error'; }
+      else if (dirty) { text = stateHandle ? '有未保存修改，等待写入…' : '尚未写入文件 · 请新建 / 另存记录，或下载 JSON 副本'; kind = 'dirty'; }
+      else if (stateHandle) { text = '已保存到 ' + recordName; kind = 'saved'; }
+      else if (pendingStateHandle) { text = '上次记录需要重新授权 · 打开“使用记录”恢复文件访问'; kind = 'dirty'; }
+      else if (recordName) { text = '已导入 ' + recordName + ' · 下载模式，修改后需重新下载 JSON'; kind = 'saved'; }
+      else { text = '未连接记录文件 · 筛选和收藏仅本次有效'; kind = 'session'; }
+      if (d) text += ' · ' + d.name + (hasData() ? '' : '（项目数据未载入）');
+      node.textContent = text; node.title = text; node.dataset.state = kind;
+      $('#dataset-picker').innerHTML = root.datasets.length ? root.datasets.map(p => '<option value="' + esc(p.id) + '">' + esc(p.name) + ' · ' + p.favorites.length + ' 个收藏</option>').join('') : '<option value="">尚未建立清单</option>';
+      $('#dataset-picker').value = root.activeDatasetId || ''; $('#dataset-picker').disabled = !root.datasets.length;
+      for (const id of ['dataset-rename', 'dataset-delete', 'data-update', 'data-reload']) $('#' + id).disabled = !d;
+      $('#state-save').disabled = !!savePromise;
+      $('#state-save').textContent = stateHandle ? '立即保存' : nativeFilesEnabled ? '立即保存' : '下载当前记录';
+      $('#state-reconnect').hidden = !pendingStateHandle;
+      $('#view-favorites').textContent = '全部收藏（' + (d?.favorites.length || 0) + '）';
+      $('#view-favorites').disabled = !d;
+      if (!hasData()) {
+        $('#empty h1').textContent = d ? '请载入这份清单的项目数据' : '导入项目数据';
+        $('#empty .empty-description').textContent = d ? '已恢复「' + d.name + '」的筛选和 ' + d.favorites.length + ' 个收藏。请导入对应的 progress.jsonl，再核对当前状态。' : '将 progress.jsonl 拖到这里，或选择本地文件。';
+      }
+    }
+    function markDirty(urgent = false) {
+      syncFilters(); dirty = true; generation++; saveError = blocked ? saveError : ''; updateRecordUI(); cacheCurrent();
+      clearTimeout(saveTimer);
+      if (stateHandle && !blocked) saveTimer = setTimeout(() => { saveNow(false); }, urgent ? 0 : 600);
+    }
+    function touchFilters() { if (!hasData()) return; render(); markDirty(); }
+    function hl(value) {
+      const s = String(value || '');
+      if (!terms.length || !s) return esc(s);
+      const re = new RegExp('(' + terms.map(t => t.replace(/[.*+?^\x24{}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi');
       return s.split(re).map((p, i) => i % 2 ? '<mark>' + esc(p) + '</mark>' : esc(p)).join('');
     }
-    function toast(m) { const t = $('#toast'); t.textContent = m; t.classList.add('on'); setTimeout(() => t.classList.remove('on'), 1600) }
-    const cl = v => typeof v === 'string' ? v.replace(ILL, '').trim() : '';
-
-    function norm(r) {
-      const st = cl(r['Status']);
-      const o = {
-        id: cl(r['Project ID']), title: cl(r['Project Title']), desc: cl(r['Description']), obj: cl(r['Objectives']),
-        type: cl(r['Project type']), area: cl(r['Specific area of research']), skills: cl(r['Skill set required']),
-        deliv: cl(r['Expected deliverable']), sched: cl(r['Project schedule (List of steps for the project)']),
-        inno: cl(r['Innovative component/ project potential']), prog: cl(r['This project suitable for programme']),
-        by: cl(r['Proposed by']), seen: cl(r['Last seen']), rmon: cl(r['Removed on']), sup: cl(r['Supervisor name:']), email: cl(r['Email:']),
-        status: stat(st)
-      };
-      o.all = [o.id, o.title, o.desc, o.obj, o.type, o.area, o.skills, o.deliv, o.sched, o.inno, o.prog, o.by, o.sup].join('\n').toLowerCase();
-      o.td = (o.title + '\n' + o.desc).toLowerCase();
-      o.tl = o.title.toLowerCase();
-      return o;
+    function opts(selector, values, label, saved = '') {
+      const items = [...new Set(values.filter(Boolean))].sort();
+      if (saved && !items.includes(saved)) items.push(saved);
+      $(selector).innerHTML = '<option value="">' + label + '</option>' + items.map(v => '<option value="' + esc(v) + '">' + esc(v) + (values.includes(v) ? '' : '（本次无此选项）') + '</option>').join('');
+      $(selector).value = saved;
     }
-
-    // 状态只做精确识别：Available / Taken / Removed，其他原样显示，避免把 Unavailable 之类误当成 Available
-    function stat(st) {
-      const s = st.replace(/[\[\]]/g, '').trim(), l = s.toLowerCase();
-      return l === 'available' ? 'Available' : l === 'taken' ? 'Taken' : l === 'removed' ? 'Removed' : (s || '未知');
-    }
-    let bad = 0, dup = 0, fileTime = null;
     function drawStatus() {
-      const c = {}; all.forEach(p => c[p.status] = (c[p.status] || 0) + 1);
-      const o = ['Available', 'Taken', 'Removed'], keys = [...o.filter(k => c[k]), ...Object.keys(c).filter(k => !o.includes(k))];
-      $('#status').innerHTML = ['<button data-v=""' + (status === '' ? ' class="on"' : '') + '>全部 ' + all.length + '</button>']
-        .concat(keys.map(k => '<button data-v="' + esc(k) + '"' + (status === k ? ' class="on"' : '') + '>' + esc(k) + ' ' + c[k] + '</button>')).join('');
-    }
-    function banner() {
-      const rm = all.filter(p => p.status === 'Removed').length,
-        oth = all.filter(p => !['Available', 'Taken', 'Removed'].includes(p.status)).length,
-        emp = all.filter(p => !p.desc).length,
-        sr = all.filter(p => stars.has(p.id) && p.status !== 'Available').length,
-        old = fileTime ? Math.floor((Date.now() - fileTime) / 864e5) : null;
-      const m = ['数据只是抓取当时的快照，决定申请前，请回 IPMS 网站核对该项目是否仍是 Available。'];
-      if (fileTime) m.unshift('数据文件最后修改于 ' + fileTime.toLocaleString() + (old >= 3 ? '（已过 ' + old + ' 天，建议先更新）' : ''));
-      if (rm) m.push(rm + ' 个项目已在网站被移除（Removed），默认不显示，可在左侧「状态」里查看。');
-      if (sr) m.push('你的收藏里有 ' + sr + ' 个已经不是 Available（已被选走或被移除）。');
-      if (oth) m.push(oth + ' 个项目的状态无法识别，请在「状态」筛选里查看。');
-      if (emp) m.push(emp + ' 个项目的描述为空，可能是抓取不完整。');
-      if (bad) m.push(bad + ' 行数据无法读取，已跳过（可能是中断时写了一半的行）。');
-      if (dup) m.push(dup + ' 个重复的 Project ID 已合并，保留文件里最后出现的那条。');
-      $('#banner').innerHTML = '<div class="banner">' + m.map(esc).join('<br>') + '</div>';
-    }
-    function load(text, mod, filename) {
-      const m = new Map(); bad = 0; dup = 0;
-      text.replace(/^\ufeff/, '').split(/\r?\n/).filter(l => l.trim()).forEach(l => {
-        try { const p = norm(JSON.parse(l)); if (!p.id) { bad++; return } if (m.has(p.id)) dup++; m.set(p.id, p) } catch (e) { bad++ }
-      });
-      all = [...m.values()];
-      if (!all.length) { toast('读不到数据，请确认是 progress.jsonl'); return }
-      fileTime = mod ? new Date(mod) : null;
-      status = all.some(p => p.status === 'Available') ? 'Available' : '';
-      stars.clear(); sups.clear(); build();
-      $('#empty').hidden = true; $('#res').hidden = false; $('#side').hidden = false; $('#q').disabled = false;
-      document.body.classList.add('has-data');
-      $('#file-state').textContent = filename || 'progress.jsonl';
-      $('#file-summary').hidden = false;
-      $('#q').placeholder = '搜索标题、描述或技能（空格分隔多个关键词）';
-      render(); toast('已读取 ' + all.length + ' 个项目');
-    }
-
-    function opts(sel, arr, label) {
-      $(sel).innerHTML = '<option value="">' + label + '</option>' + arr.map(v => '<option>' + esc(v) + '</option>').join('');
-    }
-    function build() {
-      const uniq = f => [...new Set(all.map(f).filter(Boolean))].sort();
-      opts('#type', uniq(p => p.type), '全部类型');
-      opts('#prog', [...new Set(all.flatMap(p => p.prog.split(/[\n;]+/).map(s => s.trim())).filter(Boolean))].sort(), '全部专业');
-      $('#arealist').innerHTML = uniq(p => p.area.replace(/\.$/, '')).map(v => '<option value="' + esc(v) + '">').join('');
-      drawSups(); drawStatus();
+      const counts = new Map(); for (const p of all) counts.set(p.status, (counts.get(p.status) || 0) + 1);
+      const order = ['Available', 'Taken', 'Removed'], keys = [...order.filter(k => counts.has(k)), ...[...counts.keys()].filter(k => !order.includes(k))];
+      if (status && !keys.includes(status)) keys.push(status);
+      $('#status').innerHTML = [['', '全部', all.length], ...keys.map(k => [k, k, counts.get(k) || 0])].map(([value, label, count]) => '<button type="button" data-v="' + esc(value) + '" class="' + (status === value ? 'on' : '') + '" aria-pressed="' + (status === value) + '">' + esc(label) + ' ' + count + '</button>').join('');
     }
     function drawSups() {
-      const q = $('#supq').value.toLowerCase(), c = {};
-      all.forEach(p => { if (p.sup) c[p.sup] = (c[p.sup] || 0) + 1 });
-      $('#sups').innerHTML = Object.keys(c).sort().filter(n => n.toLowerCase().includes(q)).map(n =>
-        '<label><input type="checkbox" value="' + esc(n) + '"' + (sups.has(n) ? ' checked' : '') + '>' + esc(n) + '<small>' + c[n] + '</small></label>').join('') || '<div class="none" style="padding:10px">没有匹配</div>';
+      const q = $('#supq').value.toLowerCase(), counts = new Map();
+      for (const p of all) if (p.sup) counts.set(p.sup, (counts.get(p.sup) || 0) + 1);
+      for (const name of sups) if (!counts.has(name)) counts.set(name, 0);
+      $('#sups').innerHTML = [...counts.keys()].sort().filter(n => n.toLowerCase().includes(q)).map(n => '<label' + (!counts.get(n) ? ' class="unavailable"' : '') + '><input type="checkbox" value="' + esc(n) + '"' + (sups.has(n) ? ' checked' : '') + '>' + esc(n) + (counts.get(n) ? '' : '（本次无此导师）') + '<small>' + counts.get(n) + '</small></label>').join('') || '<div class="none" style="padding:10px">没有匹配的导师</div>';
     }
-
+    function applyFilters() {
+      const f = active().filters; status = f.status; sups = new Set(f.supervisors);
+      $('#q').value = f.query; $('#scope').value = f.scope; $('#supq').value = f.supervisorQuery;
+      $('#area').value = f.area; $('#skills').value = f.skills; $('#starred').checked = f.starredOnly; $('#sort').value = f.sort;
+      opts('#type', all.map(p => p.type), '全部类型', f.type);
+      opts('#prog', all.flatMap(p => p.prog.split(/[\n;]+/).map(s => s.trim())), '全部专业', f.programme);
+      $('#arealist').innerHTML = [...new Set(all.map(p => p.area.replace(/\.$/, '')).filter(Boolean))].sort().map(v => '<option value="' + esc(v) + '"></option>').join('');
+      drawStatus(); drawSups();
+    }
+    function filterWarnings() {
+      const invalid = C.invalidFilters(captureFilters(), all), node = $('#filter-message');
+      node.hidden = !invalid.length;
+      const names = { status: '状态', type: '类型', programme: '专业', supervisors: '导师' };
+      node.innerHTML = invalid.length ? '以下已保存条件在本次数据中不存在，仍保留原选择，可能得到零结果：' + invalid.map(x => esc(names[x.field] + '「' + x.value + '」')).join('、') + '。<button type="button" id="clear-invalid">移除失效筛选</button>' : '';
+    }
     function filtered() {
-      const q = $('#q').value.trim().toLowerCase();
-      terms = q ? q.split(/\s+/) : [];
-      const key = { all: 'all', title: 'tl', td: 'td' }[$('#scope').value];
-      const ty = $('#type').value, pg = $('#prog').value, ar = $('#area').value.trim().toLowerCase(), sk = $('#skills').value.trim().toLowerCase(),
-        so = $('#starred').checked;
-      let r = all.filter(p =>
-        (!status || p.status === status) &&
-        (!sups.size || sups.has(p.sup)) &&
-        (!ty || p.type === ty) && (!pg || p.prog.includes(pg)) &&
-        (!ar || p.area.toLowerCase().includes(ar)) && (!sk || p.skills.toLowerCase().includes(sk)) &&
-        (!so || stars.has(p.id)) && terms.every(t => p[key].includes(t)));
-      const s = $('#sort').value;
-      const cmp = {
-        id: (a, b) => a.id.localeCompare(b.id), idd: (a, b) => b.id.localeCompare(a.id),
-        title: (a, b) => a.title.localeCompare(b.title), sup: (a, b) => a.sup.localeCompare(b.sup) || a.id.localeCompare(b.id)
-      }[s];
-      return r.sort(cmp);
+      const q = $('#q').value.trim().toLowerCase(); terms = q ? q.split(/\s+/) : [];
+      const key = { all: 'all', title: 'tl', td: 'td' }[$('#scope').value], ty = $('#type').value, pg = $('#prog').value, ar = $('#area').value.trim().toLowerCase(), sk = $('#skills').value.trim().toLowerCase();
+      const result = all.filter(p => (!status || p.status === status) && (!sups.size || sups.has(p.sup)) && (!ty || p.type === ty) && (!pg || p.prog.includes(pg)) && (!ar || p.area.toLowerCase().includes(ar)) && (!sk || p.skills.toLowerCase().includes(sk)) && (!$('#starred').checked || stars.has(p.id)) && terms.every(t => p[key].includes(t)));
+      return result.sort({ id: (a, b) => a.id.localeCompare(b.id), idd: (a, b) => b.id.localeCompare(a.id), title: (a, b) => a.title.localeCompare(b.title), sup: (a, b) => a.sup.localeCompare(b.sup) || a.id.localeCompare(b.id) }[$('#sort').value]);
     }
-
     function seenTag(p) {
       if (p.status === 'Removed') return '<span class="seen no">✖ 网站已移除' + (p.rmon ? '（' + esc(p.rmon) + ' 发现）' : '') + '</span>';
-      if (p.seen) return '<span class="seen ok">✔ 最近确认仍在：' + esc(p.seen) + '</span>';
-      return '<span class="seen">未确认（更新数据后会显示）</span>';
+      return p.seen ? '<span class="seen ok">✔ 最近确认仍在：' + esc(p.seen) + '</span>' : '<span class="seen">没有列表确认日期</span>';
     }
     function card(p) {
-      const meta = [p.sup && uiIcon('user') + hl(p.sup), p.type && uiIcon('tag') + hl(p.type), p.area && uiIcon('leaf') + hl(p.area)].filter(Boolean).map(x => '<span>' + x + '</span>').join('');
+      const meta = [p.sup && uiIcon('user') + hl(p.sup), p.type && uiIcon('tag') + hl(p.type), p.area && uiIcon('leaf') + hl(p.area)].filter(Boolean).map(v => '<span>' + v + '</span>').join('');
       const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<div class="detail-item"><h4>' + f[1] + '</h4><p>' + hl(p[f[0]]) + '</p></div>').join('');
-      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" aria-expanded="false" aria-label="' + esc(p.title || p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span>' +
-        '<span class="pill ' + esc(p.status) + '">' + esc(p.status || '?') + '</span>' + seenTag(p) +
-        '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏" aria-label="收藏项目" aria-pressed="' + stars.has(p.id) + '">' + (stars.has(p.id) ? '★' : '☆') + '</button></div>' +
-        '<div class="title">' + hl(p.title) + '</div><div class="meta">' + meta + '</div>' +
-        '<div class="desc">' + hl(p.desc) + '</div><div class="more">' + more + '</div>' +
-        '<div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
+      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" aria-expanded="false" aria-label="' + esc(p.title || p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span><span class="pill ' + esc(p.status) + '">' + esc(p.status) + '</span>' + seenTag(p) + '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏" aria-label="收藏项目" aria-pressed="' + stars.has(p.id) + '">' + (stars.has(p.id) ? '★' : '☆') + '</button></div><div class="title">' + hl(p.title || p.id) + '</div><div class="meta">' + meta + '</div><div class="desc">' + hl(p.desc) + '</div><div class="more">' + more + '</div><div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
     }
-
+    function banner() {
+      const entries = favoriteEntries(), missing = entries.filter(e => e.kind === 'missing').length, changed = entries.filter(e => e.kind === 'identity-changed').length, unavailable = entries.filter(e => e.kind === 'matched' && e.project.status !== 'Available').length;
+      const messages = ['数据是本地快照；申请前请回 IPMS 核对项目是否仍可选。'];
+      if (fileTime) messages.unshift('项目文件最后修改：' + fileTime.toLocaleString() + (Date.now() - fileTime.getTime() >= 3 * 864e5 ? '（已超过 3 天，建议核对更新）' : ''));
+      if (unavailable) messages.push('收藏中有 ' + unavailable + ' 个已不是 Available，收藏仍然保留。');
+      if (missing) messages.push(missing + ' 个收藏在当前文件中未找到，不代表学校已删除；请查看“全部收藏”。');
+      if (changed) messages.push(changed + ' 个收藏的 ID 相同但标题、导师或专业发生变化，尚未关联到当前项目，请在“全部收藏”核对。');
+      const empty = all.filter(p => !p.desc).length; if (empty) messages.push(empty + ' 个项目描述为空。');
+      if (lastParse.bad) messages.push(lastParse.bad + ' 条记录无效，已跳过；未据此删除任何收藏。');
+      if (lastParse.duplicates) messages.push(lastParse.duplicates + ' 个重复 ID 保留最后一条，其中 ' + lastParse.conflicting + ' 个存在身份差异，请核对原文件。');
+      if (all.some(p => !['Available', 'Taken', 'Removed'].includes(p.status))) messages.push('存在其他或未知状态，请检查状态筛选。');
+      $('#banner').innerHTML = '<div class="banner">' + messages.map(esc).join('<br>') + '</div>';
+    }
     function render() {
-      const r = filtered();
-      $('#count').textContent = '共 ' + r.length + ' 个结果（总数据 ' + all.length + '）' + (stars.size ? ' · 已收藏 ' + stars.size : '');
-      $('#list').innerHTML = r.length ? r.map(card).join('') : '<div class="none">没有符合条件的项目，试试放宽筛选</div>';
-      banner();
+      if (!hasData()) { updateRecordUI(); return; }
+      stars = new Set(favoriteEntries().filter(e => e.kind === 'matched').map(e => e.bookmark.projectId));
+      const result = filtered(), total = active().favorites.length, unmatched = total - stars.size;
+      $('#count').textContent = '共 ' + result.length + ' 个结果（总数据 ' + all.length + '） · 收藏 ' + total + (unmatched ? '，其中 ' + unmatched + ' 个需另行查看' : '');
+      $('#list').innerHTML = result.length ? result.map(card).join('') : '<div class="none">没有符合条件的项目。' + ($('#starred').checked ? '收藏可能被状态等条件隐藏，或尚未匹配当前数据。' : '请检查关键词和筛选条件。') + '<br><button type="button" data-reset>重置筛选</button><button type="button" data-view-favorites>查看全部收藏</button></div>';
+      filterWarnings(); banner(); updateRecordUI();
+    }
+    function showActiveData() {
+      const d = active(), entry = d ? dataCache.get(d.id) : null;
+      if (entry) { all = entry.parsed.rows; loadedId = d.id; fileTime = entry.file.lastModified ? new Date(entry.file.lastModified) : null; lastParse = entry.parsed; }
+      else { all = []; loadedId = null; fileTime = null; stars = new Set(); }
+      const loaded = !!entry;
+      $('#empty').hidden = loaded; $('#res').hidden = !loaded; $('#side').hidden = !loaded; $('#q').disabled = !loaded;
+      document.body.classList.toggle('has-data', loaded);
+      $('#file-summary').hidden = !loaded;
+      $('#file-state').textContent = loaded ? d.name + ' · ' + entry.file.name : '';
+      $('#q').placeholder = loaded ? '搜索标题、描述或技能（空格分隔多个关键词）' : '导入对应的 progress.jsonl 后搜索项目';
+      if (loaded) applyFilters(); render();
+    }
+    function resetFilters() {
+      if (!hasData()) return;
+      active().filters = C.defaults(all); applyFilters(); render(); markDirty(true);
+    }
+    function clearInvalid() {
+      const f = captureFilters(), invalid = C.invalidFilters(f, all);
+      for (const entry of invalid) if (entry.field === 'supervisors') f.supervisors = f.supervisors.filter(n => n !== entry.value); else f[entry.field] = '';
+      active().filters = f; applyFilters(); render(); markDirty(true);
+    }
+    function toggleBookmark(project) {
+      notice(''); clearToast();
+      const d = active(), entry = favoriteEntries().find(e => e.kind === 'matched' && e.bookmark.projectId === project.id);
+      if (entry) d.favorites = d.favorites.filter(b => b.bookmarkId !== entry.bookmark.bookmarkId);
+      else {
+        const next = C.clone(root), target = next.datasets.find(p => p.id === d.id);
+        target.favorites.push(C.bookmark(project)); serializeState(next); root = next;
+      }
+      render(); markDirty(true);
+    }
+    function renderFavorites() {
+      const d = active(), entries = favoriteEntries();
+      $('#favorites-title').textContent = d ? '全部收藏 · ' + d.name : '全部收藏';
+      $('#favorites-description').textContent = hasData() ? '这里包含所有状态及未匹配收藏，不受主列表筛选影响。缺失和待核对项目显示保存的快照，不表示网站当前状态。' : '尚未载入这份清单的项目数据。下方只显示保存的收藏快照，请导入对应的 progress.jsonl 后核对。';
+      const labels = { matched: '已匹配当前文件', missing: '当前文件未找到（不等于已删除）', 'identity-changed': '项目身份变化，待核对', unverified: '未载入项目数据，尚未核对' };
+      $('#favorites-list').innerHTML = entries.length ? entries.map(e => {
+        const b = e.bookmark, p = e.kind === 'matched' ? C.snapshot(e.project) : b.snapshot;
+        return '<article class="bookmark-row"><div class="bookmark-state">' + esc(labels[e.kind]) + ' · ' + (e.kind === 'matched' ? '当前文件状态：' : '上次快照状态：') + esc(p.status) + '</div><h3>' + esc(p.id + ' ' + (p.title || '未保存标题')) + '</h3><p>' + esc(p.sup || '未保存导师') + (p.prog ? ' · ' + esc(p.prog) : '') + '</p>' + (e.kind === 'identity-changed' ? '<p>当前文件对应项目：' + esc(e.project.title) + ' · ' + esc(e.project.sup) + '。确认是你想收藏的题目后再关联。</p>' : '') + '<div class="bookmark-description">' + esc(p.desc || '没有保存描述') + '</div><div class="record-actions">' + (e.kind === 'identity-changed' ? '<button type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="adopt">核对后关联当前项目</button>' : '') + '<button type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="remove">取消此收藏</button></div></article>';
+      }).join('') : '<div class="none">这份清单还没有收藏。</div>';
+    }
+    function viewFavorites() { renderFavorites(); if (!$('#favorites-dialog').open) showDialog($('#favorites-dialog')); }
+    function download(text, name, type) {
+      const url = URL.createObjectURL(new Blob([text], { type })), link = document.createElement('a');
+      link.href = url; link.download = name; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+    async function copyText(text) {
+      if (!navigator.clipboard?.writeText) throw new Error('浏览器不允许直接复制，请使用下载，或手动选择文字复制。');
+      await navigator.clipboard.writeText(text); toast('已复制');
+    }
+    function exportFavorites(copy = false) {
+      if (!active()?.favorites.length) { toast('还没有收藏'); return; }
+      const md = C.favoritesMarkdown(active(), all, hasData());
+      if (copy) return copyText(md);
+      download(md, 'shortlist.md', 'text/markdown;charset=utf-8'); toast('已请求下载收藏；请确认下载完成。');
+    }
+    function serializeState(state = root) {
+      const copy = C.validateState(state).state;
+      const text = JSON.stringify(copy, null, 2) + '\n';
+      if (new TextEncoder().encode(text).length > C.MAX_BYTES) throw new Error('记录超过 16 MiB，请减少不再需要的档案或收藏。');
+      return text;
+    }
+    function backupState() {
+      syncFilters(); download(serializeState(), 'fyp_search_state.json', 'application/json;charset=utf-8');
+      toast('已请求下载记录副本，请确认文件已保存；这不代表连接文件已自动保存。');
+    }
+    async function guardReplace() {
+      if (savePromise) await savePromise;
+      if (!dirty) return true;
+      const choices = [];
+      if (stateHandle) choices.push({ key: 'save', label: '先保存当前记录' });
+      choices.push({ key: 'backup', label: '下载当前副本后继续' }, { key: 'discard', label: '放弃未保存修改' });
+      const choice = await ask('当前记录有未保存修改', '打开另一份记录会替换内存中的全部清单档案。请先保存或下载副本；取消则继续使用当前记录。', choices);
+      if (!choice) return false;
+      if (choice.key === 'save') return await saveNow(true);
+      if (choice.key === 'backup') {
+        backupState();
+        return !!await ask('请确认副本已保留', '下载请求不等于文件已经落盘。请检查下载结果，确认副本可用后再继续。', [{ key: 'yes', label: '已确认副本，继续' }]);
+      }
+      return true;
+    }
+    async function importData(file, mode = 'auto', handle = null) {
+      const sequence = ++importSequence;
+      if (file.size > C.MAX_BYTES) throw new Error('项目文件超过 16 MiB。');
+      const raw = await file.text(), parsed = C.parseProjects(raw);
+      if (sequence !== importSequence) return false;
+      if (parsed.bad || parsed.duplicates) {
+        const answer = await ask('项目文件校验提示', '有效项目 ' + parsed.rows.length + ' 个；无效记录 ' + parsed.bad + ' 条；重复 ID ' + parsed.duplicates + ' 个（最后一条优先），其中身份不同 ' + parsed.conflicting + ' 个。\n继续只使用有效记录，不会据此清理缺失收藏。', [{ key: 'continue', label: '使用有效记录继续' }]);
+        if (!answer || sequence !== importSequence) return false;
+      }
+      syncFilters();
+      const current = active(), exact = root.datasets.filter(d => d.source?.contentHash === parsed.contentHash);
+      let target = null, makeNew = false, name = '清单 ' + (root.datasets.length + 1);
+      if (mode === 'new') makeNew = true;
+      else if (mode === 'update' && current) {
+        const compared = C.overlap(current, parsed);
+        if (current.source && (compared.common < Math.min(compared.previousCount, parsed.rows.length) * .5 || compared.changed > compared.common * .3)) {
+          const choice = await ask('这次更新与原清单差异较大', '「' + current.name + '」与本次文件的 ID 重合 ' + compared.common + ' 个，身份变化 ' + compared.changed + ' 个。\n可能是新学期、其他专业或不完整文件；数量和文件名都不能证明清单相同。', [{ key: 'update', label: '仍更新当前清单' }, { key: 'new', label: '建立独立新清单' }], name);
+          if (!choice || sequence !== importSequence) return false;
+          makeNew = choice.key === 'new'; name = choice.name || name;
+        }
+        if (!makeNew) target = current;
+      } else if (exact.length === 1) target = exact[0];
+      else if (!root.datasets.length) makeNew = true;
+      else {
+        const candidate = current || root.datasets.slice().sort((a, b) => C.overlap(b, parsed).common - C.overlap(a, parsed).common)[0];
+        const compared = C.overlap(candidate, parsed), historical = candidate.source?.seenHashes.includes(parsed.contentHash);
+        const choice = await ask('这是原清单更新，还是另一份清单？', '将与「' + candidate.name + '」比较：ID 重合 ' + compared.common + ' 个，身份变化 ' + compared.changed + ' 个。' + (historical ? '\n这份内容曾导入过，可能是历史快照。' : '') + '\n选择更新会保留该清单的筛选和收藏；新清单使用独立收藏。文件名和修改时间不能单独决定归属。', [{ key: 'update', label: '更新「' + candidate.name + '」' }, { key: 'new', label: '建立新清单' }], name);
+        if (!choice || sequence !== importSequence) return false;
+        makeNew = choice.key === 'new'; name = choice.name || name; if (!makeNew) target = candidate;
+      }
+      if (mode === 'new') {
+        const choice = await ask('建立独立清单', '原档案会保留。新清单不复制收藏' + ($('#copy-filters').checked ? '，沿用当前筛选条件。' : '，使用默认筛选条件。'), [{ key: 'new', label: '建立清单并导入' }], name);
+        if (!choice || sequence !== importSequence) return false; name = choice.name || name;
+      }
+      if (sequence !== importSequence) return false;
+      if (makeNew) {
+        if (root.datasets.length >= 100) throw new Error('最多支持 100 份清单，请先备份并整理旧档案。');
+        target = C.newDataset(name, parsed.rows, $('#copy-filters').checked && current ? current.filters : null);
+      }
+      if (handle) { const latest = await handle.getFile(); if (latest.size > C.MAX_BYTES || C.hash(await latest.text()) !== C.hash(raw)) throw new Error("选择文件后，磁盘上的项目内容又发生变化。当前清单未被替换，请重新导入。"); if (sequence !== importSequence) return false; }
+      const candidate = C.clone(target); C.attach(candidate, parsed, file);
+      const next = C.clone(root);
+      const position = next.datasets.findIndex(d => d.id === candidate.id);
+      if (position < 0) next.datasets.push(candidate); else next.datasets[position] = candidate;
+      next.activeDatasetId = candidate.id;
+      // Validate the complete candidate before committing any UI or persisted state.
+      const checked = C.validateState(next).state; serializeState(checked);
+      root = checked; dataCache.set(candidate.id, { parsed, file: { name: file.name, lastModified: file.lastModified || null } });
+      if (handle) sources.set(candidate.id, handle); else sources.delete(candidate.id);
+      showActiveData(); notice('已' + (makeNew ? '建立新清单' : '载入清单') + '「' + active().name + '」：' + parsed.rows.length + ' 个项目。筛选和收藏按此档案恢复；未匹配收藏请点“全部收藏”。');
+      markDirty(true); return true;
+    }
+    async function chooseData(mode = 'auto') {
+      if (nativeFilesEnabled) {
+        const [handle] = await pickFile('showOpenFilePicker', { id: 'fyp-projects', multiple: false, types: [{ description: '项目 JSONL / JSON / TXT', accept: { 'application/json': ['.jsonl', '.json', '.txt'] } }] });
+        await importData(await handle.getFile(), mode, handle);
+      } else { pendingMode = mode; $('#file').value = ''; $('#file').click(); }
+    }
+    async function reloadData() {
+      const d = active(); if (!d) return;
+      const handle = sources.get(d.id);
+      if (!handle) { notice('没有可复用的项目文件访问位置，请重新选择该清单的 progress.jsonl。'); await chooseData('update'); return; }
+      if (await handle.queryPermission({ mode: 'read' }) !== 'granted' && await handle.requestPermission({ mode: 'read' }) !== 'granted') throw new Error('未取得项目文件读取权限；收藏仍然保留。');
+      try { await importData(await handle.getFile(), 'update', handle); }
+      catch (e) { if (!cancelled(e)) notice('重新读取失败：' + errorText(e) + '\n文件可能被替换或移动。请用“更新当前清单”重新选择文件；现有记录没有清空。', true); else throw e; }
     }
 
-    function md(arr) { return arr.map((p, i) => (i + 1) + '. ' + p.id + ' ' + p.title + '\n' + p.desc + '\n').join('\n') }
-    const starred = () => all.filter(p => stars.has(p.id));
 
-    document.querySelectorAll('[data-import]').forEach(button => button.onclick = () => $('#file').click());
-    $('#file').onchange = e => { const f = e.target.files[0]; if (f) f.text().then(t => load(t, f.lastModified, f.name)) };
-    const emp = $('#empty');
-    ['dragover', 'dragenter'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.add('drag') }));
-    ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.remove('drag') }));
-    document.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(t => load(t, f.lastModified, f.name)) });
-
-    ['q', 'scope', 'type', 'prog', 'area', 'skills', 'starred', 'sort'].forEach(id => $('#' + id).addEventListener('input', render));
-    $('#status').onclick = e => {
-      const b = e.target.closest('button'); if (!b) return; status = b.dataset.v;
-      document.querySelectorAll('#status button').forEach(x => x.classList.toggle('on', x === b)); render()
-    };
-    $('#supq').oninput = drawSups;
-    $('#sups').onchange = e => { const c = e.target; c.checked ? sups.add(c.value) : sups.delete(c.value); render() };
-    $('#reset').onclick = () => {
-      ['q', 'area', 'skills', 'supq'].forEach(id => $('#' + id).value = '');
-      ['type', 'prog'].forEach(id => $('#' + id).value = ''); $('#scope').value = 'all'; $('#starred').checked = false;
-      sups.clear(); status = all.some(p => p.status === 'Available') ? 'Available' : '';
-      drawStatus(); drawSups(); render()
-    };
-
+    async function permission(handle, write, request = false) {
+      const options = { mode: write ? 'readwrite' : 'read' };
+      if (await handle.queryPermission(options) === 'granted') return true;
+      return request && await handle.requestPermission(options) === 'granted';
+    }
+    async function saveNow(request = false) {
+      clearTimeout(saveTimer);
+      if (savePromise) { await savePromise; if (request && dirty) return saveNow(true); return !dirty; }
+      if (!stateHandle) { if (request) notice('尚未连接可写的记录文件。请点“新建 / 另存记录”，或“下载记录副本”。'); return false; }
+      if (!dirty) return true;
+      if (blocked && !request) return false;
+      const handle = stateHandle;
+      const write = async () => {
+        if (!await permission(handle, true, request)) throw new Error('文件写入权限需要恢复；点击“立即保存”重新授权，或另存副本。');
+        const file = await handle.getFile();
+        if (file.size > C.MAX_BYTES) throw new Error('记录文件被外部改成了过大的文件，已停止覆盖。');
+        const raw = await file.text();
+        if (C.hash(raw) !== stateHash) throw new Error('记录文件已被其他页面或程序修改。请先下载当前副本，再打开外部版本核对，或另存新文件。');
+        const version = generation, candidate = C.clone(root);
+        candidate.revision = root.revision + 1; candidate.savedAt = C.now();
+        const payload = serializeState(candidate); let stream;
+        try { stream = await handle.createWritable({ mode: 'exclusive' }); await stream.write(payload); await stream.close(); }
+        catch (e) { try { await stream?.abort(); } catch { } throw e; }
+        stateHash = C.hash(payload); root.revision = candidate.revision; root.savedAt = candidate.savedAt; savedGeneration = version;
+        dirty = generation !== version; blocked = false; saveError = ''; return true;
+      };
+      saveError = '';
+      const perform = async () => {
+        if (navigator.locks?.request) {
+          let entered = false;
+          try { return await navigator.locks.request('fyp-search:' + root.storeId, async () => { entered = true; coordinationWarning = false; updateCacheHelp(); return write(); }); }
+          catch (e) { if (entered) throw e; coordinationWarning = true; updateCacheHelp(); }
+        }
+        return write();
+      };
+      savePromise = perform().catch(e => { blocked = true; saveError = errorText(e); dirty = true; return false; }).finally(() => {
+        savePromise = null; updateRecordUI(); cacheCurrent();
+        if (dirty && !blocked && stateHandle) saveTimer = setTimeout(() => saveNow(false), 50);
+      });
+      updateRecordUI(); return await savePromise;
+    }
+    async function readStateText(text, name, handle = null) {
+      const checked = C.parseState(text);
+      if (!await guardReplace()) return false;
+      if (checked.migrated) {
+        const choice = await ask('载入旧版记录并升级', '这是已知的 v0 记录结构。页面会转换到 v1；原文件保持不变，不会直接写回。载入后请用“新建 / 另存记录”保存升级副本；旧的仅 ID 收藏需逐项核对。', [{ key: 'load', label: '保留原文件，载入升级副本' }]);
+        if (!choice) return false;
+      }
+      clearTimeout(saveTimer); root = checked.state; stateHandle = checked.migrated ? null : handle;
+      stateHash = stateHandle ? C.hash(text) : null; recordName = name; pendingStateHandle = null; blocked = false; saveError = '';
+      dirty = checked.migrated; generation = checked.migrated ? 1 : 0; savedGeneration = 0; loadedId = null; all = []; dataCache.clear(); sources.clear();
+      showActiveData(); cacheCurrent();
+      notice(checked.migrated ? '已升级到内存，请另存新记录文件；原 v0 文件未改动。' : '已打开记录。请导入相应的 progress.jsonl；恢复个人记录不等于已经读取最新项目资料。');
+      return true;
+    }
+    async function openRecord() {
+      if (nativeFilesEnabled) {
+        const [handle] = await pickFile('showOpenFilePicker', { id: 'fyp-state', multiple: false, excludeAcceptAllOption: true, types: [{ description: 'FYP 使用记录 JSON', accept: { 'application/json': ['.json'] } }] });
+        const file = await handle.getFile(); if (file.size > C.MAX_BYTES) throw new Error('记录超过 16 MiB。');
+        await readStateText(await file.text(), file.name, handle);
+      } else { $('#state-file').value = ''; $('#state-file').click(); }
+    }
+    async function newRecord() {
+      if (!nativeFilesEnabled) { backupState(); notice('此浏览器不能直接写回文件。已请求下载使用记录 JSON；以后用“打开记录”载入，修改后重新下载。'); return; }
+      const handle = await pickFile('showSaveFilePicker', { id: 'fyp-state', suggestedName: 'fyp_search_state.json', excludeAcceptAllOption: true, types: [{ description: 'FYP 使用记录 JSON', accept: { 'application/json': ['.json'] } }] });
+      for (const source of sources.values()) if (handle.isSameEntry && await handle.isSameEntry(source)) throw new Error('不能用项目数据文件保存使用记录，请选择另一个 .json 文件。');
+      const file = await handle.getFile();
+      if (!file.name.toLowerCase().endsWith('.json')) throw new Error('使用记录文件名必须以 .json 结尾。');
+      if (file.size > C.MAX_BYTES) throw new Error('选中的已有文件超过 16 MiB，未覆盖。');
+      const raw = await file.text();
+      if (raw.trim()) {
+        C.parseState(raw);
+        const choice = await ask('这个位置已经有使用记录', '为避免覆盖旧收藏，“新建 / 另存”不会清空已有文件。你可以打开里面的记录，或取消并选择一个未使用的文件名。', [{ key: 'open', label: '打开已有记录' }]);
+        if (choice) await readStateText(raw, file.name, handle);
+        return;
+      }
+      if (savePromise) await savePromise;
+      syncFilters(); stateHandle = handle; stateHash = C.hash(raw); recordName = file.name; pendingStateHandle = null; blocked = false; saveError = ''; dirty = true; generation++;
+      if (await saveNow(true)) notice('已连接记录文件 ' + file.name + '。筛选和收藏将自动保存；当前写入进度与结果请看顶部保存状态。');
+    }
+    function openDatabase() {
+      if (database) return Promise.resolve(database);
+      if (databasePromise) return databasePromise;
+      databasePromise = new Promise((resolve, reject) => {
+        if (!globalThis.indexedDB) { reject(new Error('此浏览器没有可用的本地数据库。')); return; }
+        const request = indexedDB.open('fyp-search-' + C.hash(location.href.split('#')[0]).slice(-24), 1);
+        request.onupgradeneeded = () => { if (!request.result.objectStoreNames.contains('settings')) request.result.createObjectStore('settings'); };
+        request.onerror = () => reject(request.error || new Error('无法使用浏览器缓存。'));
+        request.onblocked = () => reject(new Error('缓存被其他页面占用。'));
+        request.onsuccess = () => { database = request.result; database.onversionchange = () => { database.close(); database = null; databasePromise = null; }; resolve(database); };
+      }).catch(error => { databasePromise = null; throw error; });
+      return databasePromise;
+    }
+    async function cacheGet(key) {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => { const tx = db.transaction('settings', 'readonly'), request = tx.objectStore('settings').get(key); request.onsuccess = () => resolve(request.result); request.onerror = () => reject(request.error); });
+    }
+    async function cachePut(key, value, remove = false) {
+      const db = await openDatabase();
+      return new Promise((resolve, reject) => { const tx = db.transaction('settings', 'readwrite'); if (remove) tx.objectStore('settings').delete(key); else tx.objectStore('settings').put(value, key); tx.oncomplete = () => resolve(); tx.onerror = () => reject(tx.error); tx.onabort = () => reject(tx.error || new Error('缓存写入中止。')); });
+    }
+    function cacheFailed(error) {
+      cacheEnabled = false; cacheError = errorText(error); $('#remember-records').checked = false; updateCacheHelp();
+    }
+    function cacheCurrent() {
+      if (!cacheEnabled || !initialized) return;
+      const state = C.clone(root), d = active();
+      const draft = { state, dirty, updatedAt: C.now(), baseHash: stateHash };
+      const rememberedSource = d && sources.get(d.id) || ((!d || sourceRestore?.datasetId === d.id) ? sourceRestore?.dataHandle : null) || null;
+      const session = { handle: stateHandle || pendingStateHandle, dataHandle: rememberedSource, datasetId: d?.id || sourceRestore?.datasetId || null };
+      cacheQueue = cacheQueue.then(async () => { if (!cacheEnabled) return; await cachePut('draft', draft); if (cacheEnabled) await cachePut('session', session); }).catch(cacheFailed);
+    }
+    async function reconnectRecord() {
+      const handle = pendingStateHandle; if (!handle) return;
+      if (!await permission(handle, true, true)) throw new Error('未获得记录文件访问权限。可重新打开记录或另存新文件。');
+      const file = await handle.getFile(); if (file.size > C.MAX_BYTES) throw new Error('记录文件超过 16 MiB。');
+      await readStateText(await file.text(), file.name, handle);
+    }
+    async function recoverDraft() {
+      if (!cachedDraft) return;
+      const checked = C.validateState(cachedDraft.state);
+      if (!await guardReplace()) return;
+      const draftInfo = '草稿时间：' + cachedDraft.updatedAt + '；包含 ' + checked.state.datasets.length + ' 份清单、' + checked.state.datasets.reduce((n, d) => n + d.favorites.length, 0) + ' 个收藏。';
+      const choice = await ask('恢复未落盘草稿', draftInfo + '\n草稿不会直接覆盖连接的 JSON。恢复后会断开写入连接，请核对收藏和清单，再另存到一个新文件。', [{ key: 'restore', label: '恢复到内存，之后另存' }]);
+      if (!choice) return;
+      if (savePromise) await savePromise;
+      root = checked.state; stateHandle = null; stateHash = null; recordName = '已恢复的草稿'; pendingStateHandle = null; blocked = false; saveError = ''; dirty = true; generation++;
+      dataCache.clear(); sources.clear(); loadedId = null; cachedDraft = null; $('#state-recover').hidden = true;
+      await cachePut('recovery', null, true).catch(cacheFailed);
+      showActiveData(); cacheCurrent(); notice('草稿已恢复到内存，尚未写入文件。请核对后点“新建 / 另存记录”。');
+    }
+    async function initializeCache() {
+      const sequence = actionSequence;
+      try {
+        const [enabled, draft, recovery, session] = await Promise.all([cacheGet('enabled'), cacheGet('draft'), cacheGet('recovery'), cacheGet('session')]);
+        cacheEnabled = enabled !== false; $('#remember-records').checked = cacheEnabled;
+        if (!cacheEnabled) return;
+        const candidates = [draft, recovery].filter(d => d?.dirty && d.state).sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+        for (const candidate of candidates) try { C.validateState(candidate.state); cachedDraft = candidate; break; } catch { }
+        if (cachedDraft) { await cachePut('recovery', cachedDraft); $('#state-recover').hidden = false; $('#state-recover').textContent = '恢复未落盘草稿（' + cachedDraft.state.datasets.length + ' 份清单）'; }
+        if (sequence !== actionSequence || generation || root.datasets.length || stateHandle) return;
+        if (session?.handle) {
+          pendingStateHandle = session.handle; sourceRestore = session;
+          try {
+            if (await permission(session.handle, false, false)) {
+              const file = await session.handle.getFile(); if (file.size > C.MAX_BYTES) throw new Error('上次的记录文件超过大小限制。');
+              const text = await file.text(); if (sequence !== actionSequence || generation || root.datasets.length || stateHandle) return;
+              await readStateText(text, file.name, session.handle);
+              if (session.dataHandle && session.datasetId === root.activeDatasetId && await permission(session.dataHandle, false, false)) {
+                try { const data = await session.dataHandle.getFile(); if (sequence === actionSequence) await importData(data, 'update', session.dataHandle); }
+                catch (e) { if (sequence === actionSequence && !cancelled(e)) notice('使用记录已恢复，但项目文件无法重新读取。请重新导入 progress.jsonl。', true); }
+              }
+            } else if (sequence === actionSequence) notice('找到上次的记录文件，但需要重新授权。打开“使用记录”，点击“恢复文件访问”。');
+          } catch (e) { if (sequence === actionSequence) notice('无法恢复上次文件：' + errorText(e) + '。请重新打开 JSON；已有草稿不会据此删除。', true); }
+        } else if (cachedDraft) notice('找到上次未落盘草稿，打开“使用记录”后可恢复；恢复后需另存 JSON。');
+      } catch (e) { cacheFailed(e); }
+      finally { initialized = true; updateRecordUI(); updateCacheHelp(); if (cacheEnabled) cacheCurrent(); }
+    }
+    async function runAction(action) {
+      if (ioBusy) { busyToast = toast('正在处理另一个文件操作，请先完成或取消当前操作。'); return; }
+      ioBusy = true; actionSequence++; notice(''); clearToast();
+      try { await action(); }
+      catch (e) { if (!cancelled(e)) notice(errorText(e), true); }
+      finally { ioBusy = false; if (busyToast !== null) { clearToast(busyToast); busyToast = null; } updateRecordUI(); }
+    }
+    function on(id, action) { $('#' + id).addEventListener('click', () => runAction(action)); }
+    $('#decision-actions').addEventListener('click', e => { const button = e.target.closest('[data-choice]'); if (button) finishDecision(button.dataset.choice); });
+    $('#decision-cancel').addEventListener('click', () => finishDecision(null));
+    $('#decision-dialog').addEventListener('cancel', e => { e.preventDefault(); finishDecision(null); });
+    $('#manage-records').onclick = () => { const node = $('#records-panel'); node.hidden = !node.hidden; $('#manage-records').setAttribute('aria-expanded', String(!node.hidden)); };
+    document.querySelectorAll('[data-import]').forEach(button => button.onclick = () => runAction(() => chooseData('auto')));
+    $('#file').onchange = () => runAction(async () => { const file = $('#file').files[0]; if (file) await importData(file, pendingMode); });
+    $('#state-file').onchange = () => runAction(async () => { const file = $('#state-file').files[0]; if (file) { if (file.size > C.MAX_BYTES) throw new Error('记录文件超过 16 MiB。'); await readStateText(await file.text(), file.name); } });
+    const empty = $('#empty');
+    for (const event of ['dragover', 'dragenter']) document.addEventListener(event, e => { e.preventDefault(); empty.classList.add('drag'); });
+    for (const event of ['dragleave', 'drop']) document.addEventListener(event, e => { e.preventDefault(); empty.classList.remove('drag'); });
+    document.addEventListener('drop', e => { const file = e.dataTransfer.files[0]; if (file) runAction(() => importData(file, 'auto')); });
+    for (const id of ['q', 'scope', 'type', 'prog', 'area', 'skills', 'starred', 'sort']) $('#' + id).addEventListener('input', touchFilters);
+    $('#supq').oninput = () => { drawSups(); markDirty(); };
+    $('#status').onclick = e => { const button = e.target.closest('button[data-v]'); if (!button) return; status = button.dataset.v; drawStatus(); touchFilters(); };
+    $('#sups').onchange = e => { if (e.target.type !== 'checkbox') return; e.target.checked ? sups.add(e.target.value) : sups.delete(e.target.value); touchFilters(); };
+    $('#reset').onclick = resetFilters;
+    $('#filter-message').onclick = e => { if (e.target.closest('#clear-invalid')) clearInvalid(); };
     $('#list').onclick = e => {
-      const c = e.target.closest('.card'); if (!c) return;
-      const p = all.find(x => x.id === c.dataset.id), action = e.target.closest('[data-a]'), a = action?.dataset.a;
-      if (a === 'star') {
-        stars.has(p.id) ? stars.delete(p.id) : stars.add(p.id);
-        action.classList.toggle('on'); action.textContent = stars.has(p.id) ? '★' : '☆';
-        action.setAttribute('aria-pressed', String(stars.has(p.id)));
-        banner();
-        $('#count').textContent = $('#count').textContent.replace(/ · 已收藏 \d+/, '') + (stars.size ? ' · 已收藏 ' + stars.size : '');
-        if ($('#starred').checked) render(); return
-      }
-      if (a === 'copy') { navigator.clipboard.writeText(p.id + ' ' + p.title + '\n' + p.desc).then(() => toast('已复制')); return }
-      if (!getSelection().toString()) {
-        c.classList.toggle('open');
-        c.setAttribute('aria-expanded', String(c.classList.contains('open')));
-      }
+      if (e.target.closest('[data-reset]')) { resetFilters(); return; }
+      if (e.target.closest('[data-view-favorites]')) { viewFavorites(); return; }
+      const node = e.target.closest('.card'); if (!node) return;
+      const p = all.find(p => p.id === node.dataset.id), action = e.target.closest('[data-a]')?.dataset.a; if (!p) return;
+      if (action === 'star') { notice(''); if (!stars.has(p.id) && active().favorites.length >= 5000) { notice('单份清单最多保留 5,000 个收藏。'); return; } try { toggleBookmark(p); } catch (e) { notice(errorText(e), true); } return; }
+      if (action === 'copy') { runAction(() => copyText(p.id + ' ' + p.title + '\n' + p.desc)); return; }
+      if (!getSelection().toString()) { node.classList.toggle('open'); node.setAttribute('aria-expanded', String(node.classList.contains('open'))); }
     };
-    $('#list').addEventListener('keydown', e => {
-      if (e.target.classList.contains('card') && (e.key === 'Enter' || e.key === ' ')) {
-        e.preventDefault(); e.target.click();
-      }
+    $('#list').addEventListener('keydown', e => { if (e.target.classList.contains('card') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.target.click(); } });
+    document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName) && !$('#q').disabled && !$('#decision-dialog').open && !$('#favorites-dialog').open) { e.preventDefault(); $('#q').focus(); } });
+    on('state-new', newRecord); on('state-open', openRecord); on('state-save', () => stateHandle ? saveNow(true) : newRecord()); on('state-backup', backupState); on('state-reconnect', reconnectRecord); on('state-recover', recoverDraft);
+    on('data-new', () => chooseData('new')); on('data-update', () => chooseData('update')); on('data-reload', reloadData);
+    $('#view-favorites').onclick = viewFavorites; $('#favorites-close').onclick = () => closeDialog($('#favorites-dialog'));
+    on('exp', () => exportFavorites(true)); on('dl', () => exportFavorites(false)); on('favorites-copy', () => exportFavorites(true)); on('favorites-download', () => exportFavorites(false));
+    $('#dataset-picker').onchange = () => runAction(async () => {
+      const id = $('#dataset-picker').value; if (!root.datasets.some(d => d.id === id)) return;
+      syncFilters(); root.activeDatasetId = id; showActiveData(); markDirty(true); notice('已切换到「' + active().name + '」。' + (hasData() ? '使用当前页面已载入的数据。' : '个人记录已恢复，请导入对应项目数据。'));
     });
-    $('#exp').onclick = () => { const s = starred(); if (!s.length) return toast('还没有收藏'); navigator.clipboard.writeText(md(s)).then(() => toast('已复制 ' + s.length + ' 个' + (s.some(p => p.status !== 'Available') ? '（其中有已不可选的项目）' : ''))) };
-    $('#dl').onclick = () => {
-      const s = starred(); if (!s.length) return toast('还没有收藏');
-      const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md(s)], { type: 'text/markdown' }));
-      a.download = 'shortlist.md'; a.click(); URL.revokeObjectURL(a.href)
-    };
-    document.addEventListener('keydown', e => { if (e.key === '/' && !/INPUT|SELECT/.test(document.activeElement.tagName) && !$('#q').disabled) { e.preventDefault(); $('#q').focus() } });
+    on('dataset-rename', async () => {
+      const d = active(); if (!d) return;
+      const choice = await ask('修改清单名称', '名称只用于区分本地档案，不改变项目文件。', [{ key: 'rename', label: '保存名称' }], d.name);
+      if (choice) { if (!choice.name) throw new Error('清单名称不能为空。'); d.name = choice.name.slice(0, 80); updateRecordUI(); markDirty(true); }
+    });
+    on('dataset-delete', async () => {
+      const d = active(); if (!d) return;
+      const choice = await ask('删除清单档案', '将从使用记录中删除「' + d.name + '」及 ' + d.favorites.length + ' 个收藏。不会删除 progress.jsonl。需要保留时请先取消并下载记录副本。', [{ key: 'delete', label: '删除此档案和收藏' }]);
+      if (!choice) return;
+      root.datasets = root.datasets.filter(x => x.id !== d.id); dataCache.delete(d.id); sources.delete(d.id); root.activeDatasetId = root.datasets[0]?.id || null; showActiveData(); markDirty(true);
+    });
+    on('favorites-clear', async () => {
+      const d = active(); if (!d?.favorites.length) return;
+      const choice = await ask('清空此清单的收藏', '将移除「' + d.name + '」的全部 ' + d.favorites.length + ' 个收藏，包含未匹配记录；其他清单不受影响。', [{ key: 'clear', label: '确认清空此清单收藏' }]);
+      if (choice) { d.favorites = []; render(); renderFavorites(); markDirty(true); }
+    });
+    $('#favorites-list').onclick = e => runAction(async () => {
+      const button = e.target.closest('[data-book-action]'); if (!button) return;
+      const d = active(), b = d?.favorites.find(b => b.bookmarkId === button.dataset.bookmark); if (!b) return;
+      if (button.dataset.bookAction === 'remove') d.favorites = d.favorites.filter(x => x.bookmarkId !== b.bookmarkId);
+      else {
+        const p = hasData() ? all.find(p => p.id === b.projectId) : null; if (!p) return;
+        if (favoriteEntries().some(x => x.kind === 'matched' && x.bookmark.bookmarkId !== b.bookmarkId && x.bookmark.projectId === p.id)) throw new Error('当前项目已经另有收藏。请先核对并取消不再需要的旧收藏，避免重复关联。');
+        const choice = await ask('确认关联的是你想要的题目', '上次：' + b.snapshot.title + ' / ' + b.snapshot.sup + '\n当前：' + p.title + ' / ' + p.sup + '\nID 相同不能证明题目相同。确认后将用当前资料更新此收藏快照。', [{ key: 'adopt', label: '已核对，关联当前项目' }]);
+        if (!choice) return; b.snapshot = C.snapshot(p);
+      }
+      render(); renderFavorites(); markDirty(true);
+    });
+    $('#remember-records').onchange = () => runAction(async () => {
+      const enabled = $('#remember-records').checked;
+      try { await cacheQueue; cacheEnabled = enabled; await cachePut('enabled', enabled); if (!enabled) { await cachePut('session', null, true); await cachePut('draft', null, true); await cachePut('recovery', null, true); cachedDraft = null; $('#state-recover').hidden = true; } else cacheCurrent(); cacheError = ''; updateCacheHelp(); }
+      catch (e) { cacheFailed(e); }
+    });
+    on('clear-cache', async () => {
+      const choice = await ask('清除此页浏览器缓存', '只清除本页面记住的文件位置和草稿，不删除 JSON、项目文件或当前内存中的收藏。清理前请确认需要保留的修改已保存。', [{ key: 'clear', label: '清除缓存并关闭记忆' }]);
+      if (!choice) return;
+      cacheEnabled = false; $('#remember-records').checked = false;
+      await cacheQueue;
+      try {
+        for (const key of ['session', 'draft', 'recovery']) await cachePut(key, null, true);
+        await cachePut('enabled', false); cachedDraft = null; $('#state-recover').hidden = true; cacheError = ''; updateCacheHelp(); toast('此页缓存已清除，文件未删除。');
+      } catch (e) { cacheFailed(e); throw e; }
+    });
+    window.addEventListener('beforeunload', e => { if (dirty || savePromise) { e.preventDefault(); e.returnValue = ''; } });
+    for (const [id, max] of [['q', 2000], ['supq', 1000], ['area', 1000], ['skills', 1000]]) $('#' + id).maxLength = max;
+    function updateCapabilities() {
+      $('#storage-help').textContent = nativeFilesEnabled ? '此浏览器可尝试直接保存文件：首次选择位置并授权，之后自动写入。重开时可能需要重新授权。建议同一记录文件只开一个可写页面。' : '当前环境不能使用高级文件选择：项目数据及使用记录改用普通文件选择；新记录使用下载模式。下载不会自动覆盖原文件，请自行保留最新 JSON。已经连接的文件仍按其有效权限处理。';
+      $('#state-new').textContent = nativeFilesEnabled ? '新建 / 另存记录' : '下载新记录 JSON';
+    }
+    async function pickFile(method, options) {
+      try { return await window[method](options); }
+      catch (e) {
+        if (['SecurityError', 'NotSupportedError', 'NotAllowedError'].includes(e?.name)) {
+          nativeFilesEnabled = false; updateCapabilities();
+          throw new Error('此环境拒绝高级文件选择，已切换到普通选择 / 下载模式。请再次点击原按钮继续；当前数据和记录没有被替换。');
+        }
+        throw e;
+      }
+    }
+    updateCapabilities();
+    updateRecordUI();
+    initializeCache();
+
   </script>
 </body>
 
