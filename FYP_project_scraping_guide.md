@@ -114,37 +114,13 @@ python -m pip freeze > requirements.txt
 python -m pip install -r requirements.txt
 ```
 
-如果还没有实际跑通环境的版本记录，先按第 2.3 节安装并做第 5.2 节的小规模测试，不要把未经验证的依赖版本记成“已测试通过”。
+如果还没有实际跑通环境的版本记录，先按第 2.3 节安装并做第 5.1 节的小规模测试，不要把未经验证的依赖版本记成“已测试通过”。
 
 ---
 
 ## 3. 第 1 步：保存登录状态
 
-### 3.1 脚本 `save_login.py`
-
-```python
-from pathlib import Path
-from playwright.sync_api import sync_playwright
-
-LIST_URL = "https://fist-fyp.mmu.edu.my/qazxsw/p_student/stud_project_list.php"
-
-# 如果 output 文件夹不存在就自动创建（存在则自动忽略）
-Path("output").mkdir(parents=True, exist_ok=True)
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(channel="msedge", headless=False)
-    context = browser.new_context()
-    page = context.new_page()
-    page.goto(LIST_URL)
-
-    input("请手动登录，看到 Project List 后，回到这里按回车...")
-
-    context.storage_state(path="output/login_state.json")
-    print("已保存 login_state.json")
-    browser.close()
-```
-
-### 3.2 运行
+### 3.1 运行 `save_login.py`
 
 ```
 python save_login.py
@@ -163,7 +139,7 @@ browser = p.chromium.launch(channel="chrome", headless=False)
 ```
 >要修改的地方有三个，分别是`save_login.py`和`get_list.py`里的`channel="msedge"`，以及`get_details.py`开头的`BROWSER = "msedge"`。
 
-### 3.3 注意
+### 3.2 注意
 
 - 登录状态**会过期**。以后如果脚本提示"跳回登录页"，重新运行一次 `save_login.py` 即可。
 - 如果之前已删除 `output/login_state.json`，即使原会话还没过期，也必须重新运行 `save_login.py` 保存登录状态。
@@ -173,76 +149,7 @@ browser = p.chromium.launch(channel="chrome", headless=False)
 
 ## 4. 第 2 步：抓取项目列表（含翻页）
 
-### 4.1 脚本 `get_list.py`
-
-```python
-import sys
-from pathlib import Path
-from playwright.sync_api import sync_playwright
-import pandas as pd
-import time, os, random
-
-# 1. 需要检查的所有文件路径
-REQUIRED_FILES = [
-    Path("output/login_state.json"),
-]
-
-# 2. 找出所有缺失的文件
-missing_files = [file for file in REQUIRED_FILES if not file.exists()]
-
-# 3. 如果有缺失的文件，直接提示并退出
-if missing_files:
-    print("❌ 错误：缺少运行所需的关键文件！")
-    print("缺失的文件如下：")
-    for file in missing_files:
-        print(f"  - {file}")
-    sys.exit(1)
-
-# 所有文件都存在，继续往下执行
-print("✅ 所有必要文件已就绪，开始运行...")
-
-# 如果 output 文件夹不存在就自动创建（存在则自动忽略）
-Path("output").mkdir(parents=True, exist_ok=True)
-
-LIST_URL = "https://fist-fyp.mmu.edu.my/qazxsw/p_student/stud_project_list.php"
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(channel="msedge", headless=False)
-    context = browser.new_context(storage_state="output/login_state.json")
-    page = context.new_page()
-    page.goto(LIST_URL)
-
-    input("选好专业（如 AI），把 Show 选到 100，然后回到这里按回车...")
-
-    all_rows = []
-    seen = set()
-    while True:
-        rows = page.query_selector_all("#dt_table tbody tr")
-        for r in rows:
-            cells = [c.inner_text().strip() for c in r.query_selector_all("td")]
-            if len(cells) >= 7 and cells[0] not in seen:
-                seen.add(cells[0])
-                all_rows.append(cells[:7])
-
-        print("已读取:", len(all_rows), "|", page.inner_text("#dt_table_info"))
-
-        nxt = page.query_selector("#dt_table_next")
-        if nxt is None or "disabled" in (nxt.get_attribute("class") or ""):
-            break
-        nxt.click()
-        time.sleep(random.uniform(3, 6))
-
-    df = pd.DataFrame(
-        all_rows,
-        columns=["Project ID", "Title", "Type", "Programme", "Supervisor", "View", "Status"],
-    )
-    df.to_excel("output/project_list_all.xlsx", index=False)
-    print("总共:", len(df), "已保存 project_list_all.xlsx")
-
-    browser.close()
-```
-
-### 4.2 运行
+### 4.1 运行 `get_list.py`
 
 ```
 python get_list.py
@@ -253,7 +160,7 @@ python get_list.py
 1. **Select Programme** 选成自己的专业（例如 Artificial Intelligence (AI)）
 2. **Show** 建议选到 100，以减少翻页次数。脚本会遍历所有分页；选择 50 等其他每页数量，本身不会让完整列表变成不完整列表。
 
-### 4.3 检查结果
+### 4.2 检查结果
 
 最后一行 `总共: N` 的 N 应该等于页面右下角 "of N entries" 的数字（当时是 391）。数字对得上，说明翻页没有漏。
 
@@ -263,154 +170,7 @@ python get_list.py
 
 列表页没有描述，描述在每个项目的详情页里，所以要逐个打开。
 
-### 5.1 脚本 `get_details.py`
-
-```python
-from playwright.sync_api import sync_playwright
-import pandas as pd
-import time, random, json, os, sys
-from pathlib import Path
-
-# 1. 需要检查的所有文件路径
-REQUIRED_FILES = [
-    Path("output/login_state.json"),
-    Path("output/project_list_all.xlsx"),
-]
-
-# 2. 找出所有缺失的文件
-missing_files = [file for file in REQUIRED_FILES if not file.exists()]
-
-# 3. 如果有缺失的文件，直接提示并退出
-if missing_files:
-    print("❌ 错误：缺少运行所需的关键文件！")
-    print("缺失的文件如下：")
-    for file in missing_files:
-        print(f"  - {file}")
-    sys.exit(1)
-
-# 所有文件都存在，继续往下执行
-print("✅ 所有必要文件已就绪，开始运行...")
-
-BASE = "https://fist-fyp.mmu.edu.my/qazxsw/p_student/stud_project_view.php?q={}&btn=back"
-PROGRESS = "output/progress.jsonl"   # 每抓完一个就追加一行，中断后可接着抓
-ONLY_AVAILABLE = False        # 改成 True 就只抓状态为 Available 的项目（分批期间不要改）
-AUTO_BATCH_LIMIT = 100        # 单次运行最多抓多少个（手动输入的数字也不能超过它）
-BROWSER = "msedge"            # 用 Chrome 就改成 "chrome"
-DELAY = (3, 6)                # 每个项目之间随机等待的秒数范围，不要调得比 3 秒更小
-
-
-def fix(text):
-    # 修正 â€“ 之类的乱码，修不了就保持原样
-    try:
-        return text.encode("cp1252").decode("utf-8")
-    except Exception:
-        return text
-
-
-df = pd.read_excel("output/project_list_all.xlsx")
-if ONLY_AVAILABLE:
-    df = df[df["Status"] == "Available"]
-ids = df["Project ID"].astype(str).str.strip().tolist()
-
-# 如果上次中断时最后一行没有写完（没有换行），先补一个换行，
-# 避免新记录粘在残缺的那一行后面
-if os.path.exists(PROGRESS) and os.path.getsize(PROGRESS) > 0:
-    with open(PROGRESS, "rb") as f:
-        f.seek(-1, 2)
-        last = f.read(1)
-    if last != b"\n":
-        with open(PROGRESS, "a", encoding="utf-8") as f:
-            f.write("\n")
-
-# 读取已完成的进度（遇到无法读取的行就跳过，不会崩溃）
-done = set()
-bad_lines = 0
-if os.path.exists(PROGRESS):
-    with open(PROGRESS, encoding="utf-8") as f:
-        for line in f:
-            if not line.strip():
-                continue
-            try:
-                done.add(str(json.loads(line)["Project ID"]).strip())
-            except (json.JSONDecodeError, KeyError, TypeError):
-                bad_lines += 1
-if bad_lines:
-    print(f"⚠️ 注意：progress.jsonl 里有 {bad_lines} 行无法读取，已跳过。"
-          "可能是上次中断时写了一半，用记事本打开检查一下。")
-
-remaining = [i for i in ids if i not in done]
-
-if not remaining:
-    raise SystemExit("没有需要抓取的项目，已全部完成")
-
-choice = input(
-    f"本次要限制抓取数量吗？输入正整数限制本次运行；"
-    f"直接按回车自动计算（最多 {AUTO_BATCH_LIMIT} 个）："
-).strip()
-if choice:
-    try:
-        batch = int(choice)
-    except ValueError:
-        raise SystemExit("请输入正整数，或直接按回车使用自动计算")
-    if batch <= 0:
-        raise SystemExit("抓取数量必须是正整数")
-    if batch > AUTO_BATCH_LIMIT:
-        raise SystemExit(f"本次最多只能抓取 {AUTO_BATCH_LIMIT} 个项目")
-else:
-    batch = min(len(remaining), AUTO_BATCH_LIMIT)
-
-todo = remaining[:batch]
-runs_after = -(-(len(remaining) - len(todo)) // AUTO_BATCH_LIMIT)  # 向上取整
-print(f"总共 {len(ids)} 个，已完成 {len(done)} 个，还剩 {len(remaining)} 个")
-print(f"本次要抓 {len(todo)} 个，抓完后大约还需要再运行 {runs_after} 次")
-
-with sync_playwright() as p:
-    browser = p.chromium.launch(channel=BROWSER, headless=False)
-    context = browser.new_context(storage_state="output/login_state.json")
-    page = context.new_page()
-
-    for n, pid in enumerate(todo, 1):
-        try:
-            resp = page.goto(BASE.format(pid), timeout=30000)
-        except Exception as e:
-            print("打开页面出错，停止:", e)
-            break
-
-        if resp is None or resp.status != 200:
-            print("异常状态码:", resp.status if resp else None, "，停止")
-            break
-        if page.query_selector("input[type=password]"):
-            print("跳回登录页，登录状态可能过期，停止")
-            break
-
-        # 详情页是「左列字段名 | 右列内容」的表格
-        record = {"Project ID": pid}
-        for tr in page.query_selector_all("tr"):
-            tds = tr.query_selector_all("td")
-            if len(tds) == 2:
-                key = fix(tds[0].inner_text().strip().replace("\n", " "))
-                val = fix(tds[1].inner_text().strip())
-                if key == "Project Information":
-                    key = "Status"
-                if key and key not in record:
-                    record[key] = val
-
-        if "Description" not in record:
-            print(pid, "读不到 Description，页面可能异常，停止")
-            break
-
-        with open(PROGRESS, "a", encoding="utf-8") as f:
-            f.write(json.dumps(record, ensure_ascii=False) + "\n")
-
-        print(f"[{n}/{len(todo)}] {pid} 完成")
-        time.sleep(random.uniform(*DELAY))
-
-    browser.close()
-
-print("本次结束。进度保存在", PROGRESS)
-```
-
-### 5.2 先小规模测试（强烈建议）
+### 5.1 先小规模测试（强烈建议）`get_details.py`
 
 第一次运行前，运行脚本时在数量提示中输入 `3`，运行：
 
@@ -420,7 +180,7 @@ python get_details.py
 
 然后打开 `output/progress.jsonl`，确认 `Description`、`Objectives` 等字段内容正确。没问题后，下一次运行时直接按回车使用自动计算；这 3 个已经存好，之后会自动跳过。
 
-### 5.3 正式分批抓取
+### 5.2 正式分批抓取
 
 ```
 python get_details.py
@@ -433,7 +193,7 @@ python get_details.py
 - 全部抓完后，再运行会显示没有需要抓取的项目，已全部完成，并且不会打开浏览器
 > 注意！！之所以不要一次过抓取是怕被误判成机器人。
 
-### 5.4 分批注意事项
+### 5.3 分批注意事项
 
 1. **`progress.jsonl` 不要删、不要改名、不要移动**，它应一直放在脚本所在文件夹下的 `output/` 中，否则脚本找不到已有进度，会从头开始抓。
 2. 中途想停，按 `Ctrl+C`。最多只丢掉正在抓的那一个，下次会重新抓。
@@ -441,7 +201,7 @@ python get_details.py
 4. 隔了很久再跑，如果提示"跳回登录页"，先重新运行 `save_login.py`。
 5. **旧文件迁移**：如果已有旧的 `progress.jsonl`、`project_list_all.xlsx`，先把它们放进 `output/` 再运行；尤其要确保旧进度文件位于 `output/progress.jsonl`，否则 `get_details.py` 会以为一个都没抓过，从头重抓。
 
-### 5.5 脚本会自动停止的情况
+### 5.4 脚本会自动停止的情况
 
 下表中的明确检测和对应提示针对 `get_details.py`。`save_login.py`、`get_list.py` 没有同样完整的状态码、登录页和字段检查；遇到错误页面时可能报错退出，也可能停在手动输入处，不能据此认定抓取成功。列表页面异常时不要继续按回车抓取，也不要使用异常运行产生的列表去同步状态。
 
@@ -467,64 +227,9 @@ python get_details.py
 
 ## 6. 第 4 步：导出 Excel
 
-### 6.1 脚本 `export.py`
+### 6.1 运行与检查 `export.py`
 
 这一步只读本地的 `output/progress.jsonl`，不会访问网站。
-
-```python
-import pandas as pd
-import json, re, os, sys
-from pathlib import Path
-
-# 1. 需要检查的所有文件路径
-REQUIRED_FILES = [
-    Path("output/progress.jsonl"),
-]
-
-# 2. 找出所有缺失的文件
-missing_files = [file for file in REQUIRED_FILES if not file.exists()]
-
-# 3. 如果有缺失的文件，直接提示并退出
-if missing_files:
-    print("❌ 错误：缺少运行所需的关键文件！")
-    print("缺失的文件如下：")
-    for file in missing_files:
-        print(f"  - {file}")
-    sys.exit(1)
-
-# 所有文件都存在，继续往下执行
-print("✅ 所有必要文件已就绪，开始运行...")
-
-KEEP = ["Project ID", "Status", "Project Title", "Description", "Objectives",
-        "Project type", "Specific area of research", "Skill set required",
-        "Expected deliverable", "Project schedule (List of steps for the project)",
-        "Innovative component/ project potential", "This project suitable for programme",
-        "Proposed by", "Supervisor name:", "Email:"]
-
-# Excel 不允许的控制字符（肉眼看不见，从 Word/PDF 复制粘贴时可能带进来）
-ILLEGAL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
-
-def clean(text):
-    return ILLEGAL.sub("", text) if isinstance(text, str) else text
-
-rows = []
-with open("output/progress.jsonl", encoding="utf-8") as f:
-    for line in f:
-        if not line.strip():
-            continue
-        try:
-            r = json.loads(line)
-        except json.JSONDecodeError:
-            print("跳过一行无法读取的数据")
-            continue
-        rows.append({k: clean(r.get(k, "")) for k in KEEP})
-
-df = pd.DataFrame(rows)
-df.to_excel("output/projects_with_description.xlsx", index=False)
-print("已保存 projects_with_description.xlsx，共", len(df), "个")
-```
-
-### 6.2 运行与检查
 
 ```
 python export.py
@@ -532,78 +237,21 @@ python export.py
 
 最后一行应显示 `共 391 个`（或你实际的数量）。打开 Excel 随便扫几行，看 Description 有没有明显空白。
 
-> 如果直接把原始数据写进 Excel 时报 `IllegalCharacterError`，就是因为数据里有隐藏的控制字符，上面的 `clean()` 就是用来解决这个问题的。
+> 如果直接把原始数据写进 Excel 时报 `IllegalCharacterError`，就是因为数据里有隐藏的控制字符，`export.py` 中的 `clean()` 就是用来解决这个问题的。
 
 ---
 
 ## 7. 第 5 步：导出 Available 项目为 Markdown
 
-### 7.1 脚本 `to_md.py`
+### 7.1 运行 `to_md.py`
 
 这一步只读本地的 `output/progress.jsonl`，不会访问网站。
-
-```python
-import json, re, os, sys
-from pathlib import Path
-
-# 1. 需要检查的所有文件路径
-REQUIRED_FILES = [
-    Path("output/progress.jsonl"),
-]
-
-# 2. 找出所有缺失的文件
-missing_files = [file for file in REQUIRED_FILES if not file.exists()]
-
-# 3. 如果有缺失的文件，直接提示并退出
-if missing_files:
-    print("❌ 错误：缺少运行所需的关键文件！")
-    print("缺失的文件如下：")
-    for file in missing_files:
-        print(f"  - {file}")
-    sys.exit(1)
-
-# 所有文件都存在，继续往下执行
-print("✅ 所有必要文件已就绪，开始运行...")
-
-# 清掉不可见的控制字符，保持文本干净
-ILLEGAL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
-
-def clean(text):
-    return ILLEGAL.sub("", text).strip() if isinstance(text, str) else ""
-
-projects = []
-with open("output/progress.jsonl", encoding="utf-8") as f:
-    for line in f:
-        if not line.strip():
-            continue
-        try:
-            r = json.loads(line)
-        except json.JSONDecodeError:
-            print("跳过一行无法读取的数据")
-            continue
-        # Status 原本长这样: "[ Available ]"，去掉括号和空格后做精确比较
-        if re.sub(r"[\[\]\s]", "", r.get("Status", "")).lower() == "available":
-            projects.append(r)
-
-with open("output/available_projects.md", "w", encoding="utf-8") as f:
-    for n, r in enumerate(projects, 1):
-        pid = clean(r.get("Project ID", ""))
-        title = clean(r.get("Project Title", ""))
-        desc = clean(r.get("Description", ""))
-        f.write(f"{n}. {pid} {title}\n")
-        f.write(f"{desc}\n\n")
-
-print("Available 项目数:", len(projects))
-print("已保存 available_projects.md")
-```
-
-### 7.2 运行
 
 ```
 python to_md.py
 ```
 
-### 7.3 输出格式
+### 7.2 输出格式
 
 ```
 1. T493015 ALGORITHMS COMPARISON OF SELF-ORGANIZATION MAPS IN DATA CLASSIFICATION
@@ -613,7 +261,7 @@ This system is intends to compare the performance ...
 ...
 ```
 
-### 7.4 可调整
+### 7.3 可调整
 
 - 编号是流水号 1、2、3…，不是 Project ID。
 - 想让每个描述变成一整段（去掉换行），把 `desc = clean(...)` 那行改成：
@@ -628,99 +276,7 @@ This system is intends to compare the performance ...
 
 第 7 节的 `to_md.py` 输出全部 Available 项目。如果只想看某几位导师的，用这个版本。它同样只读本地的 `progress.jsonl`，不会访问网站。
 
-### 8.1 脚本
-
-```python
-import json, re, os, sys
-from collections import Counter
-from pathlib import Path
-
-# 1. 需要检查的所有文件路径
-REQUIRED_FILES = [
-    Path("output/progress.jsonl"),
-]
-
-# 2. 找出所有缺失的文件
-missing_files = [file for file in REQUIRED_FILES if not file.exists()]
-
-# 3. 如果有缺失的文件，直接提示并退出
-if missing_files:
-    print("❌ 错误：缺少运行所需的关键文件！")
-    print("缺失的文件如下：")
-    for file in missing_files:
-        print(f"  - {file}")
-    sys.exit(1)
-
-# 所有文件都存在，继续往下执行
-print("✅ 所有必要文件已就绪，开始运行...")
-
-# ===== 设置区 =====
-# 想要哪些导师就写在这里，可以一个或多个。
-# 不区分大小写，只要名字「包含」这段文字就算匹配（所以不用写 (Dr) 之类的后缀）。
-# 留空 [] 表示不筛选导师，输出全部 Available 项目。
-SUPERVISORS = [
-    "Tan Shing Chiang",
-    "Goh Pey Yun",
-]
-
-OUTPUT = "output/available_projects.md"
-# ==================
-
-# 清掉不可见的控制字符，保持文本干净
-ILLEGAL = re.compile(r"[\x00-\x08\x0b\x0c\x0e-\x1f]")
-
-def clean(text):
-    return ILLEGAL.sub("", text).strip() if isinstance(text, str) else ""
-
-# 1. 读取，只保留 Available（Status 原本长这样: "[ Available ]"，这里去掉括号和空格后做精确比较）
-available = []
-with open("output/progress.jsonl", encoding="utf-8") as f:
-    for line in f:
-        if not line.strip():
-            continue
-        try:
-            r = json.loads(line)
-        except json.JSONDecodeError:
-            print("跳过一行无法读取的数据")
-            continue
-        if re.sub(r"[\[\]\s]", "", r.get("Status", "")).lower() == "available":
-            available.append(r)
-
-# 2. 显示 Available 项目里每位导师各有几个，方便你挑名字
-counts = Counter(clean(r.get("Supervisor name:", "")) for r in available)
-print(f"Available 项目共 {len(available)} 个，导师分布：")
-for name, c in sorted(counts.items(), key=lambda x: (-x[1], x[0])):
-    print(f"  {c:>3}  {name}")
-print()
-
-# 3. 按导师筛选
-keywords = [s.lower().strip() for s in SUPERVISORS if s.strip()]
-if keywords:
-    projects = [
-        r for r in available
-        if any(k in clean(r.get("Supervisor name:", "")).lower() for k in keywords)
-    ]
-    # 提醒：哪些关键字一个项目都没匹配到（可能拼错，或该导师没有 Available 项目）
-    for k, original in zip(keywords, [s for s in SUPERVISORS if s.strip()]):
-        if not any(k in clean(r.get("Supervisor name:", "")).lower() for r in available):
-            print(f"注意：找不到匹配「{original}」的 Available 项目")
-else:
-    projects = available
-
-# 4. 输出 md，格式：「1. Project ID Project Title」换行接 Description
-with open(OUTPUT, "w", encoding="utf-8") as f:
-    for n, r in enumerate(projects, 1):
-        pid = clean(r.get("Project ID", ""))
-        title = clean(r.get("Project Title", ""))
-        desc = clean(r.get("Description", ""))
-        f.write(f"{n}. {pid} {title}\n")
-        f.write(f"{desc}\n\n")
-
-print(f"筛选后项目数: {len(projects)}")
-print(f"已保存 {OUTPUT}")
-```
-
-### 8.2 怎么用
+### 8.1 怎么用
 
 1. **先检查输出文件名，再运行一次**：`python to_md_by_supervisor.py`，屏幕会列出 Available 项目里每位导师各有几个，方便挑名字。注意：这次运行也会按设置区的预设导师生成 Markdown，并覆盖同名输出文件，并非只打印导师分布。
 2. **在设置区填想要的导师**：`SUPERVISORS = ["Tan Shing Chiang", "Goh Pey Yun"]`，一个或多个都可以。
@@ -728,7 +284,7 @@ print(f"已保存 {OUTPUT}")
 
 第 7 节的 `to_md.py` 和本节脚本默认都写入 `output/available_projects.md`，后运行的会覆盖前一次结果。若要同时保留全部 Available 与按导师筛选的版本，运行前把本节的 `OUTPUT` 改成不同文件名，例如 `output/available_projects_by_supervisor.md`。
 
-### 8.3 修改设置后会变成什么
+### 8.2 修改设置后会变成什么
 
 | 设置 | 修改后的效果 |
 |---|---|
@@ -736,7 +292,7 @@ print(f"已保存 {OUTPUT}")
 | `SUPERVISORS = []` | 不筛选导师，输出全部 Available 项目 |
 | `OUTPUT = "output/别的名字.md"` | 输出到别的文件，不覆盖旧的 `available_projects.md` |
 
-### 8.4 需要知道的
+### 8.3 需要知道的
 
 - 导师名字用**包含**匹配、不区分大小写，所以不用写 `(Dr)`。名字以第 1 步打印出来的为准（来自详情页的 `Supervisor name:`，可能和列表页写法略有不同）。
 - 某个名字匹配不到任何 Available 项目时，屏幕会提示"找不到匹配…"，通常是拼错了，或该导师目前没有 Available 项目。
@@ -756,7 +312,7 @@ print(f"已保存 {OUTPUT}")
 3. **状态自检**：看左侧状态按钮，Available + Taken + Removed 的数量应该等于「全部」总数；如果出现别的状态，先确认状态含义和数据是否正确，再依赖 Markdown 导出和搜索结果。
 4. 搜索、筛选、收藏。
 
-状态数量相加只用于检查分类是否符合预期，不能证明没有漏抓、坏行或重复记录；仍需留意页面提示，并按第 4.3 节核对列表数量。
+状态数量相加只用于检查分类是否符合预期，不能证明没有漏抓、坏行或重复记录；仍需留意页面提示，并按第 4.2 节核对列表数量。
 
 ### 9.2 功能说明
 
@@ -784,7 +340,7 @@ print(f"已保存 {OUTPUT}")
 - 如果在当前已加载的数据里收藏了 Taken、Removed 或其他非 Available 项目，下一次完整刷新结果时，顶部提示条会显示收藏中非 Available 项目的数量。普通视图中仅点击收藏按钮不会立即更新该提示，改变筛选条件等触发重绘后才会更新。
 - **复制收藏**成功时会提示是否包含非 Available 项目；**下载收藏**只生成 `shortlist.md`，没有额外的状态警告，需在下载前自行检查。
 
-### 9.3.1 每个项目是否「还在」
+#### 9.3.1 每个项目是否「还在」
 
 每张卡片的状态旁边都有一行小字：
 
@@ -838,7 +394,7 @@ pip install playwright pandas openpyxl
 python save_login.py
 ```
 
-已有可运行环境的 `requirements.txt` 时，可按第 2.4 节恢复依赖。如果连 `output/progress.jsonl` 也已删除，先按第 10.7 节恢复备份；没有备份时按首次抓取流程重新开始，不能直接同步不存在的进度文件。
+已有可运行环境的 `requirements.txt` 时，可按第 2.4 节恢复依赖。如果连 `output/progress.jsonl` 也已删除，先按第 10.6 节恢复备份；没有备份时按首次抓取流程重新开始，不能直接同步不存在的进度文件。
 
 **步骤 1：更新列表（遍历当前筛选范围的全部列表页）**
 
@@ -846,11 +402,11 @@ python save_login.py
 python get_list.py
 ```
 
-**专业及其他决定项目范围的筛选条件必须和上次一致，并确认所有分页读取完整**，否则后面可能把未抓到的项目误判为缺失。Show 建议继续选 100 来减少分页；只改变每页数量不会改变完整列表中的项目范围。重新抓完后按第 4.3 节核对总数。
+**专业及其他决定项目范围的筛选条件必须和上次一致，并确认所有分页读取完整**，否则后面可能把未抓到的项目误判为缺失。Show 建议继续选 100 来减少分页；只改变每页数量不会改变完整列表中的项目范围。重新抓完后按第 4.2 节核对总数。
 
 **步骤 2：本地同步状态（不访问网站）**
 
-同步前先核对列表范围与完整性。**若设置了 `REFRESH_IDS`，还要在运行更新前确认这些 ID 仍在列表中，并检查 `ONLY_AVAILABLE` 是否会排除它们。** 更新脚本会先移除指定旧记录，再由详情脚本补抓；如果目标已不在列表、被筛选排除或抓取失败，旧记录不会自动恢复。此时停止操作，按第 10.7 节从更新前的备份恢复；确认处理方式后再重试。
+同步前先核对列表范围与完整性。**若设置了 `REFRESH_IDS`，还要在运行更新前确认这些 ID 仍在列表中，并检查 `ONLY_AVAILABLE` 是否会排除它们。** 更新脚本会先移除指定旧记录，再由详情脚本补抓；如果目标已不在列表、被筛选排除或抓取失败，旧记录不会自动恢复。此时停止操作，按第 10.6 节从更新前的备份恢复；确认处理方式后再重试。
 
 ```
 python update_status.py
@@ -876,117 +432,7 @@ python to_md_by_supervisor.py
 
 **步骤 5：收尾**：按第 13.1 节处理同一脚本会话的 Logout（如需主动注销），再删除 `output\login_state.json`。下次运行访问网站的脚本前，文件不存在或会话已过期时，都需要重新运行 `save_login.py`。
 
-### 10.3 脚本
-
-```python
-import json, os, shutil, time
-import pandas as pd
-
-PROGRESS = "output/progress.jsonl"
-LIST_FILE = "output/project_list_all.xlsx"   # 刚用 get_list.py 重新抓的最新列表
-
-# 想重新抓详情页的项目（比如导师改了描述），把 Project ID 写在这里；不需要就留空
-REFRESH_IDS = []
-# 例如: REFRESH_IDS = ["T493015", "T493056"]
-
-# 网站上已经删除的项目（本地有、最新列表里没有）怎么处理：
-#   "report" = 对缺失项目只提醒，不删除或标记它们；其他状态和日期仍会更新（默认）
-#   "mark"   = 把它的 Status 改成 [ Removed ]，数据保留，但不会再出现在 Available 里
-#   "delete" = 直接从 progress.jsonl 删掉（有备份，但仍建议优先用 mark）
-GONE_ACTION = "report"
-
-# 1. 读取最新列表：Project ID -> Status
-df = pd.read_excel(LIST_FILE)
-live = dict(zip(df["Project ID"].astype(str).str.strip(),
-                df["Status"].astype(str).str.strip()))
-
-# 2. 读取现有数据
-records = []
-with open(PROGRESS, encoding="utf-8") as f:
-    for n, line in enumerate(f, 1):
-        if not line.strip():
-            continue
-        try:
-            records.append(json.loads(line))
-        except json.JSONDecodeError:
-            raise SystemExit(f"progress.jsonl 第 {n} 行无法读取（可能是中断时写了一半）。"
-                             "请先手动备份原文件，再检查并删除损坏行后运行；本脚本没有改动任何文件。")
-
-# 3. 先备份，再修改
-backup = f"output/progress_backup_{time.strftime('%Y%m%d_%H%M%S')}.jsonl"
-shutil.copy(PROGRESS, backup)
-print("已备份到", backup)
-
-refresh = set(REFRESH_IDS)
-today = time.strftime("%Y-%m-%d")
-
-# 数量检查：只比较列表 ID 数与本地记录行数，不验证 ID 重合度或列表完整性。
-# 最新列表少于本地记录行数的 80% 时，本次不执行 mark / delete；仍会同步其他状态和日期。
-action = GONE_ACTION
-if action in ("mark", "delete") and len(live) < 0.8 * len(records):
-    print(f"警告：最新列表只有 {len(live)} 个，本地有 {len(records)} 个，"
-          "差距太大，可能是专业或筛选范围不同、列表未抓完整。本次不删除或标记缺失项目，其他同步仍会进行。\n")
-    action = "report"
-
-kept, changed, removed = [], [], []
-for r in records:
-    pid = r["Project ID"]
-    if pid in refresh:
-        continue                      # 先移除旧记录；后续是否补抓取决于列表、筛选和批次
-    new = live.get(pid)
-    if new:
-        r["Last seen"] = today            # 记录：这天确认过它还在最新列表里
-        r.pop("Removed on", None)         # 如果之前被标记过移除，现在又出现了，就清掉标记
-        old = r.get("Status", "")
-        old_clean = old.replace("[", "").replace("]", "").strip()
-        if new.lower() != old_clean.lower():
-            changed.append((pid, old_clean, new))
-            r["Status"] = f"[ {new} ]"
-    elif action == "delete":
-        removed.append(pid)
-        continue
-    elif action == "mark":
-        if "removed" not in r.get("Status", "").lower():
-            removed.append(pid)
-            r["Removed on"] = today       # 记录：这天发现它已不在列表里
-        r["Status"] = "[ Removed ]"
-    kept.append(r)
-
-# 4. 写回（先写临时文件再替换，中途出错也不会弄坏原文件）
-with open(PROGRESS + ".tmp", "w", encoding="utf-8") as f:
-    for r in kept:
-        f.write(json.dumps(r, ensure_ascii=False) + "\n")
-os.replace(PROGRESS + ".tmp", PROGRESS)
-
-# 5. 报告
-have = {r["Project ID"] for r in kept}
-new_ids = [i for i in live if i not in have]
-gone = [i for i in have if i not in live and i not in removed
-        and not any(r["Project ID"] == i and "removed" in r.get("Status", "").lower() for r in kept)]
-
-print(f"\n状态变化: {len(changed)} 个")
-for pid, old, new in changed:
-    print(f"  {pid}: {old} -> {new}")
-if removed:
-    print(f"\n网站已删除的项目，本次已{'标记为 Removed' if action == 'mark' else '从本地删除'}: {len(removed)} 个")
-    for i in removed:
-        print("  ", i)
-print(f"\n新增项目（还没有详情）: {len(new_ids)} 个")
-for i in new_ids:
-    print("  ", i)
-print(f"\n本地有、但最新列表里没有: {len(gone)} 个（不会删除，只是提醒）")
-if gone:
-    print("  可能是项目被移除，或专业 / 筛选范围不同、列表未抓完整")
-    for i in gone[:20]:
-        print("  ", i)
-
-if new_ids or refresh:
-    print("\n下一步：运行 python get_details.py，按当前列表、筛选和批次补抓缺少详情的项目")
-else:
-    print("\n没有需要抓详情页的项目，更新完成")
-```
-
-### 10.4 三个设置，改了会怎样
+### 10.3 三个设置，改了会怎样
 
 **`REFRESH_IDS`（最常用）**：指定哪些项目要重新抓详情页。
 
@@ -1007,7 +453,7 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 
 **`LIST_FILE` / `PROGRESS`**：最新列表文件和数据文件的名字，只有你重命名过文件才需要改。
 
-### 10.5 确认项目真的被删除了再标记
+### 10.4 确认项目真的被删除了再标记
 
 脚本提示"本地有、但最新列表里没有"时，不要马上处理：
 
@@ -1016,14 +462,14 @@ ID 要加引号，多个用英文逗号隔开。**用完记得改回 `[]`**，�
 3. **`GONE_ACTION = "mark"` 会标记全部缺失项目，不是只标记刚才手动查看的几个。** 抽查只能确认抽查项；只有在列表范围一致、抓取完整，并能确认全部缺失项目都应如此处理时，才改成 `"mark"` 再运行。如果只能确认其中几个，保持 `"report"`，不要用这个全局设置批量标记。
 4. 用完改回 `"report"`。
 
-### 10.6 脚本内置的安全措施
+### 10.5 脚本内置的安全措施
 
 - **读取最新列表和现有数据成功后、修改前自动备份**成 `output/progress_backup_日期时间.jsonl`。读取坏行时会提前退出，还没有创建这次备份，手动编辑前要自己先备份。
 - **写入先写临时文件再替换**，中途出错不会弄坏原文件。
 - **数量差距保护**：仅当最新列表 ID 数量**少于本地记录行数的 80%**（严格少于，恰好减少 20% 不触发）时，将本次 `mark` / `delete` 降为 `report`；其他状态、日期和指定重抓的处理仍会执行。它不检查 ID 重合度，相同数量但完全不同的一批项目不会触发保护；重复本地记录也会影响这个数量判断，不能用它替代列表范围和完整性检查。
 - **状态用精确比较**，不会把 `Unavailable` 当成 `Available`。
 
-### 10.7 手动编辑前备份与恢复
+### 10.6 手动编辑前备份与恢复
 
 先停止所有正在读写这些文件的脚本。遇到坏行、准备清理重复记录或手动修改 JSONL 时，先复制一份原文件到未使用的备份名；不要先编辑唯一副本。
 
@@ -1108,7 +554,7 @@ copy /-Y output\progress.jsonl output\progress_backup_before_edit.jsonl
 | 出现新的状态（如 Unavailable） | 搜索页面会单独显示这个状态，不会当成 Available | 到页面「状态」按钮里查看，必要时告诉我来调整 |
 | 网站改版 | `get_details.py` 读不到 Description 而自动停下 | 重新查看页面结构，再改脚本，不是改设置能解决的 |
 | 登录过期（批次中途） | 提示"跳回登录页"并停止 | 重新运行 `save_login.py`，再接着抓 |
-| 抓取中途中断（Ctrl+C、断电） | `progress.jsonl` 最后一行可能写了一半 | 搜索页面会跳过并提示无法读取；`get_details.py` 会跳过坏行、避免新行粘连；`update_status.py` 会在备份前停下并指出行号，先按第 10.7 节手动备份，再检查损坏行及补抓条件 |
+| 抓取中途中断（Ctrl+C、断电） | `progress.jsonl` 最后一行可能写了一半 | 搜索页面会跳过并提示无法读取；`get_details.py` 会跳过坏行、避免新行粘连；`update_status.py` 会在备份前停下并指出行号，先按第 10.6 节手动备份，再检查损坏行及补抓条件 |
 | Excel 正开着时写 xlsx | `PermissionError` | 关掉 Excel 再运行 |
 | 同时开两个窗口跑 `get_details.py` | 同时写同一个文件，可能错乱，也违反第 11 节 | 一次只跑一个 |
 | 同一项目出现两次 | 搜索页面会合并并保留最后一条；Excel、Markdown 导出及状态更新脚本不会自动去重，重复行还会影响数量保护 | 仅在搜索页面查看时无需为显示重复另行处理；要导出或同步时，先备份，再按 Project ID 核对重复记录并保留正确的一条 |
@@ -1204,7 +650,7 @@ del output\progress_backup_*.jsonl
 del output\project_list_all.xlsx
 ```
 
-`progress_backup_*.jsonl` 包括自动生成的备份，也会匹配第 10.7 节示例中的手动备份；确认它们全部不再需要后再删除。以上命令保留导出的 `.xlsx` 和 `.md` 成品。
+`progress_backup_*.jsonl` 包括自动生成的备份，也会匹配第 10.6 节示例中的手动备份；确认它们全部不再需要后再删除。以上命令保留导出的 `.xlsx` 和 `.md` 成品。
 
 ### 13.5 检查是否干净
 
@@ -1294,7 +740,7 @@ python to_md_by_supervisor.py
 
 **之后更新（选题期间每隔几天一次，不要每天）**
 
-进入工作文件夹并激活已有虚拟环境；若环境已删除，先按第 10.2 节重新准备。若原始进度已删除，先按第 10.7 节恢复备份；没有备份时需按首次使用流程重新抓取，不能直接同步不存在的文件。
+进入工作文件夹并激活已有虚拟环境；若环境已删除，先按第 10.2 节重新准备。若原始进度已删除，先按第 10.6 节恢复备份；没有备份时需按首次使用流程重新抓取，不能直接同步不存在的文件。
 
 ```cmd
 cd C:\Users\User\Desktop\t
@@ -1314,7 +760,7 @@ python get_list.py
 python update_status.py
 ```
 
-仅当有尚未抓到的项目或指定了 `REFRESH_IDS` 时，再按批次运行详情脚本；目标必须仍在列表中并通过 `ONLY_AVAILABLE` 筛选，失败时按第 10.7 节恢复或处理：
+仅当有尚未抓到的项目或指定了 `REFRESH_IDS` 时，再按批次运行详情脚本；目标必须仍在列表中并通过 `ONLY_AVAILABLE` 筛选，失败时按第 10.6 节恢复或处理：
 
 ```cmd
 python get_details.py
