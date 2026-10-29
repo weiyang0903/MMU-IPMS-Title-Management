@@ -4,304 +4,549 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
   <title>FYP 项目搜索</title>
   <style>
     :root {
-      --bg: #f4f5fa;
+      color-scheme: only light;
+      --bg: #f7f8f3;
       --card: #fff;
-      --tx: #1d2433;
-      --mu: #6b7385;
-      --bd: #e3e6ee;
-      --ac: #4f46e5;
-      --acs: #eceeff;
-      --ok: #12805c;
-      --oks: #e0f5ec;
-      --no: #c0392b;
-      --nos: #fdeaea;
-      --hl: #ffeb85;
-      --st: #f5a623
-    }
-
-    @media(prefers-color-scheme:dark) {
-      :root {
-        --bg: #12141b;
-        --card: #1b1e28;
-        --tx: #e6e8ef;
-        --mu: #98a0b3;
-        --bd: #2b3040;
-        --ac: #9a95ff;
-        --acs: #262a4a;
-        --ok: #4fd1a1;
-        --oks: #163a2f;
-        --no: #ff8a7a;
-        --nos: #3c1f1f;
-        --hl: #6b5a00
-      }
+      --tx: #273c35;
+      --mu: #778078;
+      --bd: #e3e7de;
+      --ac: #2d6854;
+      --acs: #edf4e9;
+      --ok: #357458;
+      --oks: #edf5eb;
+      --no: #ad6957;
+      --nos: #fcf0e9;
+      --hl: #f6e5a8;
+      --st: #c99743;
+      --shadow: 0 8px 32px #304a3610;
     }
 
     * {
       box-sizing: border-box
     }
 
+    [hidden] {
+      display: none !important
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-gutter: stable
+    }
+
     body {
       margin: 0;
-      font: 15px/1.55 system-ui, "Segoe UI", "Microsoft YaHei", sans-serif;
-      background: var(--bg);
-      color: var(--tx)
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 5;
-      background: var(--card);
-      border-bottom: 1px solid var(--bd);
-      padding: 12px 20px;
-      display: flex;
-      gap: 14px;
-      align-items: center;
-      flex-wrap: wrap
-    }
-
-    h1 {
-      font-size: 18px;
-      margin: 0;
-      white-space: nowrap
-    }
-
-    h1 span {
-      color: var(--ac)
-    }
-
-    #q {
-      flex: 1;
-      min-width: 220px;
-      padding: 10px 14px;
-      border: 1px solid var(--bd);
-      border-radius: 10px;
-      background: var(--bg);
       color: var(--tx);
-      font-size: 15px
+      background: var(--bg);
+      font: 14px/1.65 "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      -webkit-font-smoothing: antialiased
     }
 
-    #q:focus,
-    input:focus,
-    select:focus {
-      outline: 2px solid var(--ac);
-      outline-offset: 0
+    button,
+    input,
+    select {
+      font: inherit
     }
 
     button,
     .btn {
-      font: inherit;
-      font-size: 13px;
-      padding: 8px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 15px;
       border: 1px solid var(--bd);
-      border-radius: 8px;
-      background: var(--card);
+      border-radius: 9px;
+      background: #fff;
       color: var(--tx);
-      cursor: pointer
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .18s, border-color .18s, box-shadow .18s, transform .18s
     }
 
     button:hover,
     .btn:hover {
-      border-color: var(--ac);
-      color: var(--ac)
+      background: #f4f7ef;
+      border-color: #adc2a8
+    }
+
+    button:active,
+    .btn:active {
+      transform: translateY(1px)
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    .card:focus-visible {
+      outline: 3px solid #97b999;
+      outline-offset: 3px
+    }
+
+    input,
+    select {
+      color: var(--tx);
+      accent-color: var(--ac)
+    }
+
+    input::placeholder {
+      color: #92998f;
+      opacity: 1
+    }
+
+    .icon {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.6;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      pointer-events: none
     }
 
     .pri {
-      background: var(--ac);
       color: #fff;
-      border-color: var(--ac)
+      background: var(--ac);
+      border-color: var(--ac);
+      box-shadow: 0 3px 8px #2d685418
     }
 
     .pri:hover {
       color: #fff;
-      opacity: .9
+      background: #245b48;
+      border-color: #245b48;
+      box-shadow: 0 5px 14px #2d685425
+    }
+
+    #file-state {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap
+    }
+
+    .search-band {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 62px;
+      padding: 0 20px;
+      background: #fff;
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      box-shadow: 0 3px 12px #304a3503
+    }
+
+    .search-band>.icon {
+      color: #5f7a61;
+      width: 21px;
+      height: 21px
+    }
+
+    #q {
+      min-width: 0;
+      flex: 1;
+      width: 100%;
+      padding: 17px 0;
+      font-size: 13px;
+      border: 0;
+      outline: none;
+      background: transparent
+    }
+
+    #q:disabled {
+      cursor: not-allowed;
+      opacity: .7
+    }
+
+    .search-band:focus-within {
+      border-color: #9db591;
+      box-shadow: 0 0 0 3px #dfe9d470
+    }
+
+    kbd {
+      display: inline-grid;
+      place-items: center;
+      min-width: 24px;
+      height: 25px;
+      background: #f5f6f1;
+      color: #7a8474;
+      border: 1px solid var(--bd);
+      border-bottom-width: 2px;
+      border-radius: 5px;
+      font: 11px "Segoe UI", sans-serif
     }
 
     main {
       display: grid;
-      grid-template-columns: 290px 1fr;
-      gap: 20px;
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 20px
+      grid-template-columns: 262px minmax(0, 1fr);
+      align-items: start;
+      gap: 26px;
+      margin: 26px 0 0
     }
 
-    @media(max-width:820px) {
-      main {
-        grid-template-columns: 1fr
-      }
+    body:not(.has-data) main {
+      display: block
     }
 
     aside {
-      background: var(--card);
-      border: 1px solid var(--bd);
-      border-radius: 14px;
-      padding: 16px;
-      align-self: start;
       position: sticky;
-      top: 76px;
-      max-height: calc(100vh - 96px);
-      overflow: auto
+      top: 20px;
+      min-width: 0;
+      padding: 22px 19px 18px;
+      border: 1px solid var(--bd);
+      background: #fdfefb;
+      border-radius: 12px;
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #d5ddce transparent
     }
 
-    @media(max-width:820px) {
-      aside {
-        position: static;
-        max-height: none
-      }
+    .side-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding-bottom: 16px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--bd)
+    }
+
+    .side-heading h2 {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0;
+      font-size: 13px;
+      font-weight: 650
+    }
+
+    .side-heading h2 .icon {
+      width: 16px;
+      height: 16px;
+      color: #6a8063
+    }
+
+    #reset {
+      min-height: 28px;
+      padding: 2px 0 2px 8px;
+      border: 0;
+      background: transparent;
+      color: #8b9586;
+      font-size: 10px;
+      font-weight: 400
+    }
+
+    #reset:hover {
+      color: var(--ac)
     }
 
     aside label.t {
-      display: block;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--mu);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      margin: 14px 0 6px
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin: 19px 0 8px;
+      color: #66745f;
+      font-size: 11px;
+      font-weight: 600
     }
 
-    aside label.t:first-child {
+    .side-heading+.filter-wide label.t {
       margin-top: 0
+    }
+
+    .label-note {
+      margin-left: auto;
+      font-weight: 400;
+      font-size: 9px;
+      color: #98a08f
     }
 
     aside input[type=text],
     aside select {
       width: 100%;
+      min-width: 0;
+      min-height: 38px;
       padding: 8px 10px;
       border: 1px solid var(--bd);
-      border-radius: 8px;
-      background: var(--bg);
-      color: var(--tx);
-      font: inherit;
-      font-size: 14px
+      border-radius: 7px;
+      background: #fff;
+      font-size: 11px
     }
 
     .seg {
       display: flex;
-      border: 1px solid var(--bd);
-      border-radius: 8px;
-      overflow: hidden
+      flex-wrap: wrap;
+      gap: 6px
     }
 
     .seg button {
-      flex: 1;
-      border: 0;
-      border-radius: 0;
-      background: none;
-      padding: 7px 4px
+      min-height: 31px;
+      padding: 5px 9px;
+      font-size: 10px;
+      font-weight: 400;
+      border-radius: 6px;
+      background: #f7f8f2
     }
 
     .seg button.on {
+      color: #fff;
       background: var(--ac);
-      color: #fff
+      border-color: var(--ac)
     }
 
     .sups {
-      max-height: 230px;
-      overflow: auto;
-      border: 1px solid var(--bd);
-      border-radius: 8px;
-      padding: 4px;
-      background: var(--bg)
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 7px;
+      padding: 3px 0;
+      scrollbar-width: thin;
+      scrollbar-color: #d5ddce transparent
     }
 
     .sups label {
       display: flex;
-      gap: 8px;
       align-items: center;
-      padding: 4px 6px;
-      border-radius: 6px;
+      gap: 8px;
+      padding: 6px 5px;
+      color: #596454;
+      font-size: 11px;
       cursor: pointer;
-      font-size: 14px
+      border-radius: 5px;
+      overflow-wrap: anywhere
     }
 
     .sups label:hover {
       background: var(--acs)
     }
 
+    .sups label input {
+      flex: 0 0 auto;
+      margin: 0;
+      width: 13px;
+      height: 13px
+    }
+
     .sups small {
       margin-left: auto;
-      color: var(--mu)
+      color: #89937f;
+      font-size: 10px;
+      padding: 0 5px;
+      background: #f1f4ea;
+      border-radius: 4px
     }
 
     .chk {
       display: flex;
-      gap: 8px;
       align-items: center;
-      margin-top: 12px;
-      cursor: pointer;
-      font-size: 14px
+      gap: 8px;
+      margin-top: 20px;
+      padding: 11px;
+      border: 1px solid #e6eadc;
+      border-radius: 7px;
+      background: #f2f5eb;
+      color: #687654;
+      font-size: 11px;
+      cursor: pointer
+    }
+
+    .chk input {
+      margin: 0;
+      width: 13px;
+      height: 13px
+    }
+
+    .hint {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
+      margin: 18px 0 0;
+      font-size: 10px;
+      line-height: 1.9;
+      color: #98a08f
+    }
+
+    .hint .icon {
+      width: 13px;
+      height: 13px;
+      margin-top: 3px
+    }
+
+    .results-section {
+      min-width: 0
     }
 
     .bar {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
       flex-wrap: wrap;
-      margin-bottom: 14px
+      gap: 14px;
+      padding: 2px 0 19px
     }
 
-    .bar b {
-      font-size: 15px
+    .results-title {
+      display: flex;
+      align-items: center;
+      gap: 10px
+    }
+
+    .results-title h2 {
+      font-size: 17px;
+      font-weight: 550;
+      margin: 0;
+      letter-spacing: .5px
+    }
+
+    #count {
+      display: block;
+      margin-top: 5px;
+      color: #899280;
+      font-size: 10px;
+      font-weight: 400
     }
 
     .bar .r {
       display: flex;
-      gap: 8px;
       align-items: center;
-      flex-wrap: wrap
+      flex-wrap: wrap;
+      gap: 7px
     }
 
     .bar select {
-      padding: 7px 8px;
+      min-width: 0;
+      height: 35px;
+      padding: 5px 9px;
       border: 1px solid var(--bd);
-      border-radius: 8px;
-      background: var(--card);
-      color: var(--tx);
-      font: inherit;
-      font-size: 13px
+      border-radius: 7px;
+      font-size: 10px;
+      background: #fff
+    }
+
+    .bar button {
+      min-height: 35px;
+      padding: 7px 10px;
+      font-size: 10px;
+      font-weight: 500
+    }
+
+    .bar button .icon {
+      width: 14px;
+      height: 14px
+    }
+
+    #dl {
+      color: var(--ac);
+      background: #eef4e9;
+      border-color: #dae5d1
+    }
+
+    .banner {
+      position: relative;
+      padding: 13px 16px 13px 38px;
+      margin-bottom: 18px;
+      border: 1px solid #e8e8d7;
+      border-radius: 9px;
+      background: #f5f5e9;
+      font-size: 10px;
+      line-height: 1.95;
+      color: #8b886a;
+      overflow-wrap: anywhere
+    }
+
+    .banner::before {
+      content: "i";
+      position: absolute;
+      top: 17px;
+      left: 15px;
+      display: grid;
+      place-items: center;
+      width: 13px;
+      height: 13px;
+      font: 10px Georgia, serif;
+      border: 1px solid #b8b38d;
+      border-radius: 50%
     }
 
     .card {
-      background: var(--card);
+      position: relative;
+      min-width: 0;
+      margin-bottom: 15px;
+      padding: 22px 24px 39px;
       border: 1px solid var(--bd);
-      border-radius: 14px;
-      padding: 16px 18px;
-      margin-bottom: 12px;
+      border-radius: 12px;
+      background: #fff;
       cursor: pointer;
-      transition: border-color .15s, box-shadow .15s
+      transition: border-color .2s, box-shadow .2s;
+      overflow-wrap: anywhere
     }
 
     .card:hover {
-      border-color: var(--ac);
-      box-shadow: 0 2px 12px rgba(79, 70, 229, .1)
+      border-color: #acc39d;
+      box-shadow: var(--shadow)
+    }
+
+    .card::after {
+      content: "点击卡片，展开完整内容 ↗";
+      position: absolute;
+      right: 24px;
+      bottom: 13px;
+      font-size: 9px;
+      letter-spacing: .3px;
+      color: #96a08c
+    }
+
+    .card.open {
+      border-color: #a7be99;
+      background: #fefffc;
+      padding-bottom: 22px;
+      box-shadow: var(--shadow)
+    }
+
+    .card.open::after {
+      display: none
     }
 
     .top {
       display: flex;
-      gap: 8px;
       align-items: center;
-      flex-wrap: wrap
+      flex-wrap: wrap;
+      gap: 8px;
+      min-height: 26px
     }
 
     .id {
-      font: 600 12px ui-monospace, Consolas, monospace;
-      background: var(--acs);
-      color: var(--ac);
-      padding: 2px 8px;
-      border-radius: 6px
+      font: 11px/1.5 Consolas, "Courier New", monospace;
+      color: #7c8973;
+      letter-spacing: .4px
     }
 
     .pill {
-      font-size: 12px;
-      padding: 2px 9px;
-      border-radius: 99px;
-      font-weight: 600
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 5px;
+      background: #f2f3ec;
+      color: #818671;
+      font-size: 9px;
+      font-weight: 500
+    }
+
+    .pill::before {
+      content: "";
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: currentColor
     }
 
     .pill.Available {
@@ -314,262 +559,583 @@
       color: var(--no)
     }
 
+    .pill.Removed {
+      background: #eff0ea;
+      color: #8d9385
+    }
+
     .star {
       margin-left: auto;
-      font-size: 20px;
-      line-height: 1;
-      border: 0;
-      background: none;
-      color: var(--mu);
-      padding: 2px 6px
+      min-height: 29px;
+      width: 31px;
+      padding: 0;
+      color: #a1aa97;
+      font: 23px/1 Georgia, serif;
+      border: 1px solid #edf0e6;
+      border-radius: 7px;
+      background: #fafbf6
+    }
+
+    .star:hover {
+      background: #faf5e8;
+      border-color: #e9d7a5;
+      color: #bc9147
     }
 
     .star.on {
-      color: var(--st)
+      color: var(--st);
+      background: #fff8e5;
+      border-color: #f1e2b9
     }
 
     .title {
-      font-weight: 650;
-      font-size: 16px;
-      margin: 8px 0 4px
+      margin: 11px 0 9px;
+      color: #2e443b;
+      font-size: 19px;
+      font-weight: 600;
+      line-height: 1.5;
+      letter-spacing: -.2px
     }
 
     .meta {
-      color: var(--mu);
-      font-size: 13px;
       display: flex;
-      gap: 6px 14px;
-      flex-wrap: wrap
+      flex-wrap: wrap;
+      gap: 7px 18px;
+      color: #86907c;
+      font-size: 10px
+    }
+
+    .meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px
+    }
+
+    .meta .icon {
+      width: 13px;
+      height: 13px;
+      color: #93a187
     }
 
     .desc {
-      margin-top: 8px;
-      color: var(--tx);
-      opacity: .88;
+      margin-top: 13px;
       white-space: pre-wrap;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
-      overflow: hidden
+      overflow: hidden;
+      color: #7e8777;
+      font-size: 12px;
+      line-height: 1.9
     }
 
     .card.open .desc {
       display: block;
-      -webkit-line-clamp: unset
+      -webkit-line-clamp: unset;
+      color: #66745f
     }
 
     .more {
       display: none;
-      margin-top: 12px;
-      border-top: 1px dashed var(--bd);
-      padding-top: 10px
+      gap: 20px 26px;
+      margin-top: 20px;
+      border-top: 1px solid #e9ecdf;
+      padding-top: 19px
     }
 
     .card.open .more {
-      display: block
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .detail-item {
+      min-width: 0
+    }
+
+    .detail-item:first-child {
+      grid-column: 1 / -1
     }
 
     .more h4 {
-      margin: 10px 0 2px;
-      font-size: 12px;
-      color: var(--mu);
+      margin: 0 0 7px;
+      font-size: 9px;
       text-transform: uppercase;
-      letter-spacing: .04em
+      letter-spacing: 1px;
+      color: #819376;
+      font-weight: 600
     }
 
     .more p {
       margin: 0;
-      white-space: pre-wrap
+      font-size: 12px;
+      white-space: pre-wrap;
+      color: #65725f;
+      line-height: 1.9
     }
 
     .act {
       display: none;
       gap: 8px;
-      margin-top: 12px
+      margin-top: 22px
     }
 
     .card.open .act {
       display: flex
     }
 
+    .act button {
+      min-height: 33px;
+      background: #f2f6ec;
+      color: #627d51;
+      border-color: #e0e8d7;
+      font-size: 10px
+    }
+
     mark {
-      background: var(--hl);
       color: inherit;
-      border-radius: 3px;
+      background: var(--hl);
+      border-radius: 2px;
       padding: 0 1px
     }
 
+    .seen {
+      color: #a1a894;
+      font-size: 9px
+    }
+
+    .seen.ok {
+      color: #7b956d
+    }
+
+    .seen.no {
+      color: #a58d7c
+    }
+
+    .card.rm {
+      background: #f9faf6
+    }
+
+    .card.rm .title {
+      text-decoration: line-through;
+      text-decoration-color: #bcc5b2;
+      color: #87917e
+    }
+
     #empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 270px;
+      padding: 36px 24px;
       text-align: center;
-      border: 2px dashed var(--bd);
-      border-radius: 16px;
-      padding: 60px 20px;
-      color: var(--mu);
-      background: var(--card)
+      border: 1px dashed #cbd6bf;
+      border-radius: 12px;
+      background: #fdfefb;
+      transition: border-color .2s, background .2s
+    }
+
+    #empty>.icon {
+      width: 28px;
+      height: 28px;
+      color: #819676
+    }
+
+    #empty h1 {
+      margin: 12px 0 0;
+      font-size: 19px;
+      font-weight: 600
+    }
+
+    #empty p {
+      margin: 8px 0 18px;
+      color: #7d8973;
+      font-size: 13px
+    }
+
+    #empty .empty-note {
+      margin: 16px 0 0;
+      color: #929b89;
+      font-size: 11px
     }
 
     #empty.drag {
-      border-color: var(--ac);
-      background: var(--acs)
-    }
-
-    #empty h2 {
-      color: var(--tx);
-      margin: 0 0 8px
+      border: 2px dashed #6b935b;
+      background: #eef5e6
     }
 
     .none {
       text-align: center;
-      color: var(--mu);
-      padding: 40px
+      padding: 54px 20px;
+      border: 1px dashed #d8e0cc;
+      background: #fcfdf9;
+      border-radius: 12px;
+      color: #89977b;
+      font-size: 12px
     }
 
     #toast {
       position: fixed;
-      bottom: 22px;
+      bottom: 28px;
       left: 50%;
-      transform: translateX(-50%);
-      background: var(--tx);
-      color: var(--bg);
-      padding: 9px 18px;
-      border-radius: 99px;
-      font-size: 14px;
+      z-index: 20;
+      max-width: calc(100vw - 32px);
+      transform: translate(-50%, 8px);
+      padding: 11px 20px;
+      border-radius: 10px;
+      background: #315c47;
+      color: #fff;
+      font-size: 12px;
       opacity: 0;
       pointer-events: none;
-      transition: opacity .2s
+      box-shadow: 0 8px 24px #274f3525;
+      transition: opacity .2s, transform .2s;
+      text-align: center
     }
 
     #toast.on {
-      opacity: 1
+      opacity: 1;
+      transform: translate(-50%, 0)
     }
 
-    .hint {
-      font-size: 12px;
-      color: var(--mu);
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto
+      }
+
+      *,
+      *::before,
+      *::after {
+        transition: none !important
+      }
+    }
+
+
+    .page-shell {
+      width: min(1280px, calc(100% - 80px));
+      margin: 24px auto 40px
+    }
+
+    .search-band .pri {
+      flex-shrink: 0;
+      white-space: nowrap;
+      min-height: 38px
+    }
+
+    .file-summary {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 10px 2px 0;
+      color: #86927b;
+      font-size: 11px;
+      min-width: 0
+    }
+
+    .file-summary .icon {
+      width: 13px;
+      height: 13px
+    }
+
+    .has-data main {
       margin-top: 16px
     }
 
-    .seg {
-      flex-wrap: wrap
+    @media (min-width: 1600px) {
+      .page-shell {
+        width: min(1400px, calc(100% - 120px))
+      }
     }
 
-    .seg button {
-      font-size: 12px;
-      flex: 1 0 auto;
-      padding: 7px 8px
+    @media (max-width: 1100px) {
+      .page-shell {
+        width: calc(100% - 48px)
+      }
+
+      main {
+        grid-template-columns: 235px minmax(0, 1fr);
+        gap: 20px
+      }
+
+      .seen {
+        flex-basis: 100%;
+        order: 3
+      }
+
+      .card {
+        padding: 19px 20px 36px
+      }
+
+      .bar .r {
+        width: 100%
+      }
     }
 
-    .pill.Removed {
-      background: var(--bd);
-      color: var(--mu)
+    @media (max-width: 800px) {
+      main {
+        grid-template-columns: 1fr
+      }
+
+      aside {
+        position: static;
+        max-height: none;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0 20px
+      }
+
+      .side-heading,
+      .filter-wide,
+      aside>.hint {
+        grid-column: 1/-1
+      }
+
+      aside label.t {
+        margin-top: 15px
+      }
+
+      .sups {
+        max-height: 140px
+      }
+
+      .bar .r {
+        width: auto
+      }
     }
 
-    .seen {
-      font-size: 12px;
-      color: var(--mu)
-    }
+    @media (max-width: 540px) {
+      .page-shell {
+        width: calc(100% - 24px);
+        margin-top: 12px
+      }
 
-    .seen.ok {
-      color: var(--ok)
-    }
+      .search-band {
+        min-height: 55px;
+        padding: 0 10px;
+        gap: 8px
+      }
 
-    .seen.no {
-      color: var(--no)
-    }
+      .search-band>.icon {
+        width: 17px;
+        height: 17px
+      }
 
-    .card.rm {
-      opacity: .6
-    }
+      .search-band .pri {
+        padding: 7px 10px;
+        min-height: 35px;
+        font-size: 11px
+      }
 
-    .card.rm .title {
-      text-decoration: line-through
-    }
+      .search-band .pri .icon {
+        display: none
+      }
 
-    .banner {
-      background: var(--acs);
-      color: var(--tx);
-      border: 1px solid var(--bd);
-      border-radius: 10px;
-      padding: 10px 14px;
-      margin-bottom: 14px;
-      font-size: 13px;
-      line-height: 1.7
+      #q {
+        font-size: 12px
+      }
+
+      kbd {
+        display: none
+      }
+
+      main {
+        margin-top: 18px;
+        gap: 20px
+      }
+
+      #empty {
+        padding: 28px 18px;
+        min-height: 240px
+      }
+
+      aside {
+        padding: 18px 16px;
+        gap: 0 14px
+      }
+
+      .card {
+        padding: 17px 17px 37px
+      }
+
+      .title {
+        font-size: 17px
+      }
+
+      .card.open .more {
+        grid-template-columns: 1fr
+      }
+
+      .detail-item:first-child {
+        grid-column: auto
+      }
+
+      .bar {
+        gap: 13px
+      }
+
+      .bar .r {
+        width: 100%;
+        gap: 6px
+      }
+
+      .bar .r select {
+        flex: 1
+      }
+
+      .bar button {
+        padding: 7px 8px;
+        font-size: 10px
+      }
     }
   </style>
 </head>
 
 <body>
-  <header>
-    <h1>FYP <span>项目搜索</span></h1>
-    <input id="q" type="search" placeholder="搜索关键词（空格分隔 = 同时包含）  按 / 快速定位" disabled>
-    <label class="btn pri">选择 progress.jsonl<input id="file" type="file" accept=".jsonl,.json,.txt" hidden></label>
-  </header>
 
-  <main>
-    <aside id="side" hidden>
-      <label class="t">状态</label>
-      <div class="seg" id="status"></div>
+  <svg hidden aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
 
-      <label class="t">搜索范围</label>
-      <select id="scope">
-        <option value="all">全部内容</option>
-        <option value="title">仅标题</option>
-        <option value="td">标题 + 描述</option>
-      </select>
-
-      <label class="t">导师（可多选）</label>
-      <input type="text" id="supq" placeholder="筛选导师名…" style="margin-bottom:6px">
-      <div class="sups" id="sups"></div>
-
-      <label class="t">项目类型</label>
-      <select id="type"></select>
-
-      <label class="t">适合专业</label>
-      <select id="prog"></select>
-
-      <label class="t">研究领域</label>
-      <input type="text" id="area" list="arealist" placeholder="如 Computational Intelligence">
-      <datalist id="arealist"></datalist>
-
-      <label class="t">所需技能</label>
-      <input type="text" id="skills" placeholder="如 Python、Java">
-
-      <label class="chk"><input type="checkbox" id="starred"> 只看已收藏 ★</label>
-
-      <div style="display:flex;gap:8px;margin-top:16px">
-        <button id="reset" style="flex:1">重置筛选</button>
-      </div>
-      <p class="hint">数据只在这个页面里读取，不会上传，也不会保存到浏览器；刷新页面后需重新选择文件，收藏也会清空，需要的话先导出。</p>
-    </aside>
-
-    <section>
-      <div id="empty">
-        <h2>把 progress.jsonl 拖到这里</h2>
-        <div>或点击右上角「选择 progress.jsonl」</div>
-      </div>
-      <div id="res" hidden>
-        <div class="bar">
-          <b id="count"></b>
-          <div class="r">
-            <select id="sort">
-              <option value="id">按 ID 排序</option>
-              <option value="idd">按 ID 倒序</option>
-              <option value="title">按标题 A-Z</option>
-              <option value="sup">按导师 A-Z</option>
-            </select>
-            <button id="exp">复制收藏 (md)</button>
-            <button id="dl">下载收藏 (md)</button>
-          </div>
+    <symbol id="i-upload" viewBox="0 0 24 24">
+      <path d="M12 16V3m-4 4 4-4 4 4M4 15v5h16v-5" />
+    </symbol>
+    <symbol id="i-search" viewBox="0 0 24 24">
+      <circle cx="10.5" cy="10.5" r="6.5" />
+      <path d="m16 16 5 5" />
+    </symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24">
+      <path d="M4 6h16M7 12h10m-7 6h4" />
+      <circle cx="9" cy="6" r="2" fill="white" />
+      <circle cx="15" cy="12" r="2" fill="white" />
+    </symbol>
+    <symbol id="i-file" viewBox="0 0 24 24">
+      <path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 12h8m-8 4h6" />
+    </symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24">
+      <rect x="8" y="8" width="12" height="13" rx="2" />
+      <path d="M16 8V3H3v13h5" />
+    </symbol>
+    <symbol id="i-download" viewBox="0 0 24 24">
+      <path d="M12 3v12m-4-4 4 4 4-4M4 16v5h16v-5" />
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path d="m12 3 8 3v6c0 4-4 7-8 9-4-2-8-5-8-9V6l8-3Z" />
+      <path d="m8 12 3 3 5-6" />
+    </symbol>
+    <symbol id="i-user" viewBox="0 0 24 24">
+      <circle cx="12" cy="8" r="4" />
+      <path d="M4 21v-3a8 8 0 0 1 16 0v3" />
+    </symbol>
+    <symbol id="i-tag" viewBox="0 0 24 24">
+      <path d="M3 3h8l10 10-8 8L3 11V3Z" />
+      <circle cx="7.5" cy="7.5" r="1" />
+    </symbol>
+    <symbol id="i-leaf" viewBox="0 0 24 24">
+      <path d="M20 3c-11-1-17 4-15 11 2 6 14 5 15-11ZM3 21 15 9" />
+    </symbol>
+  </svg>
+  <div class="page-shell">
+    <div class="search-band" role="search">
+      <svg class="icon" aria-hidden="true">
+        <use href="#i-search" />
+      </svg>
+      <input id="q" type="search" aria-label="搜索项目关键词" placeholder="导入 progress.jsonl 后搜索项目" disabled>
+      <kbd aria-hidden="true">/</kbd>
+      <button class="pri" type="button" data-import><svg class="icon" aria-hidden="true">
+          <use href="#i-upload" />
+        </svg>导入数据</button>
+      <input id="file" type="file" accept=".jsonl,.json,.txt" hidden aria-label="选择项目数据文件">
+    </div>
+    <div id="file-summary" class="file-summary" hidden><svg class="icon" aria-hidden="true">
+        <use href="#i-file" />
+      </svg><span id="file-state"></span></div>
+    <main>
+      <aside id="side" hidden aria-label="项目筛选">
+        <div class="side-heading">
+          <h2><svg class="icon" aria-hidden="true">
+              <use href="#i-filter" />
+            </svg>筛选项目</h2>
+          <button id="reset" type="button">重置筛选 ↺</button>
         </div>
-        <div id="banner"></div>
-        <div id="list"></div>
-      </div>
-    </section>
-  </main>
-  <div id="toast"></div>
+        <div class="filter-wide">
+          <label class="t">项目状态</label>
+          <div class="seg" id="status" aria-label="按项目状态筛选"></div>
+        </div>
+        <div>
+          <label class="t" for="scope">搜索范围</label>
+          <select id="scope">
+            <option value="all">全部内容</option>
+            <option value="title">仅标题</option>
+            <option value="td">标题 + 描述</option>
+          </select>
+        </div>
+        <div class="filter-wide">
+          <label class="t" for="supq">指导老师<span class="label-note">支持多选</span></label>
+          <input type="text" id="supq" placeholder="查找导师姓名…">
+          <div class="sups" id="sups"></div>
+        </div>
+        <div>
+          <label class="t" for="type">项目类型</label><select id="type"></select>
+        </div>
+        <div>
+          <label class="t" for="prog">适合专业</label><select id="prog"></select>
+        </div>
+        <div>
+          <label class="t" for="area">研究领域</label>
+          <input type="text" id="area" list="arealist" placeholder="如 Computational Intelligence">
+          <datalist id="arealist"></datalist>
+        </div>
+        <div>
+          <label class="t" for="skills">所需技能</label>
+          <input type="text" id="skills" placeholder="如 Python、Java">
+        </div>
+        <div class="filter-wide"><label class="chk"><input type="checkbox" id="starred">只看已收藏的项目 <span
+              aria-hidden="true" style="margin-left:auto;color:#bd994e">★</span></label></div>
+        <p class="hint"><svg class="icon" aria-hidden="true">
+            <use href="#i-shield" />
+          </svg><span>文件仅在当前页面处理。刷新或重新导入会清空收藏，记得先导出。</span></p>
+      </aside>
+      <section class="results-section" aria-label="项目列表">
+        <div id="empty">
+          <svg class="icon" aria-hidden="true">
+            <use href="#i-file" />
+          </svg>
+          <h1>导入项目数据</h1>
+          <p>将 progress.jsonl 拖到这里，或选择本地文件。</p>
+          <button class="pri" type="button" data-import>选择文件</button>
+          <p class="empty-note">数据仅在当前页面读取，不会上传。</p>
+        </div>
+        <div id="res" hidden>
+          <div class="bar">
+            <div>
+              <div class="results-title">
+                <h2>项目列表</h2>
+              </div><b id="count" aria-live="polite"></b>
+            </div>
+            <div class="r">
+              <select id="sort" aria-label="项目排序">
+                <option value="id">ID 从小到大</option>
+                <option value="idd">ID 从大到小</option>
+                <option value="title">标题 A–Z</option>
+                <option value="sup">导师 A–Z</option>
+              </select>
+              <button id="exp" type="button" title="复制全部收藏为 Markdown"><svg class="icon" aria-hidden="true">
+                  <use href="#i-copy" />
+                </svg>复制收藏</button>
+              <button id="dl" type="button" title="下载全部收藏为 Markdown"><svg class="icon" aria-hidden="true">
+                  <use href="#i-download" />
+                </svg>下载收藏</button>
+            </div>
+          </div>
+          <div id="banner"></div>
+          <div id="list"></div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div id="toast" role="status" aria-live="polite"></div>
 
   <script>
     const $ = s => document.querySelector(s);
+    const uiIcon = name => '<svg class="icon" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
     const ILL = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
     const F = [['desc', 'Description'], ['obj', 'Objectives'], ['type', 'Project type'], ['area', 'Specific area of research'], ['skills', 'Skill set required'], ['deliv', 'Expected deliverable'], ['sched', 'Project schedule'], ['inno', 'Innovative component'], ['prog', 'Suitable for programme'], ['by', 'Proposed by'], ['email', 'Email']];
     let all = [], stars = new Set(), sups = new Set(), status = 'Available', terms = [];
@@ -627,7 +1193,7 @@
       if (dup) m.push(dup + ' 个重复的 Project ID 已合并，保留文件里最后出现的那条。');
       $('#banner').innerHTML = '<div class="banner">' + m.map(esc).join('<br>') + '</div>';
     }
-    function load(text, mod) {
+    function load(text, mod, filename) {
       const m = new Map(); bad = 0; dup = 0;
       text.replace(/^\ufeff/, '').split(/\r?\n/).filter(l => l.trim()).forEach(l => {
         try { const p = norm(JSON.parse(l)); if (!p.id) { bad++; return } if (m.has(p.id)) dup++; m.set(p.id, p) } catch (e) { bad++ }
@@ -638,6 +1204,10 @@
       status = all.some(p => p.status === 'Available') ? 'Available' : '';
       stars.clear(); sups.clear(); build();
       $('#empty').hidden = true; $('#res').hidden = false; $('#side').hidden = false; $('#q').disabled = false;
+      document.body.classList.add('has-data');
+      $('#file-state').textContent = filename || 'progress.jsonl';
+      $('#file-summary').hidden = false;
+      $('#q').placeholder = '搜索标题、描述或技能（空格分隔多个关键词）';
       render(); toast('已读取 ' + all.length + ' 个项目');
     }
 
@@ -684,11 +1254,11 @@
       return '<span class="seen">未确认（更新数据后会显示）</span>';
     }
     function card(p) {
-      const meta = [p.sup && '👤 ' + hl(p.sup), p.type && '📌 ' + hl(p.type), p.area && '🔬 ' + hl(p.area)].filter(Boolean).map(x => '<span>' + x + '</span>').join('');
-      const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<h4>' + f[1] + '</h4><p>' + hl(p[f[0]]) + '</p>').join('');
-      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span>' +
+      const meta = [p.sup && uiIcon('user') + hl(p.sup), p.type && uiIcon('tag') + hl(p.type), p.area && uiIcon('leaf') + hl(p.area)].filter(Boolean).map(x => '<span>' + x + '</span>').join('');
+      const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<div class="detail-item"><h4>' + f[1] + '</h4><p>' + hl(p[f[0]]) + '</p></div>').join('');
+      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" aria-expanded="false" aria-label="' + esc(p.title || p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span>' +
         '<span class="pill ' + esc(p.status) + '">' + esc(p.status || '?') + '</span>' + seenTag(p) +
-        '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏">' + (stars.has(p.id) ? '★' : '☆') + '</button></div>' +
+        '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏" aria-label="收藏项目" aria-pressed="' + stars.has(p.id) + '">' + (stars.has(p.id) ? '★' : '☆') + '</button></div>' +
         '<div class="title">' + hl(p.title) + '</div><div class="meta">' + meta + '</div>' +
         '<div class="desc">' + hl(p.desc) + '</div><div class="more">' + more + '</div>' +
         '<div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
@@ -704,11 +1274,12 @@
     function md(arr) { return arr.map((p, i) => (i + 1) + '. ' + p.id + ' ' + p.title + '\n' + p.desc + '\n').join('\n') }
     const starred = () => all.filter(p => stars.has(p.id));
 
-    $('#file').onchange = e => { const f = e.target.files[0]; if (f) f.text().then(t => load(t, f.lastModified)) };
+    document.querySelectorAll('[data-import]').forEach(button => button.onclick = () => $('#file').click());
+    $('#file').onchange = e => { const f = e.target.files[0]; if (f) f.text().then(t => load(t, f.lastModified, f.name)) };
     const emp = $('#empty');
     ['dragover', 'dragenter'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.add('drag') }));
     ['dragleave', 'drop'].forEach(ev => document.addEventListener(ev, e => { e.preventDefault(); emp.classList.remove('drag') }));
-    document.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(t => load(t, f.lastModified)) });
+    document.addEventListener('drop', e => { const f = e.dataTransfer.files[0]; if (f) f.text().then(t => load(t, f.lastModified, f.name)) });
 
     ['q', 'scope', 'type', 'prog', 'area', 'skills', 'starred', 'sort'].forEach(id => $('#' + id).addEventListener('input', render));
     $('#status').onclick = e => {
@@ -726,16 +1297,26 @@
 
     $('#list').onclick = e => {
       const c = e.target.closest('.card'); if (!c) return;
-      const p = all.find(x => x.id === c.dataset.id), a = e.target.dataset.a;
+      const p = all.find(x => x.id === c.dataset.id), action = e.target.closest('[data-a]'), a = action?.dataset.a;
       if (a === 'star') {
         stars.has(p.id) ? stars.delete(p.id) : stars.add(p.id);
-        e.target.classList.toggle('on'); e.target.textContent = stars.has(p.id) ? '★' : '☆';
+        action.classList.toggle('on'); action.textContent = stars.has(p.id) ? '★' : '☆';
+        action.setAttribute('aria-pressed', String(stars.has(p.id)));
+        banner();
         $('#count').textContent = $('#count').textContent.replace(/ · 已收藏 \d+/, '') + (stars.size ? ' · 已收藏 ' + stars.size : '');
         if ($('#starred').checked) render(); return
       }
       if (a === 'copy') { navigator.clipboard.writeText(p.id + ' ' + p.title + '\n' + p.desc).then(() => toast('已复制')); return }
-      if (!getSelection().toString()) c.classList.toggle('open');
+      if (!getSelection().toString()) {
+        c.classList.toggle('open');
+        c.setAttribute('aria-expanded', String(c.classList.contains('open')));
+      }
     };
+    $('#list').addEventListener('keydown', e => {
+      if (e.target.classList.contains('card') && (e.key === 'Enter' || e.key === ' ')) {
+        e.preventDefault(); e.target.click();
+      }
+    });
     $('#exp').onclick = () => { const s = starred(); if (!s.length) return toast('还没有收藏'); navigator.clipboard.writeText(md(s)).then(() => toast('已复制 ' + s.length + ' 个' + (s.some(p => p.status !== 'Available') ? '（其中有已不可选的项目）' : ''))) };
     $('#dl').onclick = () => {
       const s = starred(); if (!s.length) return toast('还没有收藏');
