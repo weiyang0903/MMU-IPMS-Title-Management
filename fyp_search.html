@@ -309,7 +309,9 @@
       margin-top: 7px;
       padding: 3px 0;
       scrollbar-width: thin;
-      scrollbar-color: #d5ddce transparent
+      scrollbar-color: #d5ddce transparent;
+      border: 1px solid var(--bd);
+      border-radius: 7px;
     }
 
     .sups label {
@@ -617,8 +619,11 @@
       color: #93a187
     }
 
+    .description-block {
+      margin-top: 13px
+    }
+
     .desc {
-      margin-top: 13px;
       white-space: pre-wrap;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -656,13 +661,23 @@
       grid-column: 1 / -1
     }
 
-    .more h4 {
+    .detail-heading {
+      display: flex;
+      align-items: flex-start;
+      gap: 7px;
       margin: 0 0 7px;
-      font-size: 9px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      font-size: 11px;
+      line-height: 1.6;
+      text-transform: none;
+      letter-spacing: 0;
       color: #819376;
       font-weight: 600
+    }
+
+    .detail-heading .icon {
+      width: 14px;
+      height: 14px;
+      margin-top: 2px
     }
 
     .more p {
@@ -671,6 +686,38 @@
       white-space: pre-wrap;
       color: #65725f;
       line-height: 1.9
+    }
+
+    .email-copy {
+      align-items: flex-start;
+      gap: 6px;
+      max-width: 100%;
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 3px;
+      background: transparent;
+      color: var(--ac);
+      font: inherit;
+      text-align: left;
+      white-space: normal;
+      vertical-align: top
+    }
+
+    .email-copy span {
+      min-width: 0;
+      overflow-wrap: anywhere
+    }
+
+    .email-copy .icon {
+      width: 13px;
+      height: 13px;
+      margin-top: 5px
+    }
+
+    .email-copy:hover {
+      background: transparent;
+      color: #16362b
     }
 
     .act {
@@ -776,26 +823,37 @@
 
     #toast {
       position: fixed;
-      bottom: 28px;
+      inset: auto;
+      bottom: max(28px, env(safe-area-inset-bottom, 0px));
       left: 50%;
-      z-index: 20;
+      z-index: 1000;
+      width: max-content;
       max-width: calc(100vw - 32px);
+      margin: 0;
       transform: translate(-50%, 8px);
       padding: 11px 20px;
+      border: 0;
       border-radius: 10px;
       background: #315c47;
       color: #fff;
-      font-size: 12px;
+      font: 12px/1.7 "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
       opacity: 0;
       pointer-events: none;
       box-shadow: 0 8px 24px #274f3525;
       transition: opacity .2s, transform .2s;
-      text-align: center
+      text-align: center;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere
     }
 
     #toast.on {
       opacity: 1;
       transform: translate(-50%, 0)
+    }
+
+    #toast::backdrop {
+      background: transparent;
+      pointer-events: none
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -1191,39 +1249,451 @@
       margin: 0
     }
 
-    .favorites-dialog {
-      width: min(800px, calc(100vw - 32px))
+    .decision-heading {
+      align-items: flex-start
     }
 
-    .bookmark-row {
-      border-top: 1px solid var(--bd);
-      margin-top: 15px;
-      padding-top: 16px;
-      overflow-wrap: anywhere
+    .decision-heading h2 {
+      padding-top: 3px
     }
 
-    .bookmark-row h3 {
-      margin: 6px 0;
-      font-size: 14px
+    .dialog-close {
+      flex: 0 0 auto;
+      width: 32px;
+      min-height: 32px;
+      padding: 6px;
+      border-color: transparent;
+      background: transparent;
+      color: var(--mu)
     }
 
-    .bookmark-row .bookmark-state {
-      color: #8f794c;
+    .dialog-close:hover {
+      background: var(--acs);
+      border-color: var(--bd);
+      color: var(--tx)
+    }
+
+    .decision-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-top: 20px
+    }
+
+    .decision-footer>button {
+      flex: 0 0 auto;
+      min-width: 64px
+    }
+
+    .decision-footer .dialog-actions {
+      justify-content: flex-end;
+      min-width: 0;
+      margin: 0
+    }
+
+    .decision-footer button {
+      min-height: 36px;
+      padding: 7px 12px;
       font-size: 12px
     }
 
-    .bookmark-row .bookmark-description {
-      font-size: 12px;
-      color: #78836e;
-      white-space: pre-wrap;
-      max-height: 150px;
-      overflow: auto
+    .app-dialog.favorites-dialog {
+      width: min(880px, calc(100vw - 32px));
+      max-height: 86vh;
+      padding: 0;
+      overflow: hidden;
+      border-radius: 16px
     }
 
-    .bookmark-row button {
-      min-height: 30px;
+    .favorites-dialog[open] {
+      display: flex;
+      flex-direction: column
+    }
+
+    .favorites-header {
+      flex: 0 0 auto;
+      padding: 24px 26px 18px;
+      border-bottom: 1px solid var(--bd);
+      background: #fff
+    }
+
+    .favorites-heading {
+      align-items: flex-start
+    }
+
+    .favorites-title-group {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px 12px;
+      min-width: 0
+    }
+
+    .favorites-title-group h2 {
+      font-size: 19px;
+      line-height: 1.6;
+      overflow-wrap: anywhere
+    }
+
+    .favorites-count {
+      flex: 0 0 auto;
+      padding: 2px 9px;
+      border: 1px solid #e0e8d9;
+      border-radius: 20px;
+      background: #f1f6eb;
+      color: #627b54;
+      font-size: 11px
+    }
+
+    #favorites-description {
+      margin: 10px 0 16px;
+      color: #6d7b64;
+      font-size: 12px;
+      line-height: 1.8
+    }
+
+    .favorites-toolbar,
+    .favorites-export-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px
+    }
+
+    .favorites-toolbar button {
+      min-height: 37px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 500
+    }
+
+    .favorites-toolbar .icon {
+      width: 15px;
+      height: 15px
+    }
+
+    #favorites-clear {
+      margin-left: auto;
+      background: #fff;
+      border-color: #ebdfd8;
+      color: #a16c59
+    }
+
+    #favorites-clear:hover {
+      background: #fcf3ee;
+      border-color: #dcbfad;
+      color: #94563f
+    }
+
+    .favorites-feedback {
+      margin: 12px 0 0;
+      padding: 8px 11px;
+      border: 1px solid #dfe9d7;
+      border-radius: 8px;
+      background: #f2f7ed;
+      color: #5c7b4d;
+      font-size: 12px;
+      line-height: 1.7;
+      white-space: pre-line
+    }
+
+    .favorites-feedback[data-error="true"] {
+      border-color: #ecd6cb;
+      background: #fcf1eb;
+      color: #a05f47
+    }
+
+    .favorites-list {
+      flex: 0 1 auto;
+      min-height: 0;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+      padding: 20px 24px 24px;
+      background: #f6f8f2;
+      scrollbar-width: thin;
+      scrollbar-color: #cbd7c1 transparent
+    }
+
+    .bookmark-row {
+      margin: 0 0 14px;
+      padding: 20px 22px;
+      border: 1px solid #e1e7d9;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 3px 12px #304a3504;
+      overflow-wrap: anywhere
+    }
+
+    .bookmark-row:last-child {
+      margin-bottom: 0
+    }
+
+    .bookmark-row[data-match="identity-changed"],
+    .bookmark-row[data-match="missing"] {
+      border-color: #e8ddc5
+    }
+
+    .bookmark-top,
+    .bookmark-state {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 10px
+    }
+
+    .bookmark-top {
+      justify-content: space-between
+    }
+
+    .bookmark-id {
+      color: #657a58;
+      font: 11px/1.6 Consolas, "Courier New", monospace;
+      letter-spacing: .4px
+    }
+
+    .bookmark-match {
+      color: #6a7d5d;
+      font-size: 10px
+    }
+
+    .bookmark-row[data-match="missing"] .bookmark-match,
+    .bookmark-row[data-match="identity-changed"] .bookmark-match {
+      color: #8d713c
+    }
+
+    .bookmark-status {
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #f0f2eb;
+      color: #69745e;
+      font-size: 10px;
+      line-height: 1.6
+    }
+
+    .bookmark-status[data-status="Available"] {
+      background: #edf5e8;
+      color: #55763e
+    }
+
+    .bookmark-status[data-status="Taken"] {
+      background: #faf0e8;
+      color: #95613b
+    }
+
+    .bookmark-status[data-status="Removed"] {
+      background: #eff0eb;
+      color: #69745e
+    }
+
+    .bookmark-row h3 {
+      margin: 11px 0 10px;
+      color: #30463b;
+      font-size: 16px;
+      font-weight: 600;
+      line-height: 1.6
+    }
+
+    .bookmark-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 18px;
+      margin-bottom: 16px;
+      color: #6b7a60;
+      font-size: 11px
+    }
+
+    .bookmark-meta span {
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 6px
+    }
+
+    .bookmark-meta .icon {
+      width: 14px;
+      height: 14px;
+      margin-top: 2px;
+      color: #92a283
+    }
+
+    .bookmark-description {
+      padding: 14px 16px;
+      border: 1px solid #eef0e7;
+      border-radius: 8px;
+      background: #fafbf7
+    }
+
+    .bookmark-description .detail-heading {
+      margin-bottom: 7px;
+      color: #657653;
+      font-size: 10px
+    }
+
+    .bookmark-description p {
+      margin: 0;
+      color: #63705c;
+      font-size: 12px;
+      line-height: 1.9;
+      white-space: pre-wrap
+    }
+
+    .bookmark-comparison {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      margin: 0 0 14px;
+      padding: 11px 13px;
+      border-radius: 8px;
+      background: #fbf6e9;
+      color: #99804b
+    }
+
+    .bookmark-comparison>.icon {
+      width: 15px;
+      height: 15px;
+      margin-top: 2px
+    }
+
+    .bookmark-comparison strong {
       font-size: 11px;
-      padding: 4px 9px
+      font-weight: 600
+    }
+
+    .bookmark-comparison p {
+      margin: 4px 0 0;
+      font-size: 11px;
+      line-height: 1.8
+    }
+
+    .bookmark-actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 14px
+    }
+
+    .bookmark-actions button {
+      min-height: 32px;
+      padding: 5px 10px;
+      border-radius: 7px;
+      font-size: 11px;
+      font-weight: 500
+    }
+
+    .bookmark-actions .icon {
+      width: 13px;
+      height: 13px
+    }
+
+    .bookmark-remove {
+      color: #8e6855;
+      border-color: transparent;
+      background: transparent
+    }
+
+    .bookmark-remove:hover {
+      border-color: #ead9cd;
+      background: #fcf4ed;
+      color: #945b43
+    }
+
+    .bookmark-adopt {
+      background: #f2f6e9;
+      color: #6b814d;
+      border-color: #dfe7cd
+    }
+
+    .favorites-empty {
+      padding: 42px 20px;
+      border: 1px dashed #d7e0cb;
+      border-radius: 12px;
+      background: #fcfdf9;
+      text-align: center;
+      color: #8d9b7e
+    }
+
+    .favorites-empty>.icon {
+      width: 28px;
+      height: 28px;
+      margin-bottom: 6px;
+      color: #a3b48d
+    }
+
+    .favorites-empty h3 {
+      margin: 4px 0 6px;
+      color: #748765;
+      font-size: 15px;
+      font-weight: 500
+    }
+
+    .favorites-empty p {
+      margin: 0;
+      font-size: 12px
+    }
+
+    @media(max-width:540px) {
+      .app-dialog.favorites-dialog {
+        width: calc(100vw - 20px);
+        max-height: 90vh;
+        border-radius: 12px
+      }
+
+      .favorites-header {
+        padding: 18px 16px 15px
+      }
+
+      .favorites-title-group h2 {
+        font-size: 17px
+      }
+
+      .favorites-toolbar {
+        gap: 10px
+      }
+
+      .favorites-export-actions {
+        flex: 1 1 100%
+      }
+
+      .favorites-export-actions button {
+        flex: 1;
+        padding: 8px
+      }
+
+      #favorites-clear {
+        margin-left: 0;
+        font-size: 11px;
+        min-height: 32px
+      }
+
+      .favorites-list {
+        padding: 14px 12px 16px
+      }
+
+      .bookmark-row {
+        padding: 16px 14px
+      }
+
+      .bookmark-top {
+        gap: 8px
+      }
+
+      .bookmark-state {
+        gap: 5px 8px
+      }
+
+      .bookmark-row h3 {
+        font-size: 14px
+      }
+
+      .bookmark-meta {
+        gap: 7px 12px
+      }
+
+      .bookmark-description {
+        padding: 12px
+      }
     }
 
     .none button {
@@ -1299,6 +1769,62 @@
     </symbol>
     <symbol id="i-leaf" viewBox="0 0 24 24">
       <path d="M20 3c-11-1-17 4-15 11 2 6 14 5 15-11ZM3 21 15 9" />
+    </symbol>
+    <symbol id="i-close" viewBox="0 0 24 24">
+      <path d="m6 6 12 12M18 6 6 18" />
+    </symbol>
+    <symbol id="i-target" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="8" />
+      <circle cx="12" cy="12" r="4" />
+      <path d="m12 12 8-8M16 4h4v4" />
+    </symbol>
+    <symbol id="i-tools" viewBox="0 0 24 24">
+      <path d="M14 6a5 5 0 0 0-6 6l-5 5a2 2 0 0 0 4 4l5-5a5 5 0 0 0 6-6l-3 3-4-4 3-3Z" />
+    </symbol>
+    <symbol id="i-package" viewBox="0 0 24 24">
+      <path d="m12 3 9 5v9l-9 5-9-5V8l9-5Zm-9 5 9 5 9-5m-9 5v9M7.5 5.5l9 5V15" />
+    </symbol>
+    <symbol id="i-calendar" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M7 3v4m10-4v4M3 11h18m-14 4h3m4 0h3m-10 3h3" />
+    </symbol>
+    <symbol id="i-bulb" viewBox="0 0 24 24">
+      <path d="M9 18v-2a6 6 0 1 1 6 0v2H9Zm0 3h6m-5-3v3m4-3v3M12 1V0M3 4 2 3m19 1 1-1" />
+    </symbol>
+    <symbol id="i-graduation" viewBox="0 0 24 24">
+      <path d="m2 8 10-5 10 5-10 5L2 8Zm4 2v7a11 11 0 0 0 12 0v-7m4-2v9" />
+    </symbol>
+    <symbol id="i-user-edit" viewBox="0 0 24 24">
+      <circle cx="9" cy="7" r="4" />
+      <path d="M2 21v-3a7 7 0 0 1 10-6m2 9 7-7-3-3-7 7-1 4 4-1Zm2-8 3 3" />
+    </symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24">
+      <rect x="3" y="5" width="18" height="14" rx="2" />
+      <path d="m3 7 9 6 9-6" />
+    </symbol>
+    <symbol id="i-users" viewBox="0 0 24 24">
+      <circle cx="9" cy="7" r="4" />
+      <path d="M2 21v-3a7 7 0 0 1 14 0v3m0-18a4 4 0 0 1 0 8m3 3a6 6 0 0 1 3 5v2" />
+    </symbol>
+    <symbol id="i-building" viewBox="0 0 24 24">
+      <path d="M4 22V4h12v18M16 10h4v12M2 22h20M8 8h4m-4 4h4m-4 4h4m-4 6v-3h4v3" />
+    </symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24">
+      <circle cx="12" cy="12" r="9" />
+      <path d="M12 7v5l4 2" />
+    </symbol>
+    <symbol id="i-phone" viewBox="0 0 24 24">
+      <path d="m8 3 2 5-3 2a15 15 0 0 0 7 7l2-3 5 2v4a2 2 0 0 1-2 2A19 19 0 0 1 2 5a2 2 0 0 1 2-2h4Z" />
+    </symbol>
+    <symbol id="i-door" viewBox="0 0 24 24">
+      <path d="M5 22V3h14v19M3 22h18M8 22V6h8v16" />
+      <circle cx="13" cy="14" r=".6" />
+    </symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24">
+      <path d="M3 6h18M9 6V3h6v3M5 6l1 15h12l1-15M10 10v7m4-7v7" />
+    </symbol>
+    <symbol id="i-star" viewBox="0 0 24 24">
+      <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3l-5.6 2.9 1.1-6.2L3 9.6l6.2-.9L12 3Z" />
     </symbol>
   </svg>
   <div class="page-shell">
@@ -1452,24 +1978,52 @@
   </div>
 
   <dialog id="decision-dialog" class="app-dialog" aria-labelledby="decision-title">
-    <h2 id="decision-title"></h2>
+    <div class="dialog-heading decision-heading">
+      <h2 id="decision-title"></h2>
+      <button id="decision-close" class="dialog-close" type="button" aria-label="关闭弹窗" title="关闭"><svg class="icon"
+          aria-hidden="true">
+          <use href="#i-close" />
+        </svg></button>
+    </div>
     <p id="decision-message"></p>
     <label id="decision-name-label" hidden>清单名称<input id="decision-name" maxlength="80" type="text"></label>
-    <div id="decision-actions" class="dialog-actions"></div>
-    <button id="decision-cancel" type="button">取消</button>
-  </dialog>
-  <dialog id="favorites-dialog" class="app-dialog favorites-dialog" aria-labelledby="favorites-title">
-    <div class="dialog-heading">
-      <h2 id="favorites-title">全部收藏</h2><button id="favorites-close" type="button">关闭</button>
+    <div class="decision-footer">
+      <button id="decision-cancel" type="button">取消</button>
+      <div id="decision-actions" class="dialog-actions"></div>
     </div>
-    <p id="favorites-description"></p>
-    <div class="record-actions"><button id="favorites-copy" type="button">复制收藏 Markdown</button><button
-        id="favorites-download" type="button">下载收藏 Markdown</button><button id="favorites-clear"
-        type="button">清空本清单收藏</button></div>
-    <div id="favorites-list"></div>
+  </dialog>
+  <dialog id="favorites-dialog" class="app-dialog favorites-dialog" aria-labelledby="favorites-title"
+    aria-describedby="favorites-description">
+    <div class="favorites-header">
+      <div class="dialog-heading favorites-heading">
+        <div class="favorites-title-group">
+          <h2 id="favorites-title">全部收藏</h2><span id="favorites-count" class="favorites-count">0 项</span>
+        </div>
+        <button id="favorites-close" class="dialog-close" type="button" aria-label="关闭全部收藏" title="关闭"><svg class="icon"
+            aria-hidden="true">
+            <use href="#i-close" />
+          </svg></button>
+      </div>
+      <p id="favorites-description"></p>
+      <div class="favorites-toolbar">
+        <div class="favorites-export-actions">
+          <button id="favorites-copy" type="button"><svg class="icon" aria-hidden="true">
+              <use href="#i-copy" />
+            </svg>复制 Markdown</button>
+          <button id="favorites-download" class="pri" type="button"><svg class="icon" aria-hidden="true">
+              <use href="#i-download" />
+            </svg>下载 Markdown</button>
+        </div>
+        <button id="favorites-clear" type="button"><svg class="icon" aria-hidden="true">
+            <use href="#i-trash" />
+          </svg>清空本清单收藏</button>
+      </div>
+      <p id="favorites-feedback" class="favorites-feedback" role="status" hidden></p>
+    </div>
+    <div id="favorites-list" class="favorites-list"></div>
   </dialog>
 
-  <div id="toast" role="status" aria-live="polite"></div>
+  <div id="toast" popover="manual" role="status" aria-live="polite" aria-atomic="true"></div>
 
   <script id="state-core">
 
@@ -1482,7 +2036,9 @@
         type: 'Project type', area: 'Specific area of research', skills: 'Skill set required',
         deliv: 'Expected deliverable', sched: 'Project schedule (List of steps for the project)',
         inno: 'Innovative component/ project potential', prog: 'This project suitable for programme',
-        by: 'Proposed by', sup: 'Supervisor name:', email: 'Email:', seen: 'Last seen', rmon: 'Removed on'
+        by: 'Proposed by', sup: 'Supervisor name:', email: 'Email:', seen: 'Last seen', rmon: 'Removed on',
+        cosup: 'Co-supervisor name:', company: 'External company involved', consult: 'FYP Consultancy Schedule:',
+        phone: 'Office phone:', room: 'Room number:'
       };
       const clean = value => typeof value === 'string' ? value.replace(/[\x00-\x08\x0b\x0c\x0e-\x1f]/g, '').trim() : '';
       const plain = value => !!value && typeof value === 'object' && !Array.isArray(value);
@@ -1532,7 +2088,7 @@
         if (record.Status !== undefined && typeof record.Status !== 'string') throw new Error('Status 必须是文字。');
         p.status = status(record.Status);
         if (p.status.length > 128) throw new Error('Status 内容过长。');
-        p.all = [p.id, p.title, p.desc, p.obj, p.type, p.area, p.skills, p.deliv, p.sched, p.inno, p.prog, p.by, p.sup].join('\n').toLowerCase();
+        p.all = [p.id, p.title, p.desc, p.obj, p.type, p.area, p.skills, p.deliv, p.sched, p.inno, p.prog, p.by, p.sup, p.email, p.cosup, p.company, p.consult, p.phone, p.room].join('\n').toLowerCase();
         p.td = (p.title + '\n' + p.desc).toLowerCase(); p.tl = p.title.toLowerCase();
         return p;
       }
@@ -1676,7 +2232,16 @@
     const C = FypState, $ = s => document.querySelector(s);
     const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const uiIcon = name => '<svg class="icon" aria-hidden="true"><use href="#i-' + name + '"></use></svg>';
-    const F = [['desc', 'Description'], ['obj', 'Objectives'], ['type', 'Project type'], ['area', 'Specific area of research'], ['skills', 'Skill set required'], ['deliv', 'Expected deliverable'], ['sched', 'Project schedule'], ['inno', 'Innovative component'], ['prog', 'Suitable for programme'], ['by', 'Proposed by'], ['email', 'Email']];
+    const F = [
+      ['desc', 'Description', 'file'], ['obj', 'Objectives', 'target'], ['type', 'Project type', 'tag'],
+      ['area', 'Specific area of research', 'leaf'], ['skills', 'Skill set required', 'tools'],
+      ['deliv', 'Expected deliverable', 'package'], ['sched', 'Project schedule', 'calendar'],
+      ['inno', 'Innovative component', 'bulb'], ['prog', 'Suitable for programme', 'graduation'],
+      ['by', 'Proposed by', 'user-edit'], ['cosup', 'Co-supervisor name', 'users'],
+      ['company', 'External company involved', 'building'], ['consult', 'FYP Consultancy Schedule', 'clock'],
+      ['email', 'Email', 'mail'], ['phone', 'Office phone', 'phone'], ['room', 'Room number', 'door']
+    ];
+    const detailHeading = field => '<h4 class="detail-heading">' + uiIcon(field[2]) + '<span>' + esc(field[1]) + '</span></h4>';
     let root = C.newStore(), all = [], stars = new Set(), sups = new Set(), status = 'Available', terms = [];
     let loadedId = null, fileTime = null, lastParse = { bad: 0, duplicates: 0, conflicting: 0 };
     let stateHandle = null, pendingStateHandle = null, stateHash = null, recordName = '', dirty = false, generation = 0, savedGeneration = 0;
@@ -1689,15 +2254,31 @@
     const active = () => root.datasets.find(d => d.id === root.activeDatasetId) || null;
     const hasData = () => !!active() && loadedId === active().id;
     const favoriteEntries = () => active() ? C.matches(active(), all, hasData()) : [];
+    function syncToastLayer() {
+      const node = $('#toast'); if (!node.classList.contains('on')) return;
+      const host = $('#decision-dialog').open ? $('#decision-dialog') : $('#favorites-dialog').open ? $('#favorites-dialog') : document.body;
+      try { node.hidePopover?.(); } catch { }
+      // Keep the live announcement inside the active modal's accessible subtree.
+      if (node.parentElement !== host) host.appendChild(node);
+      if (node.hasAttribute('popover') && typeof node.showPopover === 'function') {
+        // A newly opened dialog may now be above an existing notification.
+        try { node.showPopover(); return; } catch { }
+      }
+      // Older browsers: place the fixed notification inside the active dialog.
+      node.removeAttribute('popover');
+    }
     function clearToast(sequence) {
       if (sequence !== undefined && sequence !== toastSequence) return;
       clearTimeout(toastTimer); toastTimer = null; const node = $('#toast'); node.classList.remove('on'); node.textContent = '';
+      try { node.hidePopover?.(); } catch { }
     }
     function toast(text) {
       clearToast(); const sequence = ++toastSequence, node = $('#toast'); node.textContent = text; node.classList.add('on');
+      syncToastLayer();
       toastTimer = setTimeout(() => clearToast(sequence), 2200); return sequence;
     }
-    function notice(text, error = false) { const node = $('#operation-message'); node.textContent = text; node.hidden = !text; node.dataset.error = String(error); }
+    function favoritesFeedback(text, error = false) { const node = $('#favorites-feedback'); node.textContent = text; node.hidden = !text; node.dataset.error = String(error); }
+    function notice(text, error = false) { const node = $('#operation-message'); node.textContent = text; node.hidden = !text; node.dataset.error = String(error); if ($('#favorites-dialog').open) favoritesFeedback(text, error); }
     function updateCacheHelp() {
       const messages = [cacheError ? '浏览器缓存不可用：' + cacheError + '。记录文件保存仍可使用；请保留 JSON，并在下次手动打开。' : cacheEnabled ? '浏览器缓存只作辅助。移动 HTML、换浏览器或清理浏览器数据后，请重新打开记录 JSON。' : '已关闭此页浏览器记忆；文件保存仍可使用，下次请手动打开记录 JSON。'];
       if (coordinationWarning) messages.push('此环境不能协调跨页面写入，请同一记录文件只开一个可写页面。');
@@ -1705,8 +2286,8 @@
     }
     function errorText(e) { return e?.message || String(e); }
     function cancelled(e) { return e?.name === 'AbortError'; }
-    function showDialog(node) { if (typeof node.showModal === 'function') node.showModal(); else node.setAttribute('open', ''); }
-    function closeDialog(node) { if (typeof node.close === 'function') node.close(); else node.removeAttribute('open'); }
+    function showDialog(node) { if (typeof node.showModal === 'function') node.showModal(); else node.setAttribute('open', ''); syncToastLayer(); }
+    function closeDialog(node) { if (typeof node.close === 'function') node.close(); else node.removeAttribute('open'); syncToastLayer(); }
     function finishDecision(key) {
       if (!decisionResolve) return;
       const done = decisionResolve; decisionResolve = null;
@@ -1809,8 +2390,9 @@
     }
     function card(p) {
       const meta = [p.sup && uiIcon('user') + hl(p.sup), p.type && uiIcon('tag') + hl(p.type), p.area && uiIcon('leaf') + hl(p.area)].filter(Boolean).map(v => '<span>' + v + '</span>').join('');
-      const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<div class="detail-item"><h4>' + f[1] + '</h4><p>' + hl(p[f[0]]) + '</p></div>').join('');
-      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" aria-expanded="false" aria-label="' + esc(p.title || p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span><span class="pill ' + esc(p.status) + '">' + esc(p.status) + '</span>' + seenTag(p) + '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏" aria-label="收藏项目" aria-pressed="' + stars.has(p.id) + '">' + (stars.has(p.id) ? '★' : '☆') + '</button></div><div class="title">' + hl(p.title || p.id) + '</div><div class="meta">' + meta + '</div><div class="desc">' + hl(p.desc) + '</div><div class="more">' + more + '</div><div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
+      const more = F.filter(f => f[0] !== 'desc' && p[f[0]]).map(f => '<div class="detail-item">' + detailHeading(f) + '<p>' + (f[0] === 'email' ? '<button class="email-copy" type="button" data-a="copy-email" title="点击复制邮箱地址" aria-label="' + esc('复制邮箱地址 ' + p.email) + '"><span>' + hl(p.email) + '</span>' + uiIcon('copy') + '</button>' : hl(p[f[0]])) + '</p></div>').join('');
+      const description = p.desc ? '<div class="description-block">' + detailHeading(F[0]) + '<div class="desc">' + hl(p.desc) + '</div></div>' : '';
+      return '<div class="card' + (p.status === 'Removed' ? ' rm' : '') + '" data-id="' + esc(p.id) + '" tabindex="0" aria-expanded="false" aria-label="' + esc(p.title || p.id) + '"><div class="top"><span class="id">' + esc(p.id) + '</span><span class="pill ' + esc(p.status) + '">' + esc(p.status) + '</span>' + seenTag(p) + '<button class="star' + (stars.has(p.id) ? ' on' : '') + '" data-a="star" title="收藏" aria-label="收藏项目" aria-pressed="' + stars.has(p.id) + '">' + (stars.has(p.id) ? '★' : '☆') + '</button></div><div class="title">' + hl(p.title || p.id) + '</div><div class="meta">' + meta + '</div>' + description + '<div class="more">' + more + '</div><div class="act"><button data-a="copy">复制 ID + 标题 + 描述</button></div></div>';
     }
     function banner() {
       const entries = favoriteEntries(), missing = entries.filter(e => e.kind === 'missing').length, changed = entries.filter(e => e.kind === 'identity-changed').length, unavailable = entries.filter(e => e.kind === 'matched' && e.project.status !== 'Available').length;
@@ -1867,21 +2449,27 @@
     function renderFavorites() {
       const d = active(), entries = favoriteEntries();
       $('#favorites-title').textContent = d ? '全部收藏 · ' + d.name : '全部收藏';
+      $('#favorites-count').textContent = entries.length + ' 项';
+      for (const id of ['favorites-copy', 'favorites-download', 'favorites-clear']) $('#' + id).disabled = !entries.length;
       $('#favorites-description').textContent = hasData() ? '这里包含所有状态及未匹配收藏，不受主列表筛选影响。缺失和待核对项目显示保存的快照，不表示网站当前状态。' : '尚未载入这份清单的项目数据。下方只显示保存的收藏快照，请导入对应的 progress.jsonl 后核对。';
       const labels = { matched: '已匹配当前文件', missing: '当前文件未找到（不等于已删除）', 'identity-changed': '项目身份变化，待核对', unverified: '未载入项目数据，尚未核对' };
       $('#favorites-list').innerHTML = entries.length ? entries.map(e => {
         const b = e.bookmark, p = e.kind === 'matched' ? C.snapshot(e.project) : b.snapshot;
-        return '<article class="bookmark-row"><div class="bookmark-state">' + esc(labels[e.kind]) + ' · ' + (e.kind === 'matched' ? '当前文件状态：' : '上次快照状态：') + esc(p.status) + '</div><h3>' + esc(p.id + ' ' + (p.title || '未保存标题')) + '</h3><p>' + esc(p.sup || '未保存导师') + (p.prog ? ' · ' + esc(p.prog) : '') + '</p>' + (e.kind === 'identity-changed' ? '<p>当前文件对应项目：' + esc(e.project.title) + ' · ' + esc(e.project.sup) + '。确认是你想收藏的题目后再关联。</p>' : '') + '<div class="bookmark-description">' + esc(p.desc || '没有保存描述') + '</div><div class="record-actions">' + (e.kind === 'identity-changed' ? '<button type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="adopt">核对后关联当前项目</button>' : '') + '<button type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="remove">取消此收藏</button></div></article>';
-      }).join('') : '<div class="none">这份清单还没有收藏。</div>';
+        const state = '<span class="bookmark-match">' + esc(labels[e.kind]) + '</span><span class="bookmark-status" data-status="' + esc(p.status) + '">' + (e.kind === 'matched' ? '当前文件状态：' : '上次快照状态：') + esc(p.status) + '</span>';
+        const meta = '<span>' + uiIcon('user') + esc(p.sup || '未保存导师') + '</span>' + (p.prog ? '<span>' + uiIcon('graduation') + esc(p.prog) + '</span>' : '');
+        const comparison = e.kind === 'identity-changed' ? '<div class="bookmark-comparison">' + uiIcon('target') + '<div><strong>当前文件中的同 ID 项目</strong><p>' + esc(e.project.title) + ' · ' + esc(e.project.sup) + '\n确认是你想收藏的题目后再关联。</p></div></div>' : '';
+        const adopt = e.kind === 'identity-changed' ? '<button class="bookmark-adopt" type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="adopt">' + uiIcon('target') + '核对后关联当前项目</button>' : '';
+        return '<article class="bookmark-row" data-match="' + esc(e.kind) + '"><div class="bookmark-top"><span class="bookmark-id">' + esc(p.id) + '</span><div class="bookmark-state">' + state + '</div></div><h3>' + esc(p.title || '未保存标题') + '</h3><div class="bookmark-meta">' + meta + '</div>' + comparison + '<div class="bookmark-description">' + detailHeading(F[0]) + '<p>' + esc(p.desc || '没有保存描述') + '</p></div><div class="bookmark-actions">' + adopt + '<button class="bookmark-remove" type="button" data-bookmark="' + esc(b.bookmarkId) + '" data-book-action="remove" aria-label="' + esc('取消收藏：' + p.id + ' ' + p.title) + '">' + uiIcon('close') + '取消此收藏</button></div></article>';
+      }).join('') : '<div class="favorites-empty">' + uiIcon('star') + '<h3>还没有收藏</h3><p>在项目卡片上点击星标，即可加入当前清单。</p></div>';
     }
-    function viewFavorites() { renderFavorites(); if (!$('#favorites-dialog').open) showDialog($('#favorites-dialog')); }
+    function viewFavorites() { renderFavorites(); favoritesFeedback(''); if (!$('#favorites-dialog').open) showDialog($('#favorites-dialog')); }
     function download(text, name, type) {
       const url = URL.createObjectURL(new Blob([text], { type })), link = document.createElement('a');
       link.href = url; link.download = name; document.body.appendChild(link); link.click(); link.remove(); setTimeout(() => URL.revokeObjectURL(url), 1000);
     }
-    async function copyText(text) {
+    async function copyText(text, message = '已复制') {
       if (!navigator.clipboard?.writeText) throw new Error('浏览器不允许直接复制，请使用下载，或手动选择文字复制。');
-      await navigator.clipboard.writeText(text); toast('已复制');
+      await navigator.clipboard.writeText(text); toast(message);
     }
     function exportFavorites(copy = false) {
       if (!active()?.favorites.length) { toast('还没有收藏'); return; }
@@ -2150,7 +2738,9 @@
     function on(id, action) { $('#' + id).addEventListener('click', () => runAction(action)); }
     $('#decision-actions').addEventListener('click', e => { const button = e.target.closest('[data-choice]'); if (button) finishDecision(button.dataset.choice); });
     $('#decision-cancel').addEventListener('click', () => finishDecision(null));
+    $('#decision-close').addEventListener('click', () => finishDecision(null));
     $('#decision-dialog').addEventListener('cancel', e => { e.preventDefault(); finishDecision(null); });
+    for (const id of ['decision-dialog', 'favorites-dialog']) $('#' + id).addEventListener('close', syncToastLayer);
     $('#manage-records').onclick = () => { const node = $('#records-panel'); node.hidden = !node.hidden; $('#manage-records').setAttribute('aria-expanded', String(!node.hidden)); };
     document.querySelectorAll('[data-import]').forEach(button => button.onclick = () => runAction(() => chooseData('auto')));
     $('#file').onchange = () => runAction(async () => { const file = $('#file').files[0]; if (file) await importData(file, pendingMode); });
@@ -2172,6 +2762,7 @@
       const p = all.find(p => p.id === node.dataset.id), action = e.target.closest('[data-a]')?.dataset.a; if (!p) return;
       if (action === 'star') { notice(''); if (!stars.has(p.id) && active().favorites.length >= 5000) { notice('单份清单最多保留 5,000 个收藏。'); return; } try { toggleBookmark(p); } catch (e) { notice(errorText(e), true); } return; }
       if (action === 'copy') { runAction(() => copyText(p.id + ' ' + p.title + '\n' + p.desc)); return; }
+      if (action === 'copy-email') { runAction(() => copyText(p.email, '邮箱地址已复制')); return; }
       if (!getSelection().toString()) { node.classList.toggle('open'); node.setAttribute('aria-expanded', String(node.classList.contains('open'))); }
     };
     $('#list').addEventListener('keydown', e => { if (e.target.classList.contains('card') && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); e.target.click(); } });
